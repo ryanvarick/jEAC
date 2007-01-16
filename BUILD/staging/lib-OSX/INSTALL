@@ -1,0 +1,62 @@
+
+----------------------
+ INSTALLATION FOR OSX
+----------------------
+
+We're not entirely sure what the procedure is for OSX yet:
+
+ 1. OSX 10.4 (Tiger) is REQUIRED.  jEAC needs Java 1.5, which is only
+    available on OSX 10.4 and later.  If you're running an earlier version
+    of OSX, jEAC isn't going to work.
+    
+    You might need to tell OSX to use Java 1.5 as the current version though;
+    for that, issue these commands in a terminal window:
+    
+    cd /System/Library/Frameworks/JavaVM.framework/Versions
+	rm Current
+	rm CurrentJDK
+	ln -s /System/Library/Frameworks/JavaVM.framework/Versions/1.5 /
+			System/Library/Frameworks/JavaVM.framework/Versions/Current
+	ln -s /System/Library/Frameworks/JavaVM.framework/Versions/1.5.0 /
+			System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK
+			
+	This will update the symlink to the latest Java version.
+    
+ 2. Plug the uEAC into one of the USB ports.  Check /dev for something that
+ 	looks like this:
+ 
+ 		tty.usbserial-1B1A
+ 		
+ 	If you see devices like this, skip to step (4).
+ 	
+ 3. Otherwise, you probably need to install FTDI support. 
+
+    Run "install_ftdi.dmg", repeat step (2).  If you're still not seeing any 
+    uEAC devices, something is wrong.  Go talk to Bryce or Adam. :-)
+    
+ 4. jEAC is a self-contained, executable .jar file.  Provided everything is
+    configured properly, it should Just Work(TM).  What "configured properly" 
+    really means is what we're trying to figure out. ;-)
+    
+    Assuming you can see uEAC devices in /dev, try to run jEAC now:
+ 
+ 		java -jar jEAC.jar
+ 		
+ 	If you get past the loading screen, and see /dev/* entries in the connect
+ 	menu, then great, we're done!
+ 	
+ 5. The hope is that, by bundling librxtxSerial.jnilib with jEAC.jar, OSX will
+    be able to use that for RXTX support.  It'd be nice if we could avoid
+    installing a million different packages.  The permissions script is probably
+    necessary, so run it now:
+    
+    	chmod 744 permissions.sh
+    	./permissions.sh
+    	
+    Repeat step (4).  If things magically work, great, we can get rid of the 
+    RXTX installer.  If not, run install_rxtx.pkg.sitx.hqx now.  Repeat step (4).
+    
+ 6. At this point, everything should work.  If it doesn't, who knows what's wrong.
+    
+    If things are working, delete librxtxSerial.jnilib; it probably isn't 
+    necessary.  Re-run jEAC and let us know if that breaks anything.

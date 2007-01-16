@@ -1,0 +1,41 @@
+\documentclass[12pt]{report}
+%\usepackage[dvips]{graphics}
+\usepackage{amsmath, amsfonts, amssymb, latexsym, epsfig}
+\usepackage{graphicx, pstricks, times, vmargin, verbatim, longtable}
+\usepackage{fancyhdr}
+
+\setmarginsrb{0.75in}{1.25in}{0.75in}{1.25in}{12pt}{11mm}{0pt}{5mm}
+
+\pagestyle{fancyplain}
+\cfoot{\textbf{\fancyplain{}{\thepage}}}
+\lhead{\fancyplain{}{Team JEAC\\}}
+
+\author{Drew Kipfer, Ryan R. Varick}
+\title{Project JEAC}
+
+\begin{document}
+\noindent
+\maketitle
+
+\setcounter{tocdepth}{2}
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+
+\setcounter{section}{0}
+
+\input{Section0}
+\newpage
+\input{Section1}
+\newpage
+\input{Section2}
+\newpage
+\input{Section3}
+\newpage
+\input{Section4}
+\newpage
+\input{Section5}
+\newpage
+\input{Section6}
+\newpage
+\end{document}

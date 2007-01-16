@@ -1,0 +1,45 @@
+\chapter{Application Overview}
+
+\section{Current Methods}
+
+Currently, an extended analog computer consists of four components:
+\begin{itemize}
+	\item A layer of semi-conductive materials, usually foam
+	\item Sources, to add current to the sheet
+	\item Sinks, to remove current from the sheet
+	\item Lukasiewicz Logic Arrays (LLAs), to modulate voltage on the sheet
+\end{itemize}
+
+Sources and sinks are attached to the semi-conductive substrate, which affects the voltage gradient on the sheet.  Using fuzzy logic, LLAs can be used to shape the voltage gradient.
+
+While components must be manually attached to specific positions on the sheet, their values may be manipulated remotely via an Ethernet-enabled digital-to-analog (DAC) converter.  Simple configuration sentences are used to communicate with the DAC.  Sentences are of the form:
+
+\begin{verbatim}
+[D, L, A]XXYYYZ
+\end{verbatim}
+
+Where the first letter (D, L, A) identifies the type of connection to configure.  The next two characters (XX) denote the channel, while the following three chracters indicate the value (YYY).  A terminator (Z) signals end-of-sentence and completes the command.
+
+The EAC features 16 programmable current channels: 8 sources and 8 sinks, referenced between 0 and 15 (HEX).  Their values, specify the amount of current, in mA, to source or sink from the sheet.  Computing the value (YYY) is the HEX result of the desired amount (in mA) multiplied by 1023.
+
+In addition, the EAC features 6 programmable LLA channels.  More about this, caddy-corner, etc.
+
+When reading the voltage gradient, one must take into consideration how the probes are arranged on the sheet.  Normally, the probes are laid out in a grid or matrix format; however, they may be arranged in radial form, or in 3-dimensional configurations.  Future hardware versions will support more flexible configuration.
+
+\section{Existing Applications}
+The team is not aware of any existing applications in this area.
+
+\section{System Characteristics}
+The team will design an intuitive application that allows researchers to remotely configure the EAC.  The interface will provide mechanisms to:
+
+\begin{itemize}
+	\item Select the connection to configure
+	\item Configure the properties of a given connection
+	\item View a continous, real-time, 3D visualization of the voltage gradient
+\end{itemize}
+
+The application will strive for platform independence, easy installation, and intuitive configuration.  The team will develop a manual to explain and document aspects of the design.  
+
+The team will interact with potential users of the application to test the usability of the implementation.  The team will donate the resultant codebase under the terms of the GNU General Public License (GPL) for free use by the students of Prof. Mills' courses.
+
+The team will test and debug the application to the best of its abilities; however, it will not be obligated to provide continued support and maintaince beyond the original development cycle.

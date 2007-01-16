@@ -1,0 +1,89 @@
+
+CHANGELOG for jEAC:
+
+
+
+04/26/2006 - v1.1.1
+
+	* BUGFIX - USBDriver.java - modified reload() to reset the JEACNodes
+	* JEAC.java - added status bar states to the configuration loader
+
+04/26/2006 - v1.1.0
+
+	* JEAC.java - statusbar now indicates reset state when connecting to a new device
+	* NodeMap.java - added a reload() method to re-sync the UI and the JEACNodes
+	* USBDriver.java - updated reload() to simply reset() and re-init the LLAs
+		- JEACNodes are handled by JEAC.java (FileIOListener) and NodeMap.reload()
+	* Gradient3D.java - added setLabel()
+		- working on label support, maybe in a future version
+	* TodoList.java - moved some issues to Sourceforge
+	* removed 1.0.x releases
+
+
+
+04/26/2006 - v1.0.5
+
+	* BUGFIX: (1476459) - fixed regression in reconfigureWindow()
+	* BUGFIX: (1477024) - fixed the orientation of the internal uEAC representation
+	
+	* forked v1.0 branch in source control
+
+
+
+04/25/2006 - v1.0.4 - UI improvments, uEAC driver fixes
+
+	* BUGFIX (1476439) - USBDriver.java - no feedback for allocating too many LLAs
+	* BUGFIX (1476425) - USBDriver.java - LLAs are not properly de-allocated on type change
+	* BUGFIX (1476501) - JEAC.java - load menu item is only active when a driver is connected
+	* BUGFIX - JEAC.java - fixed cast error in reconfigureMenu()
+	
+	* REQ (1476434) - ControlFrame.java - added key accelerators
+	* REQ (1476441) - JEAC.java - added reset() to NewDriverListener
+	
+	* USBDriver.java - reset timeout values to 1000ms
+	* USBDriver.java - changed probe command to NOK_TEST -- it doesn't matter, but it makes sense for debugging
+	* USBDriver.java - changed getVoltageGradient() to try-catch voltage conversion; on failure, a cached copy is returned
+	* JEAC.java - reset update interval to 1s
+	* JEAC.java - changed startInterfaceUpdateThread() to run immediately, then schedule the task
+	* Gradient2D/3D.java - removed driver.getVoltageGradient(), instead initialized with a blank gradient
+		- this was causing errors when toggling gradient views in heavy use situations
+
+
+
+04/23/2006 - v1.0.3 - OSX uEAC fixes
+
+	* USBDriver.java - delayed driver constructor call in getPortList until after blacklist checking
+	* USBDriver.java - made blacklist checking case insensitve
+	* USBDriver.java - blacklisted "bluetooth" and "cu" devices (OSX)
+
+
+
+04/21/2006
+
+	* USBDriver.java - moved debug control into a static method
+	* USBDriver.java - removed "LON" on connect
+
+04/20/2006 - v1.0.2 - uEAC LED support
+
+	* USBDriver.java - added KNOWN_BAD list of ports to ignore, updated getPortList() to ignore ports
+	* USBDriver.java - added toggleLEDs() and class-private ledsEnabled variable (LED toggling)
+	* JEAC.java - updated to support LED toggles (uEAC only)
+		- updated LEDListener, reconfigureMenu()
+
+04/20/2006 - v1.0.1 - fixed uEAC LLAs, changed SRC/SNK slider behavior
+
+	* ControlFrame.java - disabled slider snapping, it was causing SRC/SNK driver events to fire twice
+		(first to write the user-selected value, then to write the slider-snapped value)
+	* USBDriver.java - fixed a string comparison bug in changeNode() 
+	* BUILD - updated BUILD notes for OSX, win32, added JRE notes
+		
+
+
+04/18/2006 - driver fixes
+
+	* FIXED (bugs 1473306, 1473311, 1473313): LLA Inspector breaks on LLA change
+		- HAL: getNumActiveLLAs -> getNumLLAs (USBDriver now generates a fixed list of MAX_LLAS)
+		- USBDriver: folded changeNodeValue into changeNode
+		- USBDriver: new changeNode logic
+			- fixes bug that prevented LLAs from being initialized to function 1
+		- USBDriver: rolled reset logic into resetNode (no longer dependent on changeNodeValue)

@@ -1,0 +1,56 @@
+
+Here is a console dump when driver connection is disabled:
+
+Stable Library
+=========================================
+Native lib Version = RXTX-2.1-7
+Java lib Version   = RXTX-2.1-7
+
+/dev/tty.modem known bad, ignoring...
+
+/dev/cu.modem known bad, ignoring...
+
+/dev/cu.modem known bad, ignoring...
+
+Probing /dev/tty.usbserial-191A7...
+TRYING PORT... skipped
+/dev/tty.usbserial-191A7 is not valid.
+
+/dev/cu.usbserial-191A7 known bad, ignoring...
+
+Probing /dev/tty.usbserial-191B8...
+TRYING PORT... skipped
+/dev/tty.usbserial-191B8 is not valid.
+
+/dev/cu.usbserial-191B8 known bad, ignoring...
+
+Probing /dev/tty.usbserial-191A...
+TRYING PORT... skipped
+/dev/tty.usbserial-191A is not valid.
+
+/dev/cu.usbserial-191A known bad, ignoring...
+
+Probing /dev/tty.usbserial-191B...
+TRYING PORT... skipped
+/dev/tty.usbserial-191B is not valid.
+
+/dev/cu.usbserial-191B known bad, ignoring...
+Experimental:  JNI_OnLoad called.
+
+
+
+
+
+
+Here's a console dump when the uEAC is NOT connected:
+
+Stable Library
+=========================================
+Native lib Version = RXTX-2.1-7
+Java lib Version   = RXTX-2.1-7
+
+/dev/tty.modem known bad, ignoring...
+
+/dev/cu.modem known bad, ignoring...
+
+/dev/cu.modem known bad, ignoring...

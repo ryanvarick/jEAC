@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><eac name="COM5" type="edu.indiana.cs.eac.driver.USBDriver" version="1.0"><row index="0"><pin index="1"><SNK><![CDATA[115.0]]></SNK></pin></row><row index="1"><pin index="0"><SRC><![CDATA[115.0]]></SRC></pin></row><row index="4"><pin index="4"><LLA><![CDATA[0.0]]></LLA></pin></row></eac>

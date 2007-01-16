@@ -1,0 +1,16 @@
+
+---------------------
+ROADMAP to jEAC v2.0
+---------------------
+
+Categories:
+  - Improve visualization support
+  - Move to MVC architecture
+  - Move to SWT (?)
+  - Improve driver architecture
+  - Integrate GA
+  - LLA editor
+  - Revamp UI
+  - Fix render errors 
+  - UNIT TESTING [!]
+  
