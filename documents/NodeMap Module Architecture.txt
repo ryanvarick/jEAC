@@ -1,0 +1,202 @@
+NodeMap Module Architecture
+
+
+Class NodeMap
+    
+    Methods
+    -------
+    
+    NodeMap
+        Type:           constructor    
+        Access:         public
+        Signature:      HAL driver
+        Return type:    N/A
+        Throws:         N/A
+        Calls:          super(LayoutManager), HAL.getRows(), HAL.getCol(), HAL.getJEACNodes(), setMinimumSize(Dimension), 
+                        setPreferredSize(Dimension), setDriver(HAL), setBoarder(Boarder), 
+                        BorderFactory.createTitledBorder(String), JButton.setFont(Font), 
+                        JButton.addActionListener(ActionListener), add(JComponent)
+        Pseudocode:     Call on the super constructor to set the layout of the panel.  Create an array of JButtons that     
+                        corresponds to the number of nodes created by the driver class.  Gets a pointer to the JEACNode array 
+                        from the driver class.  Configure the size of the panel.  Initiate the JButton array.
+    
+    setDriver
+        Type:           method    
+        Access:         private
+        Signature:      HAL driver
+        Return type:    void
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Initialize the globally accessable HAL object to the given driver.
+    
+    getJEACNode
+        Type:           method    
+        Access:         private
+        Signature:      JButton button
+        Return type:    JEACNode
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Given the JButton object, find the index of the button in the JButton array, return the JEACNode that 
+                        is at that same index in the JEACNode array.
+    
+    getIndex
+        Type:           method    
+        Access:         private
+        Signature:      JButton button
+        Return type:    int[]
+        Throws:         N/A
+        Calls:          Math.floor(int), HAL.getCol()
+        Pseudocode:     Find the index of the button in the JButton array.  Using that index, figure out the (x,y) coordinates
+                        of the button in the grid display.  Return an int[2] consisting of the following:
+                            temp[0]:  the row number of the button
+                            temp[1]:  the column number of the button
+    
+    setButtonText
+        Type:           method    
+        Access:         private
+        Signature:      JButton button, String text
+        Return type:    void
+        Throws:         N/A
+        Calls:          JButton.setText(String)
+        Pseudocode:     Call the setText method of the given JButton object
+        
+    actionPerformed
+        Type:           method    
+        Access:         public
+        Signature:      ActionEvent e
+        Return type:    void
+        Throws:         N/A
+        Calls:          ActionEvent.getSource(), JEACNode.getJEACNode(JButton), JEACNode.isChanging(), 
+                        ControlPanel(JButton, JEACNode)
+        Pseudocode:     This method is implemented as required by the ActionListener interface.  First, find the JEACNode that
+                        corresponds with the selected JButton.  Call the isChanging method of the JEACNode to determine if that 
+                        node is being changed by a controlpanel already.
+    
+                       
+Private Class ControlPanel
+
+TODO:   Consider making this a separate class and passing it a pointer to the NodeMap object so that it can still access 
+        methods in that class.
+        
+    
+    Methods
+    -------
+    
+    ControlPanel
+        Type:           constructor    
+        Access:         public
+        Signature:      JButton button, JEACNode node, int[] coordinates
+        Return type:    N/A
+        Throws:         N/A
+        Calls:          setSize(Dimension), setResizable(boolean), addWindowListener(WindowAdapter), setTitle(String), 
+                        JEACNode.setChanging(boolean), configureRadioButtons(), configureControlPanel(), setVisible(boolean)
+        Pseudocode:     Initialize all class fields.  Configure the JFrame.
+    
+    configureRadioButtons
+        Type:           method    
+        Access:         private
+        Signature:      N/A
+        Return type:    void
+        Throws:         N/A
+        Calls:          JRadioButton.addActionListener(ActionListener), add(JComponent), JRadioButton.setText(String),
+                        setRadioButton()
+        Pseudocode:     Initialize the radio buttons for the controlpanel.  Set the action listener, add to a buttongroup, and 
+                        set the text.  Add the radio buttons to the global radiobuttonpanel.  Call the setRadioButton method.
+                        
+    configureControlPanel
+        Type:           method    
+        Access:         private
+        Signature:      N/A
+        Return type:    void
+        Throws:         N/A
+        Calls:          JEACNode.isType(String), Container.setLayout(LayoutManager), JPanel.add(JComponent), 
+                        Container.add(JComponent), JSlider.addChangeListener(ChangeListener), JSlider.setValue(int),
+                        JTextField.setText(String), JComboBox.setSelectedIndex(int), 
+                        JComboBox.addActionListener(ActionListener)
+        Pseudocode:     Determine the type of the node to which the control panel is assigned.
+                            If SOURCE or SINK:  Add the JSlider object "intensity" to the container and a textbox "intvalue".
+                            If LLA:  Add the JComboBox llalist to the container
+                        Then add the JRadioButtons contained in radiobuttonpanel.
+        
+    setRadioButton
+        Type:           method    
+        Access:         private
+        Signature:      N/A
+        Return type:    void
+        Throws:         N/A
+        Calls:          JEACNode.isType(String), JRadioButton.setSelected(boolean)
+        Pseudocode:     Determine the type of the JEACNode the ControlPanel object is associated with.  Depending on the type:
+                            SOURCE:     Call setSelected on the 0th element of the rbuttons array of JRadioButtons in 
+                                        radiobuttonpanel
+                            SINK:       Call setSelected on the 1st element of the rbuttons array of JRadioButtons in 
+                                        radiobuttonpanel
+                            LLA:        Call setSelected on the 2nd element of the rbuttons array of JRadioButtons in 
+                                        radiobuttonpanel
+                            OFF:        Call setSelected on the 3rd element of the rbuttons array of JRadioButtons in 
+                                        radiobuttonpanel
+        
+    allowNewWindows
+        Type:           method    
+        Access:         private
+        Signature:      N/A
+        Return type:    void
+        Throws:         N/A
+        Calls:          JEACNode.setChanging(boolean)                  
+        Pseudocode:     Call the setChanging method of the JEACNode selectednode and pass it false.  This allow the application
+                        to open a new ControlPanel associated with that node if the user selects it.
+        
+    actionPerformed
+        Type:           method    
+        Access:         public
+        Signature:      ActionEvent
+        Return type:    void
+        Throws:         N/A
+        Calls:          ActionEvent.getSource(), JEACNode.setType(String), JEACNode.setValue(int), JComboBox.getSelectedIndex()
+                        setButtonText(JButton, String), dispose()                  
+        Pseudocode:     Determine which component was triggered:
+                            rbuttons[0]:  call selectednode.setType and pass it JEACNode.SOURCE
+                            rbuttons[1]:  call selectednode.setType and pass it JEACNode.SINK
+                            rbuttons[2]:  call selectednode.setType and pass it JEACNode.LLA
+                            rbuttons[3]:  call selectednode.setType and pass it JEACNode.OFF
+                        This method is implemented as required by the ActionListener interface.  Call the setButtonText method 
+                        passing it the associated JButton object 'selectedbutton' and the type string of the JEACNode object 
+                        'selectednode'.  Instantiate a new instance of ControlPanel and dispose of the old.
+                        
+        TODO:  Look into redrawing the panel instead of creating a new one.
+        
+    stateChanged
+        Type:           method    
+        Access:         public
+        Signature:      ChangeEvent e
+        Return type:    void
+        Throws:         N/A
+        Calls:          JTextField.setText(String), Integer.toString(int), JSlider.getValue(), JEACNode.setValue(double)                  
+        Pseudocode:     This method is implemented as required by the ChangeListener interface.  If the ChangeEvent was 
+                        triggered by the JSlider intensity then set the text of the JTextField intvalue to be the String
+                        representation of the value on the JSlider intensity.
+        
+        TODO:  Make it so when a user changes text in the JTextField, it changes the value of the slider.
+        
+        
+Private Class ControlPanelListener
+        
+    
+    Methods
+    -------
+    
+    windowClosing
+        Type:           method    
+        Access:         public
+        Signature:      WindowEvent e
+        Return type:    void
+        Throws:         N/A
+        Calls:          ControlPanel.allowNewWindows()                  
+        Pseudocode:     If the user closes the window using the close button provided.  The system should then allow for 
+        another control panel to be opened to configure the node.  This method calls the allowNewWindows method in order to do 
+        that.
+    
+
+
+    
+        
+     
