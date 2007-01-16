@@ -1,0 +1,318 @@
+Driver Module Architecture
+
+TODO:  Make the driver work with a 5x7 array instead of a 9x13 but only with getVoltageGradient
+
+
+Interface HAL
+
+    public int getRows();
+    public int getCol();
+    public JEACNode[] getJEACNodes();
+	public boolean connect();
+    public double[][] getVoltageGradient();
+    public NodeMap getNodeMap();
+    public boolean changeNode(String type, double value, JEACNode node);
+    public boolean disconnect();
+    
+
+Class EthernetDriver
+    
+    Methods
+    -------
+    
+    EthernetDriver
+        Type:           constructor    
+        Access:         public
+        Signature:      String name
+        Return type:    N/A
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Instantiate globally the machine name passed in the signature. Globally instantiate the JEACNode                    
+                        array and an instance of the ChannelList class.  Instantiate the NodeMap class passing it the current 
+                        instance.
+    
+    getRows
+        Type:           method    
+        Access:         public
+        Signature:      N/A
+        Return type:    int
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Return the number of node rows on the hardware the driver class represents.
+        
+    getCol
+        Type:           method    
+        Access:         public
+        Signature:      N/A
+        Return type:    int
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Return the number of node columns on the hardware the driver class represents.
+        
+    getNodeIndex
+        Type:           method    
+        Access:         public
+        Signature:      JEACNode node
+        Return type:    int[]
+        Throws:         edu.indiana.cs.eac.exceptions.NodeNotFoundException
+        Calls:          getCol(), Math.floor(float)
+        Pseudocode:     With the given JEACNode object, search through the global JEACNode array for the same object in 
+                        the array and return the index in that array of the object.  Throw a NodeNotFoundException if   
+                        the node isn't found.
+    getJEACNodes
+        Type:           method    
+        Access:         public
+        Signature:      N/A
+        Return type:    JEACNode[]
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Return the array of JEACNode objects created by the driver class.
+        
+    getNodeMap
+        Type:           method    
+        Access:         public
+        Signature:      JEACNode node
+        Return type:    int[]
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Return the NodeMap object instantiated by the driver class.
+        
+    connect
+        Type:           method    
+        Access:         public
+        Signature:      N/A
+        Return type:    boolean
+        Throws:         N/A
+        Calls:          Socket.getInputStream(), Socket.getOutputStream()
+        Pseudocode:     Open a socket connection to the machine specified in the global field "name".  Instantiate the global 
+                        InputStream and Output stream objects named "in" and "out".  Return true if the operation was successful, 
+                        and false if it was not.
+    
+    getVoltageGradient
+        Type:           method    
+        Access:         public
+        Signature:      N/A
+        Return type:    double[][]
+        Throws:         edu.indiana.cs.eac.exceptions.NodeNotFoundException
+        Calls:          getRows(), getCol(), OutputStream.write(byte[]), OutputStream.flush(), DataInputStream.readLine(),
+                        Double.parseDouble(String), String.substring(int, int)
+        Pseudocode:     Assemble and send a command string to the connected machine for each point on the board polling for the 
+                        voltage value of that pin.  Compile these pin voltages into an double[pin_rows][pin_col] and return the 
+                        array of arrays.
+    
+                        TODO:  There is something wrong with the last two rows' reporting... fix it!  The method readLine is depricated.  Find something else to use.
+    
+    changeNode
+        Type:           method    
+        Access:         public
+        Signature:      String type, double value, JEACNode node
+        Return type:    boolean
+        Throws:         N/A
+        Calls:          ChannelList.associateChannel(JEACNode), JEACNode.isType(String), 
+                        ChannelList.changeAssociatedChannel(String, JEACNode), ChannelList.changeChannelValue(JEACNode, double)
+        Pseudocode:     Determine which of three cases fits the change the user is making to the node:
+                            1.) The user is turning the node from OFF to an 'on' state (LLA, SOURCE, SINK).
+                            2.) The user is turning the node from some 'on' state to another state.
+                            3.) The user is changing the value of the node.
+                        If 1, there hasn't been a channel associated with the node yet so the system calls on the ChannelList 
+                        object, "channels", to associate a channel to the node.  If 2, that means that the node has already been 
+                        associated ("wired") to a channel so the system needs to call on "channels" to disassociate the node from 
+                        the channel, and then call on it again to associate the node to the new channel (if going from 'on' to 
+                        'on').  If 3, that means the node type isn't changing so the system just needs to call on "channels" to
+                        change the value of the channel associated with the given node.  The actual operations are performed in the 
+                        ChannelList and Channel classes.
+                        
+    disconnect
+        Type:           method    
+        Access:         public
+        Signature:      N/A
+        Return type:    boolean
+        Throws:         N/A
+        Calls:          InputStream.close(), OutputStream.close(), Socket.close()
+        Pseudocode:     Closes the socket connection to the EAC.  Returns true if the operation succeeded and false if it did 
+                        not.
+      
+
+Private Class Channel
+    
+    Methods
+    -------
+    
+    Channel
+        Type:           constructor    
+        Access:         public
+        Signature:      N/A
+        Return type:    N/A
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Instantiate the boolean 'used' to false to mark that the channel is not currently being used.
+        
+    isUsed
+        Type:           method    
+        Access:         public
+        Signature:      N/A
+        Return type:    boolean
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Returns the global boolean 'used' to tell the calling method whether the Channel is being used or not.
+        
+    associateNode
+        Type:           method    
+        Access:         public
+        Signature:      JEACNode node
+        Return type:    void
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Instantiate the global node object with the given node instance.  Set the 'used' boolean to true.
+        
+    getNode
+        Type:           method    
+        Access:         public
+        Signature:      N/A
+        Return type:    JEACNode
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Returns the associated node.
+             
+    removeNode
+        Type:           method    
+        Access:         public
+        Signature:      N/A
+        Return type:    boolean
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Sets the 'used' boolean to false to mark the channel as being unused.
+        
+        
+Private Class ChannelList
+    
+    Methods
+    -------
+    
+    ChannelList
+        Type:           constructor    
+        Access:         public
+        Signature:      N/A
+        Return type:    N/A
+        Throws:         N/A
+        Calls:          N/A
+        Pseudocode:     Instantiate the Channel arrays sourceChannelUsed, sinkChannelUsed, and llaChannelUsed to be of sizes 
+        defined by constants SOURCE_CHANNELS, SINK_CHANNELS, LLA_INPUT_CHANNELS.
+        
+        TODO:  In order to make this a separate class instead of an inner class, change the constructor to take in the three    
+        constant values.  If this is made a separate class, however, it may also require getting passed an instance of the driver 
+        object (but probably not).  Making it a separate class might not be necessary or even desired though so this TODO may 
+        disappear.
+        
+    changeAssociatedChannel
+        Type:           method    
+        Access:         public
+        Signature:      String type, JEACNode node
+        Return type:    boolean
+        Throws:         N/A
+        Calls:          JEACNode.getType(String), findChannelIndex(JEACNode), findChannel(JEACNode), Channel.removeNode(),
+                        String.equals(String), Channel.associateNode(JEACNode), EthernetDriver.getNodeIndex(JEACNode),
+                        JOptionPane.showMessageDialog(Component, Object, String, Int), resetChannel(int, String)  
+        Pseudocode:     Store the type of the node passed to the method and the index of the channel associated with this node in 
+                        order to later reset this channel on the board after it's been unassociated in the ChannelList.  Then 
+                        search for the associated channel in the list and, if the user is not turning the node to OFF, look for an 
+                        open channel in the new list to associate the node to.  Associate the node to the new channel, Tell the 
+                        user to rewire the board using a JOptionPane and getting the coordinates of the node on the board using 
+                        EthernetDriver's getNodeIndex method. The method returns true if the operation was successful and false if 
+                        it was not. 
+
+       TODO:  Channel may need to keep track of what type it is as well.  If that's done, resetChannel could just use the Channel 
+       object. These algorithms in ChannelList might be able to be redesigned.
+       
+    associateChannel
+        Type:           method    
+        Access:         public
+        Signature:      JEACNode node
+        Return type:    boolean
+        Throws:         N/A
+        Calls:          ChannelList.findChannel(String), Channel.associateNode(JEACNode)  
+        Pseudocode:     Call on the findChannel method of ChannelList to see if there is an open channel of the particular type.
+                        If no exception is thrown, call the associateNode method of the Channel object and pass it the given 
+                        JEACNode object.  Return true if the operation was successful and false if it was not.
+    
+    changeChannelValue
+        Type:           method    
+        Access:         public
+        Signature:      JEACNode node, double value
+        Return type:    boolean
+        Throws:         N/A
+        Calls:          ChannelList.findChannelIndex(JEACNode), ChannelList.setBoardValue(double, int, String)  
+        Pseudocode:     Find the channel in the channel list that the node is associated with.  Call the setBoardValue method to 
+                        change the value of the channel on the board.
+                        
+        TODO:  Make the return type of this method void and pass up the exception handling to the calling method.  This may need to 
+        be moved up to the EthernetDriver class.      
+        
+    findChannel
+        Type:           method    
+        Access:         private
+        Signature:      JEACNode node
+        Return type:    Channel
+        Throws:         edu.indiana.cs.eac.exceptions.NoChannelFoundException
+        Calls:          JEACNode.isType(String), Channel.getNode()  
+        Pseudocode:     Determine what type the given node object is set to to pick the proper Channel object array.  Then, go
+                        through the array until we find the Channel that is associated with the given node.  Throw a    
+                        NoChannelFoundException if the node isn't found.
+    
+    findChannel
+        Type:           method    
+        Access:         private
+        Signature:      String type
+        Return type:    Channel
+        Throws:         edu.indiana.cs.eac.exceptions.NoChannelFoundException
+        Calls:          JEACNode.isType(String), Channel.getNode()  
+        Pseudocode:     Pick the proper Channel object array given the channel type.  Then, go through the array until we find the 
+                        Channel that is associated with the given node.  Throw a NoChannelFoundException if the node isn't found.   
+                        
+    findChannelIndex
+        Type:           method    
+        Access:         private
+        Signature:      JEACNode node
+        Return type:    int
+        Throws:         edu.indiana.cs.eac.exceptions.NoChannelFoundException
+        Calls:          JEACNode.isType(String), Channel.getNode()  
+        Pseudocode:     Determine what type the given node object is set to pick the proper Channel object array and to determine 
+                        the offset of the actual channel number on the board.  Then, go through the array until we find the Channel 
+                        that is associated with the given node.  Throw a NoChannelFoundException if the node isn't found.
+     
+     setBoardValue
+        Type:           method    
+        Access:         public
+        Signature:      double value, int index, String type
+        Return type:    boolean
+        Throws:         N/A
+        Calls:          String.equals(String), Double.toHexString(double), OutputStream.write(byte[]), OutputStream.flush()  
+        Pseudocode:     Depending on the type, compose a command string consisting of the proper prefix:
+                            'D':  Setting DAC current for sources and sinks
+                            'L':  Setting an LLA source
+                        appended to that are the channel number and the value to be written to the channel.  A 'Z\n'string 
+                        terminates the command string.  This command string is then converted to a byte array and sent to the 
+                        connected machine via the OutputStream out.  The OutputStream's flush() method is called to flush the I/O 
+                        buffer through the wire.  Return true if the operation was successful and false if it was not.
+                        
+        TODO:  It doesn't take into account LLA values which will probably be 
+        ints.  This should be added in some manner (another method perhaps?)...but then again, it might be okay as a double with 
+        type-casting.  This method should be made type void and throw an IOException if there is a problem instead.  This method should
+        read the string returned from the machine to make sure it matched.  If it didn't throw some sort of exception.                  
+    
+    resetChannel
+        Type:           method    
+        Access:         public
+        Signature:      int index, String type
+        Return type:    boolean
+        Throws:         N/A
+        Calls:          String.equals(String), Double.toHexString(double), OutputStream.write(byte[]), OutputStream.flush()  
+        Pseudocode:     Depending on the type, call setBoardMethod with the following value:
+                            1:  The default value for LLA channels will be 1
+                            0:  The default value for sources and sinks will be 0
+                        
+        
+ 
+    
+    
+        

@@ -1,0 +1,55 @@
+\chapter{Requirements}
+And now finally, here are a few requirements for y'all.
+
+\section{Qualitative Requirements}
+
+\begin{itemize}
+	\item The system will be easy-to-use
+	\item The system will be platform independent
+	\item The system will provide real-time feedback
+	\item The system will require minimal setup and configuration
+\end{itemize}
+
+\section{User Requirements}
+
+As stated earlier, most users will be new to the analog computing paradigm.
+
+\begin{itemize}
+	\item Users will have varied computing backgrounds
+	\item Users will be familiar with digital computers
+	\item Users will be relatively unfamiliar with analog computing
+	\item Users will prefer different computing platforms (Linux, Mac, Windows, etc.)
+\end{itemize}
+
+\section{Functional Requirements}
+
+The primary objective of Project JEAC is to develop an application that affords user exploration of the extended analog computer.  To that end, the team has defined the following functional requirements:
+
+\begin{itemize}
+\item The system will provide a continually-updating 3D model of the voltage gradient.  This model will be updated as closely to real-time as the team finds to be possible.
+\item Users will be allowed direct remote manipulation of the EAC (Extended Analog Computer) via ethernet or USB, depending on the version of EAC.
+\item The interface will contain a graphical representation of the "connection grid" -- a interactive 2D visualization of the pin configuration in the conducive foam sheet.
+\item This connection grid will consist of custom widgets for graphical representation of individual nodes.
+\item The selection of individual nodes within the connection grid will be made possible within the interface.
+\item To allow students to use this application on their personal computers, this application should be cross-platform.
+\item The system should provide some sort of status screen or bar to allow the user to know the following information:
+\subitem The active EAC machine.
+\subitem The hardware version.
+\subitem The refresh rate of the 3D display.
+\subitem The network connection status of the selected EAC.
+\item Each node on the connection grid can be set to be a source node (a voltage source on the conductive foam sheet).
+\item If a source node is selected by the user, the system allow the configuration of the node by displaying:
+\subitem The on/off status of the node.
+\subitem The voltage, or intensity, of the selected node via a slider and a text box for direct input.
+\subitem The source node's coordinates on the foam sheet plane should also be displayed.
+\item Each node on the connection grid can be set to be a sink node (a voltage sink on the conductive foam sheet).
+\item If a sink node is selected by the user, the system allow the configuration of the node by displaying:
+\subitem The on/off status of the node.
+\subitem The drained voltage, or intensity, of the selected node via a slider and a text box for direct input.
+\subitem The sink node's coordinates on the foam sheet plane should also be displayed.
+\item Each node on the connection grid can be set to be a LLA source node.
+\item If a LLA source node is selected by the user, the system allow the configuration of the node by displaying:
+\subitem A list of logic functions to select from.  The user may only select one logic function at a time.
+\subitem Non-editable labels containing the in and out values of the LLA function.
+\end{itemize}
+
