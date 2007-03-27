@@ -12,7 +12,7 @@
 
 //based on http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html
 
-package edu.indiana.cs.eac.gui;
+package edu.indiana.cs.eac.ui;
 
 import javax.swing.*;
 

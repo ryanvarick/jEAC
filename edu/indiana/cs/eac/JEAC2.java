@@ -12,7 +12,7 @@
 
 package edu.indiana.cs.eac;
 
-import edu.indiana.cs.eac.gui.*;
+import edu.indiana.cs.eac.ui.*;
 
 /**
  * A development environment for the extended analog computer.
