@@ -53,7 +53,7 @@ public class MDIManager extends JFrame
 		}
 
 		desktop = new MDIDesktopPane();
-		desktop.setBackground(Color.GRAY);
+		desktop.setBackground(Color.GRAY.brighter());
 
 		menuBar = new JMenuBar();
 
@@ -78,7 +78,7 @@ public class MDIManager extends JFrame
 		jeac.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 //				desktop.add(new Console(new String[0]));
-//				JEAC j = new JEAC();
+				desktop.add(new JEAC());
 			}});
 		
 		JMenu tools = new JMenu("Tools");
