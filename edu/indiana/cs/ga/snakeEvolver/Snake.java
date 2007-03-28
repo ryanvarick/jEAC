@@ -106,21 +106,21 @@ public class Snake
 	 */
 	protected void move(int direction)
 	{
-		boolean moveSuccess = true;
+		boolean moveSucceeded = true;
 		
 		switch(direction)
 		{
 		case Game.UP:
-			moveSuccess = moveBy(0, -Game.BLOCK_SIZE_Y);
+			moveSucceeded = moveBy(0, -Game.BLOCK_SIZE_Y);
 			break;
 		case Game.DOWN:
-			moveSuccess = moveBy(0, Game.BLOCK_SIZE_Y);
+			moveSucceeded = moveBy(0, Game.BLOCK_SIZE_Y);
 			break;
 		case Game.LEFT:
-			moveSuccess = moveBy(-Game.BLOCK_SIZE_X, 0);
+			moveSucceeded = moveBy(-Game.BLOCK_SIZE_X, 0);
 			break;
 		case Game.RIGHT:
-			moveSuccess = moveBy(Game.BLOCK_SIZE_X, 0);
+			moveSucceeded = moveBy(Game.BLOCK_SIZE_X, 0);
 			break;
 		default:
 			// at game start, the move will be null, so we ignore it
@@ -128,7 +128,7 @@ public class Snake
 		}
 		
 		// after a successful move, update the coordinates of the snake
-		if(moveSuccess) 
+		if(moveSucceeded) 
 		{ 
 			// but only update when we're not stuck (ignore collisions)
 			if(!(newHeadLocation.x == body.getFirst().x && newHeadLocation.y == body.getFirst().y))

@@ -1,7 +1,10 @@
-package edu.indiana.cs.eac.testing.ui;
+package edu.indiana.cs.eac.ui;
 
 import javax.swing.*;
 import javax.swing.event.*;
+
+import edu.indiana.cs.eac.testing.ui.MDIDesktopPane;
+
 import java.awt.event.*;
 import java.beans.*;
 

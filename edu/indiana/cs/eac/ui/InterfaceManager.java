@@ -20,15 +20,20 @@ import java.awt.event.*;
 import java.awt.*;
 
 import edu.indiana.cs.eac.testing.ui.*;
+import edu.indiana.cs.ga.snakeEvolver.*;
+
+
 import ec.display.*;
+
+
 
 /**
  * Multi-document interface (MDI) manager.
  * 
  * <p>This class implements an MDI manager.  
  * 
- * @author Ryan R. Varick
- * @since  1.3.0
+ * @author   Ryan R. Varick
+ * @since    2.0.0
  *
  */
 public class InterfaceManager extends JFrame
@@ -41,10 +46,10 @@ public class InterfaceManager extends JFrame
 	private static final String APPLICATION_TITLE = "jEAC - An integrated cross-platform EAC development environment";
 	
 	/** Initial width of the UI. */
-	public static int INITIAL_SIZE_X = 640;
+	public static int INITIAL_SIZE_X = 800;
 	
 	/** Initial height of the UI. */
-	public static int INITIAL_SIZE_Y = 480;
+	public static int INITIAL_SIZE_Y = 600;
 	
 //	/** Initial x-coordinate of the UI. */
 //	public static int INITIAL_LOCATION_X = 50;
@@ -70,7 +75,7 @@ public class InterfaceManager extends JFrame
 			} 
 			catch(Exception e)
 			{
-				System.err.println("Unable to load native look-and-feel.");
+				System.err.println("Could not load platform-native look-and-feel.");
 			}
 		}
 
@@ -119,6 +124,72 @@ public class InterfaceManager extends JFrame
 	{
 		InterfaceManager jeac = new InterfaceManager();
 	}
+	public MDIDesktopPane getDesktop()
+	{
+		return desktop;
+	}
 
 
+	public void testMethod()
+	{
+		Game game = new Game();
+		
+		game.setManualControlEnabled(true);
+		game.setUseMomentum(true);
+		
+		game.setGrowSnake(true);
+		game.setIgnoreSelfCollisions(true);
+		game.setIgnoreWallCollisions(true);
+		
+		// allocate generation information panel
+		JPanel generalPanel = new JPanel(new GridLayout(2, 2));
+		generalPanel.setBorder(BorderFactory.createTitledBorder("General information"));
+		generalPanel.add(new JLabel(" Food eaten:"));
+//		generalPanel.add(foodEaten);
+		generalPanel.add(new JLabel(" Time remaining:"));
+//		generalPanel.add(timeLeft);
+		
+		// allocate world information panel
+		JPanel worldPanel = new JPanel(new GridLayout(5, 2));
+		worldPanel.setBorder(BorderFactory.createTitledBorder("World information"));
+		worldPanel.add(new JLabel(" Snake (x,y):"));
+//		worldPanel.add(snakeLocation);
+		worldPanel.add(new JLabel(" Food (x,y):"));
+//		worldPanel.add(foodLocation);
+		worldPanel.add(new JLabel(" Absolute dt:"));
+//		worldPanel.add(absoluteFoodDistance);
+		worldPanel.add(new JLabel(" Absolute direction:"));
+//		worldPanel.add(snakeDirection);
+		worldPanel.add(new JLabel(" Relative direction (dx,dy):"));
+//		worldPanel.add(relativeFoodDistance);
+
+		// allocate snake information panel
+		JPanel snakePanel = new JPanel(new GridLayout(3, 2));
+		snakePanel.setBorder(BorderFactory.createTitledBorder("Snake information"));
+		snakePanel.add(new JLabel(" Input vector:"));
+		snakePanel.add(new JLabel());
+		snakePanel.add(new JLabel(" Output vector:"));
+		snakePanel.add(new JLabel());
+		snakePanel.add(new JLabel(" Fitness score:"));
+//		snakePanel.add(fitness);
+
+		// finalize the window
+		// TODO: Register the game frame with the MDI manager
+		JInternalFrame gameWindow = new JInternalFrame();
+		gameWindow.setLayout(new BoxLayout(gameWindow.getContentPane(), BoxLayout.Y_AXIS));
+		gameWindow.add(game);
+		gameWindow.add(generalPanel);
+		gameWindow.add(worldPanel);
+		gameWindow.add(snakePanel);
+		gameWindow.setResizable(false);
+        gameWindow.setIconifiable(true);
+        gameWindow.setClosable(true);
+
+		gameWindow.setTitle("Snaaaaake!");
+		gameWindow.pack();
+		gameWindow.setVisible(true);
+		desktop.add(gameWindow);
+		
+		game.start();
+	}
 }

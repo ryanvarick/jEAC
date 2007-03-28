@@ -6,6 +6,8 @@ import javax.swing.*;
 
 import com.sun.java.swing.SwingUtilities2;
 
+import edu.indiana.cs.eac.ui.WindowMenu;
+
 import java.awt.event.*;
 import java.awt.*;
 
