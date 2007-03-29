@@ -62,7 +62,7 @@ public class MenuManager
 	private Gradient3D gradient3DPanel;
 	private Gradient2D gradient2DPanel;
 	private NodeMap    nodemap;
-	private StatusBar  statusbar;
+	private StatusBarManager  statusbar;
 	
 
 
@@ -76,22 +76,11 @@ public class MenuManager
 		
 		
 		
-		/* ---------------[ Top-level definitions ]--------------- */
+		/* ---------------[ JEAC menu ]--------------- */
 		
 		JMenu jeacMenu = new JMenu("jEAC");
 		jeacMenu.setMnemonic('J');
-		
-		JMenu toolMenu = new JMenu("Tools");
-		toolMenu.setMnemonic('T');
-		
-		JMenu experimentalMenu = new JMenu("Experimental");
-		experimentalMenu.setMnemonic('E');
-				
-		JMenu helpMenu = new JMenu("Help");
-		helpMenu.setMnemonic('H');
-		
-		/* ---------------[ JEAC menu ]--------------- */
-		
+
 		// jeac > connect 
 //		connectMenu = populateDriverMenu();
 //		connectMenu.setIcon(new BlankIcon(16, 16));
@@ -104,13 +93,13 @@ public class MenuManager
 		loadMenuItem = new JMenuItem("Load configuration...", 'L');
 //		loadMenuItem.addActionListener(new FileIOListener(this));
 		loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
-		loadMenuItem.setIcon(new ImageIcon(JEAC.getImage("icon_open.gif")));
+		loadMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_open.gif")));
 		
 		// jeac > save
 		saveMenuItem = new JMenuItem("Save configuration", 'S');
 //		saveMenuItem.addActionListener(new FileIOListener(this));
 		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-		saveMenuItem.setIcon(new ImageIcon(JEAC.getImage("icon_save.gif")));
+		saveMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_save.gif")));
 		
 		// jeac > save as
 		saveAsMenuItem = new JMenuItem("Save configuration as...", 'A');
@@ -121,14 +110,36 @@ public class MenuManager
 		disconnectMenuItem = new JMenuItem("Disconnect from EAC", 'D');
 //		disconnectMenuItem.addActionListener(new DisconnectListener());
 		disconnectMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_MASK));
-		disconnectMenuItem.setIcon(new ImageIcon(JEAC.getImage("icon_disconnect.png")));
+		disconnectMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_disconnect.png")));
 		
 		// jeac > exit
 		JMenuItem exitMenuItem = new JMenuItem("Exit", 'X');
 //		exitMenuItem.addActionListener(new ExitListener());
 		exitMenuItem.setIcon(new BlankIcon(16, 16));
 		
+		
+		
+		// build the jeac menu
+//		jeacMenu.add(connectMenu);
+//		jeacMenu.add(runMenu);
+//		jeacMenu.add(loadMenuItem);
+		jeacMenu.add(new JSeparator());
+		jeacMenu.add(saveMenuItem);
+		jeacMenu.add(saveAsMenuItem);
+		jeacMenu.add(new JSeparator());
+		jeacMenu.add(disconnectMenuItem);
+		jeacMenu.add(new JSeparator());
+		jeacMenu.add(exitMenuItem);
+
+		menu.add(jeacMenu);
+
+		
+
+		
 		/* ---------------[ Tools ]--------------- */
+		
+		JMenu toolMenu = new JMenu("Tools");
+		toolMenu.setMnemonic('T');
 
 		// tools > visualization
 		JMenu visualizationMenu = new JMenu("Visualization");
@@ -163,7 +174,7 @@ public class MenuManager
 		llaViewerMenuItem = new JCheckBoxMenuItem("LLA Inspector");
 //		llaViewerMenuItem.addActionListener(new LLAViewerListener());
 		llaViewerMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK));
-		llaViewerMenuItem.setIcon(new ImageIcon(JEAC.getImage("icon_inspector.gif")));
+		llaViewerMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_inspector.gif")));
 		llaViewerMenuItem.setMnemonic('L');
 		llaViewerMenuItem.setState(false);
 		
@@ -178,38 +189,10 @@ public class MenuManager
 		resetMenuItem = new JMenuItem("Spawn a new frame");
 		resetMenuItem.addActionListener(new TestListener());
 		resetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
-		resetMenuItem.setIcon(new ImageIcon(JEAC.getImage("icon_reset.png")));
+		resetMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_reset.png")));
 		resetMenuItem.setMnemonic('R');
 		
-		
-		
-		/* ----- [Experimental] ----- */
-		
-		
-		
-		
-		
-		
-		
-		/* ---------------[ Help  ]--------------- */
-		
-		// help > about
-		JMenuItem about = new JMenuItem("About", 'A');
-//		about.addActionListener(new AboutListener());
-				
-		/* ---------------[ Finalize menus ]--------------- */
-		
-		// build the jeac menu
-//		jeacMenu.add(connectMenu);
-//		jeacMenu.add(runMenu);
-//		jeacMenu.add(loadMenuItem);
-		jeacMenu.add(new JSeparator());
-		jeacMenu.add(saveMenuItem);
-		jeacMenu.add(saveAsMenuItem);
-		jeacMenu.add(new JSeparator());
-		jeacMenu.add(disconnectMenuItem);
-		jeacMenu.add(new JSeparator());
-		jeacMenu.add(exitMenuItem);
+
 		
 		// build the tools menu
 		toolMenu.add(visualizationMenu);
@@ -218,51 +201,37 @@ public class MenuManager
 		toolMenu.add(evolverMenuItem);
 		toolMenu.add(new JSeparator());
 		toolMenu.add(resetMenuItem);
-		
-		// build the help menu
-		helpMenu.add(about);
-		
-		// build and return the main menu
-		menu.add(jeacMenu);
-		menu.add(toolMenu);
 
+		menu.add(toolMenu);
+		
+		/* ----- [Experimental] ----- */
+		
+		JMenu experimentalMenu = new JMenu("Experimental");
+		experimentalMenu.setMnemonic('E');
+				
+	
 		// FIXME: Incorporate into the code better
 		menu.add(new WindowMenu(ui.getDesktop()));
-		menu.add(helpMenu);
+		
+		
+		/* ---------------[ Help  ]--------------- */
+		
+		JMenu helpMenu = new JMenu("Help");
+		helpMenu.setMnemonic('H');
 
-//		fileMenu = new JMenu("jEAC");
-//		JMenuItem newMenu = new JMenuItem("New");
-//		JScrollPane scrollPane = new JScrollPane();
-//
-//		menuBar.add(fileMenu);
-//
-//		JMenuItem ecj = new JMenuItem("ECJ");
-//		ecj.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent ae) {
-////				desktop.add(new Console(new String[0]));
-//				
-//				Console c = new Console(new String[0]);
-//				c.setVisible(true);
-//				
-//			}});
-//		
-//		JMenuItem jeac = new JMenuItem("jEAC");
-//		jeac.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent ae) {
-////				desktop.add(new Console(new String[0]));
-//				desktop.add(new JEAC());
-//			}});
-//		
-//		JMenu tools = new JMenu("Tools");
-//		tools.add(ecj);
-//		tools.add(jeac);
-//		
-//		
-//		menuBar.add(tools);
-//
-//		fileMenu.add(newMenu);
-//
-//		menuBar.add(new JMenu("Help"));	
+		// help > about
+		JMenuItem about = new JMenuItem("About", 'A');
+//		about.addActionListener(new AboutListener());
+
+		// build the help menu
+		helpMenu.add(about);
+		menu.add(helpMenu);
+				
+		/* ---------------[ Finalize menus ]--------------- */
+		
+		
+		
+		
 	}
 	
 	/**

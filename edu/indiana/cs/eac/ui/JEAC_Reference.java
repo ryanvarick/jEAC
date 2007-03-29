@@ -10,7 +10,7 @@
  * 
  */
 
-package edu.indiana.cs.eac;
+package edu.indiana.cs.eac.ui;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -27,6 +27,7 @@ import javax.xml.transform.stream.*;
 
 import ec.display.Console;
 
+import edu.indiana.cs.eac.*;
 import edu.indiana.cs.eac.driver.*;
 import edu.indiana.cs.eac.gradient.*;
 import edu.indiana.cs.eac.exceptions.*;
@@ -41,7 +42,7 @@ import edu.indiana.cs.ga.snakeEvolver.*;
  * @since    1.0.0
  *
  */
-public class JEAC extends JFrame 
+public class JEAC_Reference extends JInternalFrame 
 {
 	private static final String JEAC_WINDOW_TITLE = "jEAC - Real-time 2D/3D EAC Interaction";
 	private static final String VERSION = "1.2-DEV";
@@ -98,7 +99,7 @@ public class JEAC extends JFrame
 	private Gradient3D gradient3DPanel;
 	private Gradient2D gradient2DPanel;
 	private NodeMap    nodemap;
-	private StatusBar  statusbar;
+	private StatusBarManager  statusbar;
 
 	
 	
@@ -106,7 +107,7 @@ public class JEAC extends JFrame
 	 * Constructor - initializes the overall UI.
 	 * 
 	 */
-	public JEAC() 
+	public JEAC_Reference() 
 	{		
 		// platform-native look-and-feel
 		try
@@ -160,14 +161,14 @@ public class JEAC extends JFrame
 		constraints.anchor = GridBagConstraints.LAST_LINE_START;
 		constraints.fill   = GridBagConstraints.HORIZONTAL;		
 
-		statusbar = new StatusBar();
-		statusbar.setStatus(StatusBar.DISCONNECTED);
+		statusbar = new StatusBarManager();
+		statusbar.setStatus(StatusBarManager.DISCONNECTED);
 		container.add(statusbar, constraints);
 				
 		// other basic window configuration
 		container.setBackground(getJMenuBar().getBackground());
-		addWindowListener(new ExitListener());
-		setIconImage(JEAC.getApplicationIcon());
+//		addWindowListener(new ExitListener());
+//		setIconImage(JEAC.getApplicationIcon());
 		
 		// size and location
 		setSize(getWindowSize());
@@ -181,6 +182,8 @@ public class JEAC extends JFrame
 		setResizable(false);
 		setTitle(JEAC_WINDOW_TITLE);
 		setVisible(true);
+        setIconifiable(true);
+        setClosable(true);
 	}
 
 	/**
@@ -198,7 +201,7 @@ public class JEAC extends JFrame
 		// NOTE: enable or disable uEAC debugging here
 		USBDriver.setDebug(false);
 	
-		JEAC jEAC = new JEAC();
+		JEAC_Reference jEAC = new JEAC_Reference();
 	}
 	
 	
@@ -244,13 +247,13 @@ public class JEAC extends JFrame
 		loadMenuItem = new JMenuItem("Load configuration...", 'L');
 		loadMenuItem.addActionListener(new FileIOListener(this));
 		loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
-		loadMenuItem.setIcon(new ImageIcon(JEAC.getImage("icon_open.gif")));
+		loadMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_open.gif")));
 		
 		// jeac > save
 		saveMenuItem = new JMenuItem("Save configuration", 'S');
 		saveMenuItem.addActionListener(new FileIOListener(this));
 		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-		saveMenuItem.setIcon(new ImageIcon(JEAC.getImage("icon_save.gif")));
+		saveMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_save.gif")));
 		
 		// jeac > save as
 		saveAsMenuItem = new JMenuItem("Save configuration as...", 'A');
@@ -261,7 +264,7 @@ public class JEAC extends JFrame
 		disconnectMenuItem = new JMenuItem("Disconnect from EAC", 'D');
 		disconnectMenuItem.addActionListener(new DisconnectListener());
 		disconnectMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_MASK));
-		disconnectMenuItem.setIcon(new ImageIcon(JEAC.getImage("icon_disconnect.png")));
+		disconnectMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_disconnect.png")));
 		
 		// jeac > exit
 		JMenuItem exitMenuItem = new JMenuItem("Exit", 'X');
@@ -303,7 +306,7 @@ public class JEAC extends JFrame
 		llaViewerMenuItem = new JCheckBoxMenuItem("LLA Inspector");
 		llaViewerMenuItem.addActionListener(new LLAViewerListener());
 		llaViewerMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK));
-		llaViewerMenuItem.setIcon(new ImageIcon(JEAC.getImage("icon_inspector.gif")));
+		llaViewerMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_inspector.gif")));
 		llaViewerMenuItem.setMnemonic('L');
 		llaViewerMenuItem.setState(false);
 		
@@ -318,7 +321,7 @@ public class JEAC extends JFrame
 		resetMenuItem = new JMenuItem("Reset all connections");
 		resetMenuItem.addActionListener(new ResetListener());
 		resetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
-		resetMenuItem.setIcon(new ImageIcon(JEAC.getImage("icon_reset.png")));
+		resetMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_reset.png")));
 		resetMenuItem.setMnemonic('R');
 		
 		/* ---------------[ Help  ]--------------- */
@@ -407,7 +410,7 @@ public class JEAC extends JFrame
 		if(driverConnected)
 		{
 			// status bar
-			statusbar.setStatus(StatusBar.PLOTTING);
+			statusbar.setStatus(StatusBarManager.PLOTTING);
 
 			// initialize grid bag constraints
 			GridBagConstraints constraints = new GridBagConstraints();
@@ -472,10 +475,10 @@ public class JEAC extends JFrame
 		// status bar
 		if(driverConnected)
 		{
-			statusbar.setStatus(StatusBar.CONNECTED);
+			statusbar.setStatus(StatusBarManager.CONNECTED);
 			statusbar.setConnectedTo(driver.getDeviceName());
 		}
-		else statusbar.setStatus(StatusBar.DISCONNECTED);
+		else statusbar.setStatus(StatusBarManager.DISCONNECTED);
 		
 		// resize and revalidate
 		this.pack();
@@ -652,7 +655,7 @@ public class JEAC extends JFrame
 		}
 		else
 		{
-			newSize = new Dimension(JEAC.MIN_WINDOW_WIDTH, JEAC.MIN_WINDOW_HEIGHT);
+			newSize = new Dimension(JEAC_Reference.MIN_WINDOW_WIDTH, JEAC_Reference.MIN_WINDOW_HEIGHT);
 		}
 		return newSize;
 	}
@@ -693,7 +696,7 @@ public class JEAC extends JFrame
 	 */
 	public static Image getImage(String imageName)
 	{
-		java.net.URL imageURL = JEAC.class.getResource("images/" + imageName);
+		java.net.URL imageURL = JEAC_Reference.class.getResource("../images/" + imageName);
 		
 		ImageIcon icon = null;
 		if (imageURL != null) {
@@ -813,15 +816,15 @@ public class JEAC extends JFrame
 	 */
 	private class FileIOListener implements ActionListener
 	{
-		private JEAC jeac;
+		private JEAC_Reference jeac;
 
 		/**
 		 * Constructor - Instantiates a new listener.
 		 * 
-		 * @param JEAC - reference to jEAC
+		 * @param JEAC_Reference - reference to jEAC
 		 * 
 		 */
-		public FileIOListener(JEAC jeac)
+		public FileIOListener(JEAC_Reference jeac)
 		{
 			this.jeac = jeac;
 		}
@@ -916,9 +919,9 @@ public class JEAC extends JFrame
 			// everything is good so far, reset the driver
 			try
 			{
-				statusbar.setStatus(StatusBar.RESETTING);
+				statusbar.setStatus(StatusBarManager.RESETTING);
 				driver.reload();
-				statusbar.setStatus(StatusBar.LOADING);
+				statusbar.setStatus(StatusBarManager.LOADING);
 			}
 			catch(Exception e)
 			{
@@ -960,7 +963,7 @@ public class JEAC extends JFrame
 			// update the UI
 //			gradient3DPanel.setLabel("TESTING");
 			driver.getNodeMap().reload();
-			statusbar.setStatus(StatusBar.CONNECTED);
+			statusbar.setStatus(StatusBarManager.CONNECTED);
 		}
 		
 		/**
@@ -1079,7 +1082,7 @@ public class JEAC extends JFrame
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			statusbar.setStatus(StatusBar.CONNECTING);
+			statusbar.setStatus(StatusBarManager.CONNECTING);
 			
 			// stop existing driver connections
 			if(driverConnected) disconnectDriver();
@@ -1109,7 +1112,7 @@ public class JEAC extends JFrame
 				driver.connect();
 				driverConnected = true;
 				
-				statusbar.setStatus(StatusBar.RESETTING);
+				statusbar.setStatus(StatusBarManager.RESETTING);
 				driver.reset();				// reset the machine on connect (1476441)
 			} 
 			catch(ConnectionException ea)
@@ -1196,7 +1199,7 @@ public class JEAC extends JFrame
 			int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset all connections?", "Confirm...", JOptionPane.YES_NO_OPTION);
 			if(choice == JOptionPane.YES_OPTION)
 			{
-				statusbar.setStatus(StatusBar.RESETTING);
+				statusbar.setStatus(StatusBarManager.RESETTING);
 				
 				// stop the update thread, then stop the driver
 				stopInterfaceUpdateThread();
@@ -1207,7 +1210,7 @@ public class JEAC extends JFrame
 				nodemap.reset();
 		
 				// finally, restart the update thread
-				statusbar.setStatus(StatusBar.CONNECTED);
+				statusbar.setStatus(StatusBarManager.CONNECTED);
 				JOptionPane.showMessageDialog(null, "Connections reset.");
 				startInterfaceUpdateThread();
 			}

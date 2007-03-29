@@ -18,6 +18,8 @@ import java.io.*;
 
 import edu.indiana.cs.eac.*;
 import edu.indiana.cs.eac.exceptions.*;
+import edu.indiana.cs.eac.ui.JEACNode;
+import edu.indiana.cs.eac.ui.NodeMap;
 
 public interface HAL
 {

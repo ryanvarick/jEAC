@@ -4,9 +4,9 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import edu.indiana.cs.eac.JEACNode;
-import edu.indiana.cs.eac.NodeMap;
 import edu.indiana.cs.eac.exceptions.*;
+import edu.indiana.cs.eac.ui.JEACNode;
+import edu.indiana.cs.eac.ui.NodeMap;
 
 public class NullDriver implements HAL, Serializable {
 	

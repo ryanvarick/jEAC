@@ -25,6 +25,10 @@ import gnu.io.*;
 
 import edu.indiana.cs.eac.*;
 import edu.indiana.cs.eac.exceptions.*;
+import edu.indiana.cs.eac.ui.JEACNode;
+import edu.indiana.cs.eac.ui.LoadingFrame;
+import edu.indiana.cs.eac.ui.NodeMap;
+
 import javax.swing.*;
 
 public class USBDriver implements HAL, Serializable

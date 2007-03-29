@@ -7,6 +7,8 @@ import javax.swing.*;
 
 import edu.indiana.cs.eac.*;
 import edu.indiana.cs.eac.gradient.*;
+import edu.indiana.cs.eac.ui.JEACNode;
+import edu.indiana.cs.eac.ui.NodeMap;
 import edu.indiana.cs.eac.exceptions.*;
 import edu.indiana.cs.math.*;
 

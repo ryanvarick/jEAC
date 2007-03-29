@@ -10,8 +10,6 @@
  * 
  */
 
-//based on http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html
-
 package edu.indiana.cs.eac.ui;
 
 import javax.swing.*;
@@ -25,6 +23,8 @@ import edu.indiana.cs.ga.snakeEvolver.*;
 
 import ec.display.*;
 
+
+//based on http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html
 
 
 /**
@@ -43,7 +43,7 @@ public class InterfaceManager extends JFrame
 	
 	private Color desktopColor = Color.GRAY.brighter();
 	
-	private static final String APPLICATION_TITLE = "jEAC - An integrated cross-platform EAC development environment";
+	private static final String APPLICATION_TITLE = "jEAC - Cross-platform EAC development environment";
 	
 	/** Initial width of the UI. */
 	public static int INITIAL_SIZE_X = 800;
@@ -87,6 +87,9 @@ public class InterfaceManager extends JFrame
 		scrollPane.getViewport().add(desktop);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
+	
+//		TODO: Add statusbar
+//		getContentPane().add(new StatusBarManager(), BorderLayout.SOUTH);
 
 		// hook up the menu manager
 		MenuManager menu = new MenuManager(this);

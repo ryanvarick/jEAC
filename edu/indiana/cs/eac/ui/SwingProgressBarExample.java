@@ -9,7 +9,7 @@ Publisher: O'Reilly
 // progress of a for loop.
 //
 
-package edu.indiana.cs.eac;
+package edu.indiana.cs.eac.ui;
 
 import javax.swing.*;
 

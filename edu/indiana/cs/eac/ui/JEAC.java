@@ -27,8 +27,6 @@ import javax.xml.transform.stream.*;
 
 import ec.display.Console;
 
-import edu.indiana.cs.eac.*;
-import edu.indiana.cs.eac.FileFilter;
 import edu.indiana.cs.eac.driver.*;
 import edu.indiana.cs.eac.gradient.*;
 import edu.indiana.cs.eac.exceptions.*;
@@ -43,7 +41,7 @@ import edu.indiana.cs.ga.snakeEvolver.*;
  * @since    1.0.0
  *
  */
-public class JEAC extends JInternalFrame 
+public class JEAC extends JFrame 
 {
 	private static final String JEAC_WINDOW_TITLE = "jEAC - Real-time 2D/3D EAC Interaction";
 	private static final String VERSION = "1.2-DEV";
@@ -168,8 +166,8 @@ public class JEAC extends JInternalFrame
 				
 		// other basic window configuration
 		container.setBackground(getJMenuBar().getBackground());
-//		addWindowListener(new ExitListener());
-//		setIconImage(JEAC.getApplicationIcon());
+		addWindowListener(new ExitListener());
+		setIconImage(JEAC.getApplicationIcon());
 		
 		// size and location
 		setSize(getWindowSize());
@@ -183,8 +181,6 @@ public class JEAC extends JInternalFrame
 		setResizable(false);
 		setTitle(JEAC_WINDOW_TITLE);
 		setVisible(true);
-        setIconifiable(true);
-        setClosable(true);
 	}
 
 	/**
@@ -697,7 +693,7 @@ public class JEAC extends JInternalFrame
 	 */
 	public static Image getImage(String imageName)
 	{
-		java.net.URL imageURL = JEAC.class.getResource("../images/" + imageName);
+		java.net.URL imageURL = JEAC.class.getResource("images/" + imageName);
 		
 		ImageIcon icon = null;
 		if (imageURL != null) {
@@ -822,7 +818,7 @@ public class JEAC extends JInternalFrame
 		/**
 		 * Constructor - Instantiates a new listener.
 		 * 
-		 * @param JEAC - reference to jEAC
+		 * @param JEAC_Reference - reference to jEAC
 		 * 
 		 */
 		public FileIOListener(JEAC jeac)

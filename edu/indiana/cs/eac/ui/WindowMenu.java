@@ -1,5 +1,7 @@
 package edu.indiana.cs.eac.ui;
 
+// TODO: Credit concept;
+// TODO: Move into MenuManger
 import javax.swing.*;
 import javax.swing.event.*;
 

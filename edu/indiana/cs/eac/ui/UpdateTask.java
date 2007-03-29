@@ -10,7 +10,7 @@
  * 
  */
 
-package edu.indiana.cs.eac;
+package edu.indiana.cs.eac.ui;
 
 import java.util.*;
 import java.io.IOException;
