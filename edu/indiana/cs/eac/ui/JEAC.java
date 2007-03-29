@@ -693,7 +693,7 @@ public class JEAC extends JFrame
 	 */
 	public static Image getImage(String imageName)
 	{
-		java.net.URL imageURL = JEAC.class.getResource("images/" + imageName);
+		java.net.URL imageURL = JEAC.class.getResource("../images/" + imageName);
 		
 		ImageIcon icon = null;
 		if (imageURL != null) {

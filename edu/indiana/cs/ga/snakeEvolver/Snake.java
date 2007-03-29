@@ -94,9 +94,9 @@ public class Snake
 	 * Moves the snake in the given direction.
 	 * 
 	 * <p>First, the direction is translated to a relative offset. Then that
-	 * offset is passed to moveTo() for evaluation.  If the move is successful,
-	 * then the Snake is updated accordingly.  Various settings come into
-	 * effect here, such as the collision settings.
+	 * offset is passed to <code>moveTo()</code> for evaluation.  If the move 
+	 * is successful, then the snake is updated accordingly.  Various settings 
+	 * come into effect here, such as the collision settings.
 	 * 
 	 * @param direction   New direction to move (<code>Game</code> constant expected).
 	 * 
@@ -152,7 +152,7 @@ public class Snake
 	 * Moves the snake by the given offset.
 	 * 
 	 * <p>This method tests that the new coordinate is valid.  The
-	 * Snake data structure is not updated here, just the pointer.
+	 * snake data structure is not updated here, just the pointer.
 	 * move() is responsible for updating the data structure.
 	 * 
 	 * @param offsetX   X-coordinate of the offset.
@@ -388,7 +388,7 @@ public class Snake
 	 * Toggles wall collisions.
 	 * 
 	 * <p>When enabled, the snake will not die if it collides with a wall.
-	 * When disabled, collisions with the wall result in the death of the snake
+	 * When disabled, collisions with the wall result in the death of the snake.
 	 * 
 	 * @param flag   Set to <code>true</code> to ignore collisions.
 	 * 

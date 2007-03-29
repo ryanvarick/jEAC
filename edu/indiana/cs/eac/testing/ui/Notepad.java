@@ -4,7 +4,7 @@ package edu.indiana.cs.eac.testing.ui;
 
 import javax.swing.*;
 
-import com.sun.java.swing.SwingUtilities2;
+//import com.sun.java.swing.SwingUtilities2;
 
 import edu.indiana.cs.eac.ui.WindowMenu;
 

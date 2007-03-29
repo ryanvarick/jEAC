@@ -67,6 +67,8 @@ public class InterfaceManager extends JFrame
 	
 	public InterfaceManager()
 	{
+		// attempts to change the look-and-feel must be processed before
+		//  Swing components are instantiated
 		if(useNativeLAF)
 		{
 			try
