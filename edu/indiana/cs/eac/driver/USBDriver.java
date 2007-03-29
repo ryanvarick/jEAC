@@ -31,7 +31,7 @@ import edu.indiana.cs.eac.ui.NodeMap;
 
 import javax.swing.*;
 
-public class USBDriver implements HAL, Serializable
+public class USBDriver implements Device, Serializable
 {
 	// print useful debugging information when enabled
 	private static boolean DEBUG = false;

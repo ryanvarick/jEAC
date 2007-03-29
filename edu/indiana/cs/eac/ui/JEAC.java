@@ -56,7 +56,7 @@ public class JEAC extends JFrame
 
 	// driver controls
 	private boolean driverConnected;
-	private HAL driver;
+	private Device driver;
 	private Timer updateTimer;
 	
 	// driver list

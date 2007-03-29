@@ -15,12 +15,12 @@
 package edu.indiana.cs.eac.gradient;
 
 import org.math.plot.*;
-import edu.indiana.cs.eac.driver.HAL;
+import edu.indiana.cs.eac.driver.Device;
 
 
 public class Gradient3D extends Plot3DPanel implements Gradient 
 {
-	private HAL driver;
+	private Device driver;
 	private double[] xAxis, yAxis;
 	private double[][] zData;
 	private GradientInterpolator gradient;
@@ -34,7 +34,7 @@ public class Gradient3D extends Plot3DPanel implements Gradient
 	 * @param driver - active EAC to communicate with
 	 * 
 	 */
-	public Gradient3D(HAL driver)
+	public Gradient3D(Device driver)
 	{
 		this.driver = driver;
 		this.label  = "";

@@ -23,7 +23,7 @@ import edu.indiana.cs.eac.driver.*;
 
 public class LLAInspectorFrame extends JFrame 
 {   
-    private HAL driver;
+    private Device driver;
     
     // HACK: Hook JEAC's ActionListener so we can tell it to update the UI on close
     private ActionListener callback;
@@ -37,10 +37,10 @@ public class LLAInspectorFrame extends JFrame
     /**
      * Constructor - Instantiate a new LLAPanel.
      * 
-     * @param HAL driver - active EAC to use
+     * @param Device driver - active EAC to use
      * 
      */
-    public LLAInspectorFrame(HAL driver, ActionListener callback)
+    public LLAInspectorFrame(Device driver, ActionListener callback)
     {
     	this.driver   = driver;
     	this.callback = callback;

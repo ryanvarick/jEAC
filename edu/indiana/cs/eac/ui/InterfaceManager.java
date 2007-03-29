@@ -14,10 +14,12 @@ package edu.indiana.cs.eac.ui;
 
 import javax.swing.*;
 
+import java.util.*;
 import java.awt.event.*;
 import java.awt.*;
 
 import edu.indiana.cs.eac.testing.ui.*;
+import edu.indiana.cs.eac.driver.*;
 import edu.indiana.cs.ga.snakeEvolver.*;
 
 
@@ -132,6 +134,32 @@ public class InterfaceManager extends JFrame
 	public MDIDesktopPane getDesktop()
 	{
 		return desktop;
+	}
+	
+	
+	
+	public void loadDrivers(DeviceManager deviceManager)
+	{
+//		Device[][] rawDeviceList = deviceManager.getRawDeviceList();
+//		
+//		LoadingFrame lf = new LoadingFrame();
+//		for(int i = 0; i < rawDeviceList.length; i++)
+//		{
+//			for(int j = 0; j < rawDeviceList[0].length; j++)
+//			{
+//				
+//			}
+//		}
+		
+		
+		LoadingFrame lf = new LoadingFrame(USBDriver.getNumPorts());
+		desktop.add(lf);
+		
+		String[] usbDrivers      = USBDriver.getDeviceList2(lf);
+
+		System.out.println("LF fired: " + USBDriver.getNumPorts());
+		
+		lf.dispose();
 	}
 
 

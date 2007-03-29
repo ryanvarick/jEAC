@@ -16,14 +16,14 @@ import java.util.*;
 import java.io.IOException;
 import edu.indiana.cs.eac.*;
 
-import edu.indiana.cs.eac.driver.HAL;
+import edu.indiana.cs.eac.driver.Device;
 import edu.indiana.cs.eac.gradient.Gradient;
 import edu.indiana.cs.eac.gradient.Gradient2D;
 import edu.indiana.cs.eac.gradient.Gradient3D;
 
 public class UpdateTask extends TimerTask
 {
-	private HAL driver;
+	private Device driver;
 	private double[][] gradient;
 	private Gradient gradient2DPanel, gradient3DPanel;
 	private LLAInspectorFrame inspectorFrame;
@@ -37,7 +37,7 @@ public class UpdateTask extends TimerTask
 	 * @param LLAInspectorFrame frame - UI component to update
 	 * 
 	 */
-	public UpdateTask(HAL driver, Gradient2D panel2D, Gradient3D panel3D, LLAInspectorFrame inspectorframe)
+	public UpdateTask(Device driver, Gradient2D panel2D, Gradient3D panel3D, LLAInspectorFrame inspectorframe)
 	{
 		this.driver          = driver;		
 		this.gradient3DPanel = panel3D;

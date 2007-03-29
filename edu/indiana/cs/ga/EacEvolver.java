@@ -66,7 +66,7 @@ public class EacEvolver
 	private FitnessFunction fitnessFunction;
 	private EventManager eventManager;
 	
-	private HAL driver;
+	private Device driver;
 
 	private Gene[] sample1;
 //	private Chromosome sC;

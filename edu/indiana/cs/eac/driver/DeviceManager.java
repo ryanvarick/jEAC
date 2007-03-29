@@ -1,7 +1,7 @@
 package edu.indiana.cs.eac.driver;
 
 
-public class DriverManager
+public class DeviceManager
 {
 	private String offlineDrivers[];
 	private String ethernetDrivers[];
@@ -9,33 +9,45 @@ public class DriverManager
 	private String driverList[][];
 	
 	private boolean driverConnected;
-	private HAL driver;
+	private Device driver;
 
 	private static int driver_flag = 0;
 	public static final int NULL_DRIVERS = driver_flag++;
 	public static final int EAC_DRIVERS  = driver_flag++;
 	public static final int UEAC_DRIVERS = driver_flag++;
 	
-	public DriverManager()
+	public DeviceManager()
 	{
 		
 	}
 	
 	
-	public void buildDriverList()
+	public String[][] getDeviceList()
 	{
 		// populate the driver list
 		offlineDrivers  = NullDriver.getDeviceList();
 		ethernetDrivers = EthernetDriver.getDeviceList();
-		usbDrivers      = USBDriver.getDeviceList2(lf);
+//		usbDrivers      = USBDriver.getDeviceList2(lf);
 		driverList      = new String[][]
 			{
 				offlineDrivers,
 				ethernetDrivers,
-				usbDrivers
+//				usbDrivers
 			};
 		
 		driverConnected = false;
 		
+		return driverList;
+	}
+	
+	public int getNumDevices()
+	{
+		return 0;
+	}
+	
+	public boolean validateDevice(Device device)
+	{
+//		return device.validate();
+		return true;
 	}
 }

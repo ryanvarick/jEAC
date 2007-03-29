@@ -8,7 +8,7 @@ import edu.indiana.cs.eac.exceptions.*;
 import edu.indiana.cs.eac.ui.JEACNode;
 import edu.indiana.cs.eac.ui.NodeMap;
 
-public class NullDriver implements HAL, Serializable {
+public class NullDriver implements Device, Serializable {
 	
 	private static final int MAP_ROWS = 7;
 	private static final int REPORTING_ROWS = 7;

@@ -57,7 +57,7 @@ public class JEAC_Reference extends JInternalFrame
 
 	// driver controls
 	private boolean driverConnected;
-	private HAL driver;
+	private Device driver;
 	private Timer updateTimer;
 	
 	// driver list

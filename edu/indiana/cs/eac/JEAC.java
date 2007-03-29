@@ -32,10 +32,10 @@ public class JEAC
 	public static void main(String[] args)
 	{
 		InterfaceManager ui = new InterfaceManager();
-//		DriverManager driver = new DriverManager();
+		DeviceManager deviceManager = new DeviceManager();
 //		ThreadManager thread = new ThreadManager();
 		
-//		driver.buildDriverList(ui.getLoadingFrame());
+		ui.loadDrivers(deviceManager);
 	}
 
 }

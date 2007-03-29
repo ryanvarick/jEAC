@@ -21,7 +21,7 @@ import edu.indiana.cs.eac.exceptions.*;
 import edu.indiana.cs.eac.ui.JEACNode;
 import edu.indiana.cs.eac.ui.NodeMap;
 
-public interface HAL
+public interface Device
 {
 	//
 	// NOTE: The following method should be declared for all driver classes.

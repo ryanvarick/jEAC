@@ -214,7 +214,7 @@ public class Gradient2D extends JPanel implements Gradient
 	 * 
 	 * @param driver - Active EAC to use.
 	 */
-	public Gradient2D(HAL driver)
+	public Gradient2D(Device driver)
 	{		
 		// Default graph configuration
 		this.blockSize   = 10;

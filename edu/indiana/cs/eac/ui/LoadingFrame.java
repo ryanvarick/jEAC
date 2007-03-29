@@ -24,7 +24,7 @@ import javax.swing.*;
  */
 
 // TODO: Split this into ProgressBar and LoadingFrame functionality.
-public class LoadingFrame
+public class LoadingFrame extends JInternalFrame
 {
 	private static final int PROGRESS_MIN = 0;
 	private static final int PROGRESS_MAX = 100;
@@ -36,7 +36,6 @@ public class LoadingFrame
 	
 	private int stepSize;
 	private JProgressBar progress;
-	private JFrame frame;
 	
 	
 	
@@ -62,25 +61,24 @@ public class LoadingFrame
 	    progress.setMaximum(PROGRESS_MAX);
 	    progress.setValue(0);
 	    
-		frame = new JFrame();
 //		frame.setUndecorated(true);
-	    frame.add(progress);
+	    add(progress);
 
-	    frame.pack();
-	    frame.setSize(FRAME_SIZE_X, FRAME_SIZE_Y);
+	    pack();
+	    setSize(FRAME_SIZE_X, FRAME_SIZE_Y);
 	    
 		// center on screen
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (screenSize.width - frame.getWidth()) / 2;
-		int y = (screenSize.height - frame.getHeight()) / 2;
-		frame.setLocation(x, y);
+		int x = (screenSize.width - getWidth()) / 2;
+		int y = (screenSize.height - getHeight()) / 2;
+		setLocation(x, y);
 		
 		// finalize
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setIconImage(JEAC.getApplicationIcon());
-		frame.setResizable(false);
-		frame.setTitle(TITLE);
-		frame.setVisible(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		frame.setIconImage(JEAC.getApplicationIcon());
+		setResizable(false);
+		setTitle(TITLE);
+		setVisible(true);
 
 		// start with some progress!
 		increment();
@@ -159,18 +157,6 @@ public class LoadingFrame
 	
 	
 	/* -------------------------[ LoadingFrame methods ]------------------------- */
-	
-	/**
-	 * Closes the loading frame.
-	 * 
-	 * @author   Ryan R. Varick
-	 * @since    1.2.0
-	 * 
-	 */
-	public void close()
-	{
-		frame.dispose();
-	}
 	
 	/**
 	 * Updates the loading frame by a predetermined amount.

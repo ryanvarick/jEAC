@@ -34,7 +34,7 @@ public class ControlFrame extends JFrame
 	private int    MAX_CURRENT;
 	private String CURRENT_UNIT;
 	
-	private HAL driver;
+	private Device driver;
 	private NodeMap nodemap;
 	private int[] coords;
     

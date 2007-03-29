@@ -38,7 +38,7 @@ public class NodeMap extends JPanel implements ActionListener, Serializable
 	private JEACNode nodes[];
 	private ControlFrame temp;
 	private Vector controlFrameContainer;
-	public HAL driver;
+	public Device driver;
 	
 	
 	
@@ -48,7 +48,7 @@ public class NodeMap extends JPanel implements ActionListener, Serializable
 	 * @param driver - The active EAC driver.
 	 * 
 	 */
-	public NodeMap(HAL driver)
+	public NodeMap(Device driver)
 	{
 		// cache the driver
 		this.driver = driver;

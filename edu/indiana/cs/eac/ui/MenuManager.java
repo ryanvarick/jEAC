@@ -23,6 +23,7 @@ import javax.swing.event.MenuListener;
 
 import ec.display.Console;
 import edu.indiana.cs.eac.*;
+//import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.eac.gradient.*;
 import edu.indiana.cs.eac.testing.ui.MDIDesktopPane;
 
@@ -129,8 +130,10 @@ public class MenuManager
 		deviceMenu.setMnemonic('D');
 
 		// device > connect 
-//		connectMenu = populateDriverMenu();
-//		connectMenu.setIcon(new BlankIcon(16, 16));
+		connectMenu = new ConnectMenuManager();
+		connectMenu.setText("Connect to EAC");
+		connectMenu.setIcon(new BlankIcon(16, 16));
+		deviceMenu.add(connectMenu);
 
 		deviceMenu.add(new JSeparator());
 		
@@ -147,6 +150,7 @@ public class MenuManager
 		resetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
 		resetMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_reset.png")));
 		resetMenuItem.setMnemonic('R');
+		resetMenuItem.setEnabled(false);
 		deviceMenu.add(resetMenuItem);
 
 		deviceMenu.add(new JSeparator());
@@ -166,8 +170,8 @@ public class MenuManager
 		
 		/* ---------------[ Tools ]--------------- */
 		
-		JMenu toolMenu = new JMenu("Tools");
-		toolMenu.setMnemonic('T');
+		JMenu viewMenu = new JMenu("View");
+		viewMenu.setMnemonic('V');
 
 		// tools > visualization
 		JMenu visualizationMenu = new JMenu("Visualization");
@@ -217,14 +221,14 @@ public class MenuManager
 
 		
 		// build the tools menu
-		toolMenu.add(visualizationMenu);
-		toolMenu.add(new JSeparator());
-		toolMenu.add(llaViewerMenuItem);
-		toolMenu.add(evolverMenuItem);
-		toolMenu.add(new JSeparator());
+		viewMenu.add(visualizationMenu);
+		viewMenu.add(new JSeparator());
+		viewMenu.add(llaViewerMenuItem);
+		viewMenu.add(evolverMenuItem);
+		viewMenu.add(new JSeparator());
 //		toolMenu.add(resetMenuItem);
 
-		menu.add(toolMenu);
+		menu.add(viewMenu);
 		
 		/* ----- [Experimental] ----- */
 		
@@ -299,6 +303,13 @@ public class MenuManager
 	
 	private class ConnectMenuManager extends JMenu
 	{
+		private JMenuItem nullD = new JMenuItem("Null driver");
+		
+		public ConnectMenuManager()
+		{
+			add(nullD);
+		}
+		
 		
 	}	
 	
