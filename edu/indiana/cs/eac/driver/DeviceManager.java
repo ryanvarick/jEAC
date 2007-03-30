@@ -29,6 +29,11 @@ package edu.indiana.cs.eac.driver;
  */
 public class DeviceManager
 {
+	
+	// TODO: Implement as a singleton class using a hash map to 
+	// try to define a static (final) getInstance() method to power our
+	// Driver factories... try anyway.
+	// TODO: Singleton in general -- don't forget synchronization!
 
 	/**
 	 * 

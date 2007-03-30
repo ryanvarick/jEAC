@@ -61,6 +61,8 @@ public class InterfaceManager extends JFrame
 
 	
 	/* UI components (do not alter) */
+	private static InterfaceManager instance;
+	
 	private MDIDesktopPane desktop;
 
 	private JMenuBar menuBar;
@@ -68,8 +70,16 @@ public class InterfaceManager extends JFrame
 	private Device[][] deviceList;
 
 	
-	
-	public InterfaceManager()
+	public static InterfaceManager getInstance()
+	{
+		if(instance == null) { instance = new InterfaceManager(); }
+		return instance;
+	}
+	public Object clone() throws CloneNotSupportedException
+	{
+		throw new CloneNotSupportedException();
+	}
+	private InterfaceManager()
 	{
 		// attempts to change the look-and-feel must be processed before
 		//  Swing components are instantiated
@@ -98,7 +108,7 @@ public class InterfaceManager extends JFrame
 //		getContentPane().add(new StatusBarManager(), BorderLayout.SOUTH);
 
 		// hook up the menu manager
-		MenuManager menu = new MenuManager(this);
+		MenuManager menu = new MenuManager();
 		setJMenuBar(menu.getMenu());
 		
 		// specify UI appearance and behavior

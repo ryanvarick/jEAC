@@ -71,10 +71,10 @@ public class MenuManager
 
 
 	// constructor
-	public MenuManager(InterfaceManager ui)
+	public MenuManager()
 	{
 		// cache the InterfaceManager--we need to know where to send menu events
-		this.ui = ui;
+		ui = InterfaceManager.getInstance();
 		
 		menu = new JMenuBar();
 		
