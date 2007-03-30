@@ -1125,31 +1125,6 @@ public class USBDriver implements Device, Serializable
 
 	}
 	
-	/**
-	 * @deprecated DO NOT USE, HACK!!
-	 * @param lf
-	 * @return
-	 */
-	public static String[] getDeviceList2(LoadingFrame lf)
-	{
-		Object[] ports    = USBDriver.getPortList2(lf);
-		String[] portList = new String[ports.length];
-		
-		for(int i = 0; i < ports.length; i++)
-		{
-			portList[i] = ((CommPortIdentifier)ports[i]).getName();
-		}
-
-		// OSX on Mills' iBook *only*
-//		String[] portList = new String[]
-//		    {
-//				"/dev/tty.usbserial-191A"
-//		    };
-		
-		return portList;
-
-	}
-	
 	public static int getNumPorts()
 	{
 		Enumeration ports   = CommPortIdentifier.getPortIdentifiers();
@@ -1211,68 +1186,6 @@ public class USBDriver implements Device, Serializable
 					if(DEBUG) System.out.println(port.getName() + " is not valid.");				
 				}
 			}
-		}
-		
-		return validPorts.toArray();
-	}
-	
-	/**
-	 * Lists available ports that RXTX knows about.
-	 * 
-	 * @return Object[] - list of know ports
-	 * 
-	 * @deprecated   DO NOT USE THIS, IT IS A HACK
-	 * 
-	 */
-	public static Object[] getPortList2(LoadingFrame lf)
-	{
-		// retrive the list of known COMM ports
-		Enumeration ports   = CommPortIdentifier.getPortIdentifiers();
-		
-		// now look for at each port
-		Vector validPorts = new Vector();
-		while(ports.hasMoreElements())
-		{
-			CommPortIdentifier port = (CommPortIdentifier) ports.nextElement();
-			
-			// check for ignored ports
-			boolean try_port = true;
-			for(int i = 0; i < IGNORED_PORTS.length; i++)
-			{
-				if(port.getName().toLowerCase().contains(IGNORED_PORTS[i].toLowerCase())) 
-				{
-					if(DEBUG) System.out.println("\n" + port.getName() + " known bad, ignoring...");					
-					try_port = false;
-				}
-			}
-			
-			// now probe the port
-			if(try_port)
-			{
-				if(DEBUG) System.out.println("\nProbing " + port.getName() + "...");
-	
-				// try to connect, then probe the driver
-				boolean isValid  = false;
-				try
-				{
-					USBDriver driver = new USBDriver(port.getName());
-					driver.connect();
-					if(driver.writeSentence("NOK_TEST")) { isValid = true; }
-					driver.disconnect();
-				}
-				catch(Exception e) { /* Do nothing. */ }
-				
-				if(isValid) 
-				{ 
-					validPorts.add(port);
-					if(DEBUG) System.out.println(port.getName() + " is valid.");
-				}
-				else
-				{
-					if(DEBUG) System.out.println(port.getName() + " is not valid.");				
-				}
-			}
-			lf.increment();
 		}
 		
 		return validPorts.toArray();
@@ -1359,5 +1272,10 @@ public class USBDriver implements Device, Serializable
 				dataString = readString.substring(0, (bufferSize - 7));
 			}
 		}
+	}
+	
+	public boolean isValid()
+	{
+		return true;
 	}
 }

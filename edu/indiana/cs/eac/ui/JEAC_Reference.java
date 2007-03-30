@@ -177,7 +177,7 @@ public class JEAC_Reference extends JInternalFrame
 		int y = (screenSize.height - getHeight()) / 2;
 		setLocation(x, y);
 
-		lf.close();
+//		lf.close();
 		
 		setResizable(false);
 		setTitle(JEAC_WINDOW_TITLE);

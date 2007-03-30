@@ -53,7 +53,7 @@ public class LoadingFrame extends JInternalFrame
 	public LoadingFrame(int steps)
 	{
 		// compute the increment 
-		stepSize = PROGRESS_MAX / steps;
+		stepSize = PROGRESS_MAX / Math.max(1, steps);
 		
 		// initialize the progress bar
 		progress = new JProgressBar();

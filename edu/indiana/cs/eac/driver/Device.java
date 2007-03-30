@@ -1,9 +1,7 @@
-/**
- * HAL.java - Extended analog computer hardware abstraction layer.
+/*
+ * This file is part of jEAC (http://jeac.sf.net/).
  * 
- * @version 1.0.0
- * 
- * Copyright (C) 2006.  All rights reserved.
+ * Copyright (C) 2007.  All rights reserved.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -16,25 +14,35 @@ package edu.indiana.cs.eac.driver;
 
 import java.io.*;
 
-import edu.indiana.cs.eac.*;
+import edu.indiana.cs.eac.ui.*;
 import edu.indiana.cs.eac.exceptions.*;
-import edu.indiana.cs.eac.ui.JEACNode;
-import edu.indiana.cs.eac.ui.NodeMap;
 
+/**
+ * Abstract definition of a device.
+ * 
+ * <p>Devices constitute the line between jEAC and the physical hardware.  
+ * Usually this refers to uEACs and EACs; however, it can also refer to null
+ * devices and software-based simulators.  This interface defines the 
+ * prototypical behavior that all devices must exhibit.  It defines the baseline
+ * functionality that jEAC expects.
+ * 
+ * <p>A class that implements this interface is referred to as a 
+ * <code>Driver</code>, as it typically represents an entire class of individual
+ * devices.  Thus the implementation should utilize the factory design pattern.
+ * That is, the driver should not be instantiated directly, rather it should
+ * produce instantiations on request.
+ * 
+ * @author   Ryan R. Varick
+ * @author   Drew Kipfer
+ * 
+ * @since    1.0.0   
+ *
+ */
 public interface Device
 {
-	//
-	// NOTE: The following method should be declared for all driver classes.
-	//       You can't declare static methods in an interface, apparently. :-/
-	//
 
-	/**
-     * Return the list of valid devices for this driver class.
-     * 
-     * @return String[] - list of devices
-     */
-//	public static String[] getDeviceList();
 	
+	public boolean isValid();
     
 
     
@@ -258,6 +266,7 @@ public interface Device
      * Returns the driver's array of JEAC nodes.
      * 
      * @return JEACNode[] - array of nodes
+     * @deprecated FIXME: Too tightly integrated with the UI; rework
      * 
      */
 	public JEACNode[] getJEACNodes();
@@ -266,6 +275,7 @@ public interface Device
 	 * Returns the driver's NodeMap.
 	 * 
 	 * @return NodeMap
+     * @deprecated FIXME: Too tightly integrated with the UI; rework
 	 * 
 	 */
     public NodeMap getNodeMap();
@@ -286,6 +296,7 @@ public interface Device
      * 
      * @return boolean - node successfully changed
      * 
+     * @deprecated FIXME: Too tightly integrated with the UI; rework
      */
     public boolean changeNode(String type, double value, JEACNode node);
 	

@@ -652,4 +652,9 @@ public class EthernetDriver implements Device, Serializable
 			};
 
 	}
+	
+	public boolean isValid()
+	{
+		return true;
+	}
 }

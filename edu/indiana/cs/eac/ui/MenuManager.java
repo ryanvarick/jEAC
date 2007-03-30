@@ -300,7 +300,7 @@ public class MenuManager
 	
 	
 	
-	
+	// TODO: Add a "rescan" option
 	private class ConnectMenuManager extends JMenu
 	{
 		private JMenuItem nullD = new JMenuItem("Null driver");

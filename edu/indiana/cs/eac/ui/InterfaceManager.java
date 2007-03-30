@@ -64,6 +64,8 @@ public class InterfaceManager extends JFrame
 	private MDIDesktopPane desktop;
 
 	private JMenuBar menuBar;
+	
+	private Device[][] deviceList;
 
 	
 	
@@ -137,27 +139,33 @@ public class InterfaceManager extends JFrame
 	}
 	
 	
-	
+	/**
+	 * ...
+	 * 
+	 * @param deviceManager   .
+	 * 
+	 * @author                Ryan R. Varick
+	 * @since                 2.0.0
+	 * 
+	 */
 	public void loadDrivers(DeviceManager deviceManager)
 	{
-//		Device[][] rawDeviceList = deviceManager.getRawDeviceList();
-//		
-//		LoadingFrame lf = new LoadingFrame();
-//		for(int i = 0; i < rawDeviceList.length; i++)
-//		{
-//			for(int j = 0; j < rawDeviceList[0].length; j++)
-//			{
-//				
-//			}
-//		}
-		
-		
-		LoadingFrame lf = new LoadingFrame(USBDriver.getNumPorts());
-		desktop.add(lf);
-		
-		String[] usbDrivers      = USBDriver.getDeviceList2(lf);
+		// show a progress bar while loading
+		LoadingFrame lf = new LoadingFrame(deviceManager.getDeviceCount());
 
-		System.out.println("LF fired: " + USBDriver.getNumPorts());
+		// validate each option so the UI does not show unusable devices 
+		Device[][] rawDeviceList = deviceManager.getDeviceList();
+		for(int i = 0; i < rawDeviceList.length; i++)
+		{
+			for(int j = 0; j < rawDeviceList[i].length; j++)
+			{
+				if(rawDeviceList[i][j].isValid())
+				{
+					deviceList[i][j] = rawDeviceList[i][j];
+				}
+				lf.increment();
+			}
+		}
 		
 		lf.dispose();
 	}
