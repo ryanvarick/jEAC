@@ -67,11 +67,13 @@ public class InterfaceManager extends JFrame
 
 	private JMenuBar menuBar;
 	
+	private String[][] validDeviceList;
 	private Device[][] deviceList;
 
-	
+
 	public static InterfaceManager getInstance()
 	{
+//		return (InterfaceManager)ManagerRegistry.getInstance(this);
 		if(instance == null) { instance = new InterfaceManager(); }
 		return instance;
 	}
@@ -80,6 +82,37 @@ public class InterfaceManager extends JFrame
 		throw new CloneNotSupportedException();
 	}
 	private InterfaceManager()
+	{
+
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args)
+	{
+		InterfaceManager jeac = new InterfaceManager();
+	}
+	public MDIDesktopPane getDesktop()
+	{
+		return desktop;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Needs to be here because the Constructor will overflow with the 
+	 * complex call hierarchy.
+	 *
+	 */
+	public void init()
 	{
 		// attempts to change the look-and-feel must be processed before
 		//  Swing components are instantiated
@@ -134,20 +167,19 @@ public class InterfaceManager extends JFrame
 //		});
 	}
 	
+	
 	/**
 	 * 
-	 * 
-	 * @param args
+	 * @return   Returns a validated list of drivers, organized by class.
 	 */
-	public static void main(String[] args)
+	public Device[][] getDeviceList()
 	{
-		InterfaceManager jeac = new InterfaceManager();
+		if(validDeviceList == null)
+		{
+			loadDrivers();
+		}
+		return null;
 	}
-	public MDIDesktopPane getDesktop()
-	{
-		return desktop;
-	}
-	
 	
 	/**
 	 * ...
@@ -158,13 +190,15 @@ public class InterfaceManager extends JFrame
 	 * @since                 2.0.0
 	 * 
 	 */
-	public void loadDrivers(DeviceManager deviceManager)
+	private void loadDrivers()
 	{
+		DeviceManager dm = DeviceManager.getInstance();
+		
 		// show a progress bar while loading
-		LoadingFrame lf = new LoadingFrame(deviceManager.getDeviceCount());
+		LoadingFrame lf = new LoadingFrame(dm.getDeviceCount());
 
 		// validate each option so the UI does not show unusable devices 
-		Device[][] rawDeviceList = deviceManager.getDeviceList();
+		Device[][] rawDeviceList = dm.getDeviceList();
 		for(int i = 0; i < rawDeviceList.length; i++)
 		{
 			for(int j = 0; j < rawDeviceList[i].length; j++)

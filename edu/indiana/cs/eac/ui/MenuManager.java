@@ -25,7 +25,8 @@ import ec.display.Console;
 import edu.indiana.cs.eac.*;
 //import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.eac.gradient.*;
-import edu.indiana.cs.eac.testing.ui.MDIDesktopPane;
+import edu.indiana.cs.eac.driver.*;
+import edu.indiana.cs.eac.testing.ui.*;
 
 /**
  * Menu event manager.
@@ -146,7 +147,7 @@ public class MenuManager
 
 		// device > reset
 		resetMenuItem = new JMenuItem("Reset");
-		resetMenuItem.addActionListener(new TestListener());
+//		resetMenuItem.addActionListener(new TestListener());
 		resetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
 		resetMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_reset.png")));
 		resetMenuItem.setMnemonic('R');
@@ -172,6 +173,11 @@ public class MenuManager
 		
 		JMenu viewMenu = new JMenu("View");
 		viewMenu.setMnemonic('V');
+		
+		JMenuItem consoleMenuItem = new JMenuItem("Console");
+		consoleMenuItem.addActionListener(new ConsoleListener());
+		viewMenu.add(consoleMenuItem);
+		
 
 		// tools > visualization
 		JMenu visualizationMenu = new JMenu("Visualization");
@@ -179,7 +185,7 @@ public class MenuManager
 		visualizationMenu.setMnemonic('G');
 
 		gradient2DMenuItem = new JCheckBoxMenuItem("2D Gradient");
-		gradient2DMenuItem.addActionListener(new NewGradientModeListener());
+//		gradient2DMenuItem.addActionListener(new NewGradientModeListener());
 		gradient2DMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.ALT_MASK));
 		gradient2DMenuItem.setMnemonic('2');
 		gradient2DMenuItem.setSelected(false);
@@ -230,14 +236,13 @@ public class MenuManager
 
 		menu.add(viewMenu);
 		
-		/* ----- [Experimental] ----- */
-		
-		JMenu experimentalMenu = new JMenu("Experimental");
-		experimentalMenu.setMnemonic('E');
+
 				
 	
 		// FIXME: Incorporate into the code better
-		menu.add(new WindowMenuManager(ui.getDesktop()));
+		JMenu windowMenu = new WindowMenuManager();
+		windowMenu.setText("Window");
+		menu.add(windowMenu);
 		
 		
 		/* ---------------[ Help  ]--------------- */
@@ -245,19 +250,12 @@ public class MenuManager
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic('H');
 
-		// help > about
 		JMenuItem about = new JMenuItem("About", 'A');
 //		about.addActionListener(new AboutListener());
 
-		// build the help menu
 		helpMenu.add(about);
 		menu.add(helpMenu);
-				
-		/* ---------------[ Finalize menus ]--------------- */
-		
-		
-		
-		
+	
 	}
 	
 	/**
@@ -275,41 +273,118 @@ public class MenuManager
 	
 	
 	
+
 	
-	private class NewGradientModeListener implements ActionListener 
+	
+
+	/* === NOTES!! */
+	/*
+	 * This would be the perfect place to use generics.
+	 * 
+	 *   Maybe I'll work on it when I get more practice...
+	 * 
+	 */
+	private class ConsoleListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-//			ui.toggle2D();
-		}
-	}
-	
-	private class TestListener implements ActionListener 
-	{
-		public void actionPerformed(ActionEvent e)
-		{
-			System.out.println("Menu event fired.");
-			ui.testMethod();
-//			ui.toggle2D();
+			InterfaceManager.getInstance().getDesktop().add(new TextFrame());
 		}
 	}
 	
 	
 	
+//	/**
+//	 * Adds an object reference to a normal <code>JCheckBoxMenuItem</code>.
+//	 * 
+//	 * <p>For dynamically generated menus, it is often helpful to tie a menu
+//	 * item to a particular object.  This class extends the standard
+//	 * <code>JCheckBoxMenuItem</code> by adding a private <code>Object</code> 
+//	 * field.  That way, when an <code>ActionEvent</code> is fired, it can be 
+//	 * associated with an existing object.
+//	 * 
+//	 * <p>Note that the dereferencing process can be rather cumbersome.  A 
+//	 * typical event handler may look something like the following:
+//	 * 
+//	 * <p><code>
+//	 * public void actionPerformed(ActionEvent ae) { <br>
+//	 *     Type obj = (Type)((ExtendedJCheckBoxMenuItem)ae.getSource()).getReference();<br>
+//	 *     ...<br>
+//	 * }</code>
+//	 * 
+//	 * <p>Generics could be used to reduce the number of explicit casts, but at
+//	 * the expense older JVMs.
+//	 * 
+//	 * @author   Ryan R. Varick
+//	 * @since    2.0.0
+//	 * 
+//	 */
+//	private class ExtendedJCheckBoxMenuItem extends JCheckBoxMenuItem
+//    {
+//        private Object reference;
+//
+//        public ExtendedJCheckBoxMenuItem(Object reference)
+//        {
+//            this.reference = reference;
+//        }
+//
+//        public Object getReference()
+//        {
+//            return reference;
+//        }
+//    }
 	
 	
-	
-	
-	// TODO: Add a "rescan" option
-	private class ConnectMenuManager extends JMenu
-	{
-		private JMenuItem nullD = new JMenuItem("Null driver");
-		
-		public ConnectMenuManager()
+	/**
+	 * Manages the list of available devices.
+	 * 
+	 * <p>Managing the list of devices is a tricky task, and was one of the
+	 * most hack-ish parts of jEACv1.  
+	 *
+	 * @author Varick
+	 *
+	 */
+	private class ConnectMenuManager extends DynamicMenuManager
+	{		
+		protected void buildMenu()
 		{
-			add(nullD);
+			InterfaceManager ui = InterfaceManager.getInstance();
+//			
+//			Device[][] deviceList = ui.getDeviceList();
+//			int keyCounter = 0;
+//			for(int i = 0; i < deviceList.length; i++)
+//			{
+//				for(int j = 0; j < deviceList[i].length; j++)
+//				{
+//					Device d = deviceList[i][j];
+//					
+//					// create the menu item (and store the Device reference)
+//					ExtendedJCheckBoxMenuItem menuItem = new ExtendedJCheckBoxMenuItem(d);
+//					menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0 + keyCounter++, KeyEvent.CTRL_MASK));
+//					menuItem.setText(d.getTitle());
+//
+//					// add the listener
+//					menuItem.addActionListener(new ActionListener()
+//		            {
+//		            	public void actionPerformed(ActionEvent ae)
+//		            	{
+//		            		Device d = (Device)((ExtendedJCheckBoxMenuItem)ae.getSource()).getReference();
+//		            		System.out.println("Event fired:  Device=" + d.getTitle());
+//		                }
+//		            });
+//					
+//					add(menuItem);
+//				}
+//				add(new JSeparator());
+//			}
+		
+			add(new JMenuItem("Rescan"));
+			// TODO: Add listener
+
 		}
 		
+		
+
 		
 	}	
 	
@@ -319,57 +394,55 @@ public class MenuManager
 	/**
 	 * Menu component that handles the functionality expected of a standard
 	 * "Windows" menu for MDI applications.
+	 * 
+	 *  TODO:  Integrate code better
 	 */
-	private class WindowMenuManager extends JMenu
+	private class WindowMenuManager extends DynamicMenuManager
 	{
-	    private MDIDesktopPane desktop;
-	    private JMenuItem cascade=new JMenuItem("Cascade");
-	    private JMenuItem tile=new JMenuItem("Tile");
+		private JMenuItem cascadeMenuItem, tileMenuItem;
 
-	    public WindowMenuManager(MDIDesktopPane desktop) {
-	        this.desktop=desktop;
-	        setText("Window");
-	        cascade.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent ae) {
-	                WindowMenuManager.this.desktop.cascadeFrames();
+		/* Sets up the children menus depending on the current desktop state */
+	    protected void buildMenu()
+	    {
+	        // cascade menu
+	        cascadeMenuItem = new JMenuItem("Cascade");
+	        cascadeMenuItem.addActionListener(new ActionListener()
+	        {
+	            public void actionPerformed(ActionEvent ae)
+	            {
+	                InterfaceManager.getInstance().getDesktop().cascadeFrames();
 	            }
 	        });
-	        tile.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent ae) {
-	                WindowMenuManager.this.desktop.tileFrames();
+
+	        // tile menu
+	        tileMenuItem = new JMenuItem("Tile");
+	        tileMenuItem.addActionListener(new ActionListener()
+	        {
+	            public void actionPerformed(ActionEvent ae)
+	            {
+	                InterfaceManager.getInstance().getDesktop().tileFrames();
 	            }
 	        });
-	        addMenuListener(new MenuListener() {
-	            public void menuCanceled (MenuEvent e) {}
+	    	
+	    	
+	    	
+	    	
+	    	ExtendedJCheckBoxMenuItem menu;
+	        JInternalFrame[] array = InterfaceManager.getInstance().getDesktop().getAllFrames();
 
-	            public void menuDeselected (MenuEvent e) {
-	                removeAll();
-	            }
-
-	            public void menuSelected (MenuEvent e) {
-	                buildChildMenus();
-	            }
-	        });
-	    }
-
-	    /* Sets up the children menus depending on the current desktop state */
-	    private void buildChildMenus() {
-	        int i;
-	        ChildMenuItem menu;
-	        JInternalFrame[] array = desktop.getAllFrames();
-
-	        add(cascade);
-	        add(tile);
+	        add(cascadeMenuItem);
+	        add(tileMenuItem);
 	        if (array.length > 0) addSeparator();
-	        cascade.setEnabled(array.length > 0);
-	        tile.setEnabled(array.length > 0);
+	        cascadeMenuItem.setEnabled(array.length > 0);
+	        tileMenuItem.setEnabled(array.length > 0);
 
-	        for (i = 0; i < array.length; i++) {
-	            menu = new ChildMenuItem(array[i]);
+	        for (int i = 0; i < array.length; i++) {
+	            menu = new ExtendedJCheckBoxMenuItem(array[i]);
+	            menu.setText(array[i].getTitle());
 	            menu.setState(i == 0);
 	            menu.addActionListener(new ActionListener() {
 	                public void actionPerformed(ActionEvent ae) {
-	                    JInternalFrame frame = ((ChildMenuItem)ae.getSource()).getFrame();
+	                    JInternalFrame frame = (JInternalFrame)((ExtendedJCheckBoxMenuItem)ae.getSource()).getReference();
 	                    frame.moveToFront();
 	                    try {
 	                        frame.setSelected(true);
@@ -382,21 +455,22 @@ public class MenuManager
 	            add(menu);
 	        }
 	    }
-
-	    /* This JCheckBoxMenuItem descendant is used to track the child frame that corresponds
-	       to a give menu. */
-	    class ChildMenuItem extends JCheckBoxMenuItem {
-	        private JInternalFrame frame;
-
-	        public ChildMenuItem(JInternalFrame frame) {
-	            super(frame.getTitle());
-	            this.frame=frame;
-	        }
-
-	        public JInternalFrame getFrame() {
-	            return frame;
-	        }
-	    }
+//
+//	    /* This JCheckBoxMenuItem descendant is used to track the child frame that corresponds
+//	       to a give menu. */
+//	    class ChildMenuItem extends JCheckBoxMenuItem
+//	    {
+//	        private JInternalFrame frame;
+//
+//	        public ChildMenuItem(JInternalFrame frame) {
+//	            super(frame.getTitle());
+//	            this.frame=frame;
+//	        }
+//
+//	        public JInternalFrame getFrame() {
+//	            return frame;
+//	        }
+//	    }
 	}
 
 }

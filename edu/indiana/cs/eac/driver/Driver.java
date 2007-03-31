@@ -1,15 +1,55 @@
 package edu.indiana.cs.eac.driver;
 
-abstract class Driver
+import java.util.HashMap;
+
+public class Driver
 {
+//	public static Driver Register = new Driver();
+//	private static HashMap map = new HashMap();
+//	
+//	public static synchronized Object getInstance(String classname)
+//	{
+//		Object singleton = map.get(classname);
+//
+//		if(singleton != null)
+//		{
+//			return singleton;
+//		}
+//		
+//		try
+//		{
+//			singleton = Class.forName(classname).newInstance();
+//		}
+//		catch(Exception e)
+//		{
+//			e.printStackTrace();
+//		}
+//		
+//		map.put(classname, singleton);
+//		return singleton;
+//	}
+//	
+	
+	private static final String[] driverClasses = new String[] 
+		{
+			"NullDriver", 
+			"NetEACDriver", 
+			"USBuEACDriver"
+		};
+	
+	
+	
+	
+	
+	
 	// Make this into Singletons...
 	
 	// 1. revert this to an interface
 	// 2. move this code into DeviceManager
 	//    (we cannot force subtypes to be Singletons)
-	public static Driver[] getDriverClasses()
+	public static String[] getDriverClasses()
 	{
-		return new Driver[] { new NullDriver(), new NullDriver() };
+		return new String[] { new NullDriver(), new NullDriver() };
 	}
 	
 	public abstract void testMe();

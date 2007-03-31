@@ -33,7 +33,7 @@ public class SnakeEvolver extends EacEvolverFitnessFunction
 	// old stuff
 	public static int num_chromosomes = 0;
 	public static int total_num_chromosomes = 0;
-	private USBDriver driver;
+	private USBuEACDriver driver;
 	private Object[] off, inputs, sinks, llas, llaFxs;
 	private static final int MAX_LIFESPAN_SECONDS = 60;
 	private static final int MAX_LLAS = 8;

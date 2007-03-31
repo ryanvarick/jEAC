@@ -12,6 +12,10 @@
 
 package edu.indiana.cs.eac.driver;
 
+import java.util.HashMap;
+
+import edu.indiana.cs.eac.JEAC;
+
 /**
  * Manages devices for use with jEAC (start here!).
  * 
@@ -29,6 +33,26 @@ package edu.indiana.cs.eac.driver;
  */
 public class DeviceManager
 {
+	
+	
+	
+	
+	private void test()
+	{
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// TODO: Implement as a singleton class using a hash map to 
 	// try to define a static (final) getInstance() method to power our
@@ -67,6 +91,8 @@ public class DeviceManager
 		for(Driver i : driverClasses)
 		{
 			i.testMe();
+			
+			Driver.getInstance(driverClasses[i]);
 		}
 //		
 		NullDriver nullDriver = new NullDriver();

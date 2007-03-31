@@ -120,12 +120,12 @@ public class JEAC_Reference extends JInternalFrame
 		}
 		
 		// Hack to provide better feedback.  Oi!
-		LoadingFrame lf = new LoadingFrame(USBDriver.getNumPorts());
+		LoadingFrame lf = new LoadingFrame(USBuEACDriver.getNumPorts());
 		
 		// populate the driver list
 		offlineDrivers  = NullDriver.getDeviceList();
-		ethernetDrivers = EthernetDriver.getDeviceList();
-		usbDrivers      = USBDriver.getDeviceList2(lf);
+		ethernetDrivers = NetEACDriver.getDeviceList();
+		usbDrivers      = USBuEACDriver.getDeviceList2(lf);
 		driverList      = new String[][]
 			{
 				offlineDrivers,
@@ -199,7 +199,7 @@ public class JEAC_Reference extends JInternalFrame
 	public static void main(String args[])
 	{		
 		// NOTE: enable or disable uEAC debugging here
-		USBDriver.setDebug(false);
+		USBuEACDriver.setDebug(false);
 	
 		JEAC_Reference jEAC = new JEAC_Reference();
 	}
@@ -379,10 +379,10 @@ public class JEAC_Reference extends JInternalFrame
 		resetMenuItem.setEnabled(driverConnected);
 		
 		// LED control is uEAC-specific
-		if(driverConnected && driver.getClass() == USBDriver.class)
+		if(driverConnected && driver.getClass() == USBuEACDriver.class)
 		{
 			ledMenuItem.setEnabled(true);
-			ledMenuItem.setSelected(((USBDriver)driver).getLEDStatus());
+			ledMenuItem.setSelected(((USBuEACDriver)driver).getLEDStatus());
 		}
 		else
 		{
@@ -1096,13 +1096,13 @@ public class JEAC_Reference extends JInternalFrame
 			}
 			for(int i = 0; i < driverList[EAC_DRIVERS].length; i++)
 			{
-				if(new_driver == driverList[EAC_DRIVERS][i]) { driver = new EthernetDriver(new_driver); }
+				if(new_driver == driverList[EAC_DRIVERS][i]) { driver = new NetEACDriver(new_driver); }
 			}
 			for(int i = 0; i < driverList[UEAC_DRIVERS].length; i++)
 			{
 				if(new_driver == driverList[UEAC_DRIVERS][i])
 				{
-					driver = new USBDriver(new_driver);
+					driver = new USBuEACDriver(new_driver);
 				}
 			}
 						
@@ -1150,7 +1150,7 @@ public class JEAC_Reference extends JInternalFrame
 		public void actionPerformed(ActionEvent e)
 		{
 			// since this is a uEAC-only command, we can safely cast here
-			((USBDriver)driver).toggleLEDs();
+			((USBuEACDriver)driver).toggleLEDs();
 		}
 	}
 	

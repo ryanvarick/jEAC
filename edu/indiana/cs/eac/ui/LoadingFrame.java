@@ -83,77 +83,7 @@ public class LoadingFrame extends JInternalFrame
 		// start with some progress!
 		increment();
 	}
-	
-	/**
-	 * Returns a new <code>LoadingFrame</code> instance.
-	 * 
-	 * @author   Ryan R. Varick
-	 * @since    1.0.0
-	 * 
-	 * @deprecated
-	 *
-	 */
-	public LoadingFrame()
-	{
-		// TODO: parameterize this (using jEAC constants)
-		try
-		{
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} 
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		
 
-		
-		
-//	    // This message describes the task that is running
-//	    String message = "Description of Task";
-//	    
-//	    // This string describes a subtask; set to null if not needed
-//	    String note = "subtask";
-//	    
-//	    // Set the title of the dialog if desired
-//	    String title = "Task Title";
-//	    UIManager.put("ProgressMonitor.progressText", title);
-//	    
-//	    // Create a progress monitor dialog.
-//	    // The dialog will use the supplied component's frame as the parent.
-//	    int min = 0;
-//	    int max = 100;
-//	    ProgressMonitor pm = new ProgressMonitor(this, message, note, min, max);
-//		add(pm);
-//		
-//		JLabel label = new JLabel("Searching for local uEACs...", 
-//								new ImageIcon(JEAC.getImage("loading.gif")), JLabel.CENTER);
-//		label.setVerticalTextPosition(JLabel.BOTTOM);
-//		label.setHorizontalTextPosition(JLabel.CENTER);
-//	  
-//		getContentPane().add(label, BorderLayout.CENTER);
-//		getContentPane().setBackground(Color.WHITE);
-//		
-//		// screen size
-//		setSize(new Dimension(150, 150));
-//		
-//		// center on screen
-//		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//		int x = (screenSize.width - this.getWidth()) / 2;
-//		int y = (screenSize.height - this.getHeight()) / 2;
-//		setLocation(x, y);
-//		
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		setIconImage(JEAC.getApplicationIcon());
-//		setResizable(false);
-//		setTitle("Loading...");
-//		setVisible(true);
-//		paintAll(getGraphics());
-////		
-//		pm.setProgress(10);
-
-	}
-	
 	
 	
 	/* -------------------------[ LoadingFrame methods ]------------------------- */
@@ -161,8 +91,8 @@ public class LoadingFrame extends JInternalFrame
 	/**
 	 * Updates the loading frame by a predetermined amount.
 	 * 
-	 * <p>The increment is determined automatically, given the number of steps
-	 * the progress bar is expected to report.
+	 * <p>The increment is fixed, determined automatically by the number of steps
+	 * passed to the constructor. 
 	 * 
 	 * @author   Ryan R. Varick
 	 * @since    1.2.0
@@ -170,7 +100,7 @@ public class LoadingFrame extends JInternalFrame
 	 */
 	public void increment()
 	{
-		// TODO: Handle > 100 errors
+		// TODO: Handle more than 100 steps
 		int value = progress.getValue() + stepSize;
 		progress.setValue(value);
 	}

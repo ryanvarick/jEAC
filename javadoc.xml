@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project default="javadoc">
-<target name="javadoc">
-<javadoc access="public" author="true" classpath="lib/jmathplot.jar;lib/RXTXcomm.jar" destdir="C:\Documents and Settings\Varick\Desktop\jeac-javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="edu.indiana.cs.ga.snakeEvolver" source="1.5" sourcepath="." splitindex="true" use="true" version="true"/>
-</target>
-</project>

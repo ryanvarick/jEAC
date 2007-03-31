@@ -12,7 +12,7 @@ import edu.indiana.cs.eac.ui.NodeMap;
 import edu.indiana.cs.eac.exceptions.*;
 import edu.indiana.cs.math.*;
 
-public class EthernetDriver implements Device, Serializable
+public class NetEACDriver implements Device, Serializable
 {
 	private static final boolean DEBUG = false;
 	
@@ -49,7 +49,7 @@ public class EthernetDriver implements Device, Serializable
 	private ChannelList channels;
 	//private boolean connected = false;
 	
-	public EthernetDriver(String URL) {
+	public NetEACDriver(String URL) {
 		this.URL = URL;
 		channels = new ChannelList();
 	
@@ -390,7 +390,7 @@ public class EthernetDriver implements Device, Serializable
 	
 	public static void main(String args[]) {
 		String machine = "eac2.cs.indiana.edu";
-		EthernetDriver test = new EthernetDriver(machine);
+		NetEACDriver test = new NetEACDriver(machine);
 	}
 	
 	private class Channel implements Serializable{

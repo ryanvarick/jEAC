@@ -31,7 +31,7 @@ import edu.indiana.cs.eac.ui.NodeMap;
 
 import javax.swing.*;
 
-public class USBDriver implements Device, Serializable
+public class USBuEACDriver implements Device, Serializable
 {
 	// print useful debugging information when enabled
 	private static boolean DEBUG = false;
@@ -111,7 +111,7 @@ public class USBDriver implements Device, Serializable
 	 * @param String port - name of the port to connect to
 	 * 
 	 */
-	public USBDriver(String portName)
+	public USBuEACDriver(String portName)
 	{		
 		this.portName   = portName;
 		this.baudRate   = 19200;
@@ -141,7 +141,7 @@ public class USBDriver implements Device, Serializable
 	 * INTERNAL - Constructor - for internal use only.
 	 *
 	 */
-	public USBDriver() { /* Do nothing */ }
+	public USBuEACDriver() { /* Do nothing */ }
 	
 
 	
@@ -153,10 +153,10 @@ public class USBDriver implements Device, Serializable
 	 */
 	public static void main(String args[])
 	{
-		String[] drivers = USBDriver.getDeviceList();
+		String[] drivers = USBuEACDriver.getDeviceList();
 		
 		System.out.println("Connecting to: " + drivers[0]);
-		USBDriver driver = new USBDriver(drivers[0]);
+		USBuEACDriver driver = new USBuEACDriver(drivers[0]);
 		
 		try
 		{
@@ -996,7 +996,7 @@ public class USBDriver implements Device, Serializable
 		{
 			// BUGFIX: (1473306) look for an existing LLA at this point; if it exists, disable it
 			int id = getLLAIndex(coords[0], coords[1]);
-			if(id != USBDriver.INVALID_INDEX)
+			if(id != USBuEACDriver.INVALID_INDEX)
 			{
 				disableLLA(id);
 			}
@@ -1107,7 +1107,7 @@ public class USBDriver implements Device, Serializable
      */
 	public static String[] getDeviceList()
 	{
-		Object[] ports    = USBDriver.getPortList();
+		Object[] ports    = USBuEACDriver.getPortList();
 		String[] portList = new String[ports.length];
 		
 		for(int i = 0; i < ports.length; i++)
@@ -1169,7 +1169,7 @@ public class USBDriver implements Device, Serializable
 				boolean isValid  = false;
 				try
 				{
-					USBDriver driver = new USBDriver(port.getName());
+					USBuEACDriver driver = new USBuEACDriver(port.getName());
 					driver.connect();
 					if(driver.writeSentence("NOK_TEST")) { isValid = true; }
 					driver.disconnect();
@@ -1249,7 +1249,7 @@ public class USBDriver implements Device, Serializable
 					}
 					
 					bufferSize = inputStream.read(buffer, 0, amountToBeRead);
-					USBDriver.sleep(20);
+					USBuEACDriver.sleep(20);
 				}
 				if(readString == null)
 				{
