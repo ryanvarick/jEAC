@@ -1,4 +1,4 @@
-package edu.indiana.cs.eac.testing.driver;
+package edu.indiana.cs.testing.driver;
 
 import java.io.*;
 import javax.swing.*;

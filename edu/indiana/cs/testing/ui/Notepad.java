@@ -1,6 +1,6 @@
 //based on http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html
 
-package edu.indiana.cs.eac.testing.ui;
+package edu.indiana.cs.testing.ui;
 
 import javax.swing.*;
 

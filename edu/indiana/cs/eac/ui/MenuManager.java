@@ -26,7 +26,7 @@ import edu.indiana.cs.eac.*;
 //import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.eac.gradient.*;
 import edu.indiana.cs.eac.driver.*;
-import edu.indiana.cs.eac.testing.ui.*;
+import edu.indiana.cs.testing.ui.*;
 
 /**
  * Menu layout and event manager.

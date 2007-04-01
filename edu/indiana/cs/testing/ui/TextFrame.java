@@ -1,4 +1,4 @@
-package edu.indiana.cs.eac.testing.ui;
+package edu.indiana.cs.testing.ui;
 
 import javax.swing.*;
 import java.awt.*;

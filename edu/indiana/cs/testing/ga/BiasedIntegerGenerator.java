@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.indiana.cs.eac.testing.ga;
+package edu.indiana.cs.testing.ga;
 
 import org.jgap.RandomGenerator;
 

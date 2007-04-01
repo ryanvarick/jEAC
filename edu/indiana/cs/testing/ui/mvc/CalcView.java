@@ -1,4 +1,4 @@
-package edu.indiana.cs.eac.testing.mvc;
+package edu.indiana.cs.testing.ui.mvc;
 // structure/calc-mvc/CalcView.java - View component
 //    Presentation only.  No user actions.
 // Fred Swartz -- December 2004

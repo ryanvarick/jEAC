@@ -18,9 +18,9 @@ import java.util.*;
 import java.awt.event.*;
 import java.awt.*;
 
-import edu.indiana.cs.eac.testing.ui.*;
 import edu.indiana.cs.eac.driver.*;
 import edu.indiana.cs.ga.snakeEvolver.*;
+import edu.indiana.cs.testing.ui.*;
 
 
 import ec.display.*;

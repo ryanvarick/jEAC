@@ -6,7 +6,7 @@
  *               throw Exception on port not being set
  */
 
-package edu.indiana.cs.eac.testing.driver;
+package edu.indiana.cs.testing.driver;
 
 import gnu.io.*;
 import java.util.*;

@@ -1,4 +1,4 @@
-package edu.indiana.cs.eac.testing.mvc;
+package edu.indiana.cs.testing.ui.mvc;
 // stucture/calc-mvc/CalcMVC.java -- Calculator in MVC pattern.
 // Fred Swartz -- December 2004
 

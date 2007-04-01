@@ -1,4 +1,4 @@
-package edu.indiana.cs.eac.testing.mvc;
+package edu.indiana.cs.testing.ui.mvc;
 // stucture/calc-mvc/CalcController.java - Controller
 //    Handles user interaction with listeners.
 //    Calls View and Model as needed.

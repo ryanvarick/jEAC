@@ -7,7 +7,7 @@
  * or have a look at the top of class org.jgap.Chromosome which representatively
  * includes the JGAP license policy applicable for any file delivered with JGAP.
  */
-package edu.indiana.cs.eac.testing.ga;
+package edu.indiana.cs.testing.ga;
 
 import java.io.*;
 
