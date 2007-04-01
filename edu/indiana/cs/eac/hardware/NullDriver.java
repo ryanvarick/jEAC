@@ -22,37 +22,23 @@ import edu.indiana.cs.eac.ui.NodeMap;
 
 public class NullDriver extends Driver
 {
-	// Singleton protection
-	protected NullDriver() 
-	{
-		super();
-	} 
 
-//	private static class NullDriverHolder
-//	{
-//		private static NullDriver instance = new NullDriver();
-//	}
-//	public static NullDriver getInstance()
-//	{
-//		return NullDriverHolder.instance;
-//	}
-	
-	
-//	public void testMe()
-//	{
-//		System.out.println("testMe() from NullDriver");
-//	}
-//	
-//	
 //	// API-mapped (added 03/29/2007, rvarick)
-//	public Device returnDeviceFromIdentifier(String identifier)
-//	{
-//		return new NullDevice(identifier);
-//	}
+	public Device returnDeviceFromIdentifier(String identifier)
+	{
+		return new NullDevice(identifier);
+	}
 //
-//    public Device[] getDeviceList()
-//    {
-//    	return new Device[] { returnDeviceFromIdentifier("Null driver") };
+	public Device[] getDevices()
+	{
+    	return new Device[] 
+		{ 
+        		returnDeviceFromIdentifier("Null driver"),
+        		returnDeviceFromIdentifier("Null driver1"),
+        		returnDeviceFromIdentifier("Null driver2"),
+    	};
+	}
+   
 	
 	
 	
@@ -60,9 +46,10 @@ public class NullDriver extends Driver
 	{
 		public String getTitle()
 		{
-			return "uEAC"; 
+			return title; 
 		}
 		
+		 private String title;
 		private static final int MAP_ROWS = 7;
 		private static final int REPORTING_ROWS = 7;
 		private static final int MAP_COL = 5;
@@ -80,8 +67,10 @@ public class NullDriver extends Driver
 		private JEACNode nodes[] = new JEACNode[MAP_ROWS * MAP_COL];
 		private String URL = "Test Driver";
 		
-		private NullDevice(String name) 
+		public NullDevice(String name) 
 		{
+			title = name;
+			
 			for (int i = 0; i < MAP_ROWS * MAP_COL; i++) {
 				nodes[i] = new JEACNode();
 			}

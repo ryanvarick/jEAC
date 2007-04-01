@@ -12,9 +12,9 @@
 
 package edu.indiana.cs.eac.hardware;
 
-import java.util.HashMap;
+import java.util.*;
 
-import edu.indiana.cs.eac.JEAC;
+import edu.indiana.cs.eac.*;
 
 /**
  * Manages devices for use with jEAC (start here!).
@@ -33,84 +33,50 @@ import edu.indiana.cs.eac.JEAC;
  */
 public class HardwareManager
 {
-	/*
+	/**
+	 * List of active driver classes.
+	 * 
+	 * <p>This is how driver classes (and, by extension, hardware devices) are
+	 * added to jEAC.  Drivers are implemented as singleton <code>Device</code>
+	 * factories.  Thus to tell jEAC to look for a new class of device, simply
+	 * add its driver class to the array.
 	 * 
 	 */
-	private static Driver[] driverClasses = new Driver[]
+	private static Driver[] drivers = new Driver[]
 	{
 		Driver.getInstance(NullDriver.class),
 //		Driver.getInstance(NetEACDriver.class),
-//		Driver.getInstance(USBuEACDriver.class),
+//		Driver.getInstance(USBuEACDriver.class)
 	};
-	                                          
 	
 	
 	
-	/** Singleton instance of the class. */
-	private static HardwareManager INSTANCE;
 	
-	
-	
-	/* -------------------------[ Generic class methods ]------------------------- */
-	
-	/**
-	 * Private contructor to prevent instantiation.
-	 * 
-	 * <p>This class follows the Singleton design pattern; it is not meant to
-	 * be instantiated directly.  Instead, the instance should be retrieved via
-	 * the <code>getInstance()</code> method.
-	 * 
-	 * @author   Ryan R. Varick
-	 * @since    2.0.0
-	 *
-	 */
-	private HardwareManager() 
-	{ 
-		
-	}
-	
-	/**
-	 * Returns the single instance of the class.
-	 * 
-	 * <p>The idea is to prevent multiple instances of jEAC from running, in
-	 * the same JVM anyway.  There shouldn't be a need for simultaneous instances.
-	 * 
-	 * @return   Class instance.
-	 * 
-	 * @author   Ryan R. Varick
-	 * @since    2.0.0
-	 * 
-	 */
-	public synchronized static HardwareManager getInstance()
-	{
-		
-		if(INSTANCE == null)
-		{ 
-			INSTANCE = new HardwareManager();
-		}
-		return INSTANCE;
-	}
-	
-	/**
-	 * Prevents attempts to create multiple instances via cloning.
-	 * 
-	 * @throws   Don't copy that floppy!
-	 * 
-	 * @author   Ryan R. Varick
-	 * @since    2.0.0
-	 * 
-	 */
-	public Object clone() throws CloneNotSupportedException
-	{
-		throw new CloneNotSupportedException();
-	}
 
-	
+
+
+	private HardwareManager()
+	{
+		
+	}
+	public static final HardwareManager getInstance()
+	{
+		return new HardwareManager();
+	}
 	
 	
 	public int getDeviceCount()
 	{
-		return 0;
+		Device[][] devices = getKnownDevices();
+		
+		int cnt = 0;
+		for(int i = 0; i < devices.length; i++)
+		{
+			cnt += devices[i].length;
+		}
+		
+		System.out.println("Returning device count: " + cnt);
+		return cnt;
 	}
 	
 
@@ -120,16 +86,16 @@ public class HardwareManager
 	 * @return
 	 * 
 	 */
-	public Device[][] getDeviceList()
+	public Device[][] getKnownDevices()
 	{
-		Driver[] drivers = Driver.getDrivers();
-		Device[][] deviceList = null;
+		Device[][] devices = new Device[drivers.length][];
+		
 		for(int i = 0; i < drivers.length; i++)
 		{
-			deviceList[i] = drivers[i].getDevices();
+			devices[i] = drivers[i].getDevices();
 		}
 		
-		return deviceList;
+		return devices;
 	}	
 
 }

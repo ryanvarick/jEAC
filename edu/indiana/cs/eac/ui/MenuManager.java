@@ -23,6 +23,7 @@ import javax.swing.event.MenuListener;
 
 import ec.display.Console;
 import edu.indiana.cs.eac.*;
+import edu.indiana.cs.eac.Singleton;
 //import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.eac.gradient.*;
 import edu.indiana.cs.eac.hardware.*;
@@ -46,6 +47,15 @@ import edu.indiana.cs.testing.ui.*;
  */
 public class MenuManager
 {
+	private MenuManager()
+	{
+		init();
+	}
+	public static final MenuManager getInstance()
+	{
+		return new MenuManager();
+	}
+	
 	// FIXME: There is no need for any of these to be fields
 	private InterfaceManager ui;
 	
@@ -72,7 +82,7 @@ public class MenuManager
 
 
 	// constructor
-	public MenuManager()
+	public void init()
 	{
 		// cache the InterfaceManager--we need to know where to send menu events
 		ui = InterfaceManager.getInstance();

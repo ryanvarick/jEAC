@@ -123,7 +123,7 @@ public class JEAC_Reference extends JInternalFrame
 		LoadingFrame lf = new LoadingFrame(USBuEACDriver.getNumPorts());
 		
 		// populate the driver list
-		offlineDrivers  = NullDriver.getDeviceList();
+		offlineDrivers  = NullDriver.getKnownDevices();
 		ethernetDrivers = NetEACDriver.getDeviceList();
 		usbDrivers      = USBuEACDriver.getDeviceList2(lf);
 		driverList      = new String[][]

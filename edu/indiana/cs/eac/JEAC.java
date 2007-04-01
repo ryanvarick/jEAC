@@ -38,85 +38,14 @@ import edu.indiana.cs.eac.hardware.*;
  */
 public final class JEAC
 {
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-//	
-//	
-//	/** Singleton instance of the class. */
-//	private static JEAC INSTANCE;
-//	
-//	
-//	
-//	/* -------------------------[ Generic class methods ]------------------------- */
-//	
-//	/**
-//	 * Private contructor to prevent instantiation.
-//	 * 
-//	 * <p>This class follows the Singleton design pattern; it is not meant to
-//	 * be instantiated directly.  Instead, the instance should be retrieved via
-//	 * the <code>getInstance()</code> method.
-//	 * 
-//	 * @author   Ryan R. Varick
-//	 * @since    2.0.0
-//	 *
-//	 */
-//	private JEAC() { }
-//	
-//	/**
-//	 * Returns the single instance of the class.
-//	 * 
-//	 * <p>The idea is to prevent multiple instances of jEAC from running, in
-//	 * the same JVM anyway.  There shouldn't be a need for simultaneous instances.
-//	 * 
-//	 * @return   Class instance.
-//	 * 
-//	 * @author   Ryan R. Varick
-//	 * @since    2.0.0
-//	 * 
-//	 */
-//	public static JEAC getInstance()
-//	{
-//		if(INSTANCE == null)
-//		{ 
-//			INSTANCE = new JEAC();
-//		}
-//		return INSTANCE;
-//	}
-//	
-//	/**
-//	 * Prevents attempts to create multiple instances via cloning.
-//	 * 
-//	 * @throws   Don't copy that floppy!
-//	 * 
-//	 * @author   Ryan R. Varick
-//	 * @since    2.0.0
-//	 * 
-//	 */
-//	public Object clone() throws CloneNotSupportedException
-//	{
-//		throw new CloneNotSupportedException();
-//	}
-//
-	
-	
-	
-	
-	
-	
-	
+	private JEAC()
+	{
+		
+	}
+	public static final JEAC getInstance()
+	{
+		return new JEAC();
+	}
 	
 	/**
 	 * Responsible for getting the good Mr. jEAC up and running.  
@@ -129,20 +58,11 @@ public final class JEAC
 	 */
 	public static void main(String[] args)
 	{
-//		try
-//		{
-			InterfaceManager ui = InterfaceManager.getInstance();
-			ui.init();
+		InterfaceManager ui = InterfaceManager.getInstance();
+		ui.init();
 			
-//			DeviceManager dm = DeviceManager.getInstance();
-//			ThreadManager thread = new ThreadManager();
-		
-//			ui.loadDrivers(deviceManager);
-//		}
-//		catch(Exception e)
-//		{
-//			e.printStackTrace();
-//		}
+//		DeviceManager dm = DeviceManager.getInstance();
+//		ThreadManager thread = new ThreadManager();
 	}
 
 }

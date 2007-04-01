@@ -2,15 +2,14 @@ package edu.indiana.cs.eac.hardware;
 
 import java.util.HashMap;
 
-abstract class Driver
+public abstract class Driver
 {
 	protected Driver()
 	{
 //		System.out.println("Trying to create a " + classname.getName());
 	}
+
 	
-	
-//	public static Driver Register = new Driver();
 	private static HashMap map = new HashMap();
 	
 	public static final synchronized Driver getInstance(Class classname)

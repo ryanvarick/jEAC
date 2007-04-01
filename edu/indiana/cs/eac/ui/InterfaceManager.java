@@ -61,45 +61,32 @@ public class InterfaceManager extends JFrame
 
 	
 	/* UI components (do not alter) */
-	private static InterfaceManager instance;
 	
 	private MDIDesktopPane desktop;
-
-	private JMenuBar menuBar;
 	
 	private Device[][] validDevices;
 
 
-	public static InterfaceManager getInstance()
-	{
-//		return (InterfaceManager)ManagerRegistry.getInstance(this);
-		if(instance == null) { instance = new InterfaceManager(); }
-		return instance;
-	}
-	public Object clone() throws CloneNotSupportedException
-	{
-		throw new CloneNotSupportedException();
-	}
-	private InterfaceManager()
-	{
 
-	}
-	
-	/**
-	 * 
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args)
-	{
-		InterfaceManager jeac = new InterfaceManager();
-	}
+
 	public MDIDesktopPane getDesktop()
 	{
 		return desktop;
 	}
 	
 	
+	
+	
+	private static InterfaceManager instance;
+	private InterfaceManager()
+	{
+		
+	}
+	public static final InterfaceManager getInstance()
+	{
+		if(instance == null) { instance = new InterfaceManager(); }
+		return instance;
+	}
 	
 	
 	
@@ -140,7 +127,8 @@ public class InterfaceManager extends JFrame
 //		getContentPane().add(new StatusBarManager(), BorderLayout.SOUTH);
 
 		// hook up the menu manager
-		MenuManager menu = new MenuManager();
+		MenuManager menu = MenuManager.getInstance();
+//		MenuManager menu = (MenuManager)MenuManager.getInstance(MenuManager.class);
 		setJMenuBar(menu.getMenu());
 		
 		// specify UI appearance and behavior
@@ -191,24 +179,57 @@ public class InterfaceManager extends JFrame
 	 */
 	private void loadDrivers()
 	{
-		HardwareManager dm = HardwareManager.getInstance();
-		LoadingFrame lf = new LoadingFrame(dm.getDeviceCount());
+		// grab the raw list of devices
+		HardwareManager hm = HardwareManager.getInstance();
+		Device[][] knownDevices = hm.getKnownDevices();
 
-		Device[][] rawDevices = dm.getDeviceList();
-		for(int i = 0; i < rawDevices.length; i++)
-		{
-			for(int j = 0; j < rawDevices[i].length; j++)
-			{
-				int k = 0;
-				if(rawDevices[i][j].isValid())
-				{
-					validDevices[i][k] = rawDevices[i][j];
-				}
-				lf.increment();
-			}
-		}
+		// prepare the loading frame
+		LoadingFrame lf = new LoadingFrame(hm.getDeviceCount());
+
+		/*
+		 * WARNING! Pain in the ass zone ahead!
+		 * 
+		 * We need to verify the devices returned by the hardware manager.
+		 * Since it is possible likely that a number of devices (or entire
+		 * driver classes) will fail to verify, we cannot allocate the 
+		 * verifiedDevices array ahead of time.
+		 * 
+		 * We could use vectors here, but that involves a lot of superflous
+		 * casting.  Generics don't help because of type erasure.  So instead
+		 * we'll use a combination of counters and parameterized methods to
+		 * build the valid devices array.  There's probably a much simpler way
+		 * to do this. 
+		 * 
+		 */
+//		Vector<Device[]> checkedDevices = new Vector<Device[]>();
+//		int goodDriverCnt = 0;
+//		
+//		for(int i = 0; i < knownDevices.length; i++)
+//		{
+//			Vector<Device> goodDevices = new Vector<Device>();
+//			int goodDeviceCnt = 0;
+//			
+//			for(int j = 0; j < knownDevices[i].length; j++)
+//			{
+//				
+//				if(knownDevices[i][j].isValid())
+//				{
+//					goodDevices.add(knownDevices[i][j]);
+//					goodDeviceCnt++;
+//				}
+//				lf.increment();
+//			}
+//			
+//			Device[] dok = new Device[goodDeviceCnt];
+//			dok = goodDevices.toArray(dok);
+//			
+//			checkedDevices.add(dok);
+//		}
+//		
+//		lf.dispose();
+//		validDevices = (Device[][])checkedDevices.toArray();
 		
-		lf.dispose();
+		validDevices = knownDevices;
 	}
 
 
