@@ -31,8 +31,21 @@ import edu.indiana.cs.eac.JEAC;
  * @since    2.0.0
  *
  */
-public class DeviceManager
+public class HardwareManager
 {
+	/*
+	 * 
+	 */
+	private static Driver[] driverClasses = new Driver[]
+	{
+		Driver.getInstance(NullDriver.class),
+//		Driver.getInstance(NetEACDriver.class),
+//		Driver.getInstance(USBuEACDriver.class),
+	};
+	                                          
+	
+	
+	
 	/** Singleton instance of the class. */
 	private static HardwareManager INSTANCE;
 	
@@ -51,7 +64,10 @@ public class DeviceManager
 	 * @since    2.0.0
 	 *
 	 */
-	private DeviceManager() { }
+	private HardwareManager() 
+	{ 
+		
+	}
 	
 	/**
 	 * Returns the single instance of the class.
@@ -65,8 +81,9 @@ public class DeviceManager
 	 * @since    2.0.0
 	 * 
 	 */
-	public static HardwareManager getInstance()
+	public synchronized static HardwareManager getInstance()
 	{
+		
 		if(INSTANCE == null)
 		{ 
 			INSTANCE = new HardwareManager();
@@ -106,10 +123,10 @@ public class DeviceManager
 	public Device[][] getDeviceList()
 	{
 		Driver[] drivers = Driver.getDrivers();
-		
+		Device[][] deviceList = null;
 		for(int i = 0; i < drivers.length; i++)
 		{
-			deviceList[i] = driver.getDevices();
+			deviceList[i] = drivers[i].getDevices();
 		}
 		
 		return deviceList;

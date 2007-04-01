@@ -4,42 +4,49 @@ import java.util.HashMap;
 
 abstract class Driver
 {
+	protected Driver()
+	{
+//		System.out.println("Trying to create a " + classname.getName());
+	}
+	
+	
 //	public static Driver Register = new Driver();
-//	private static HashMap map = new HashMap();
-//	
-//	public static synchronized Object getInstance(String classname)
-//	{
-//		Object singleton = map.get(classname);
-//
-//		if(singleton != null)
-//		{
-//			return singleton;
-//		}
-//		
-//		try
-//		{
-//			singleton = Class.forName(classname).newInstance();
-//		}
-//		catch(Exception e)
-//		{
-//			e.printStackTrace();
-//		}
-//		
-//		map.put(classname, singleton);
-//		return singleton;
-//	}
-//	
+	private static HashMap map = new HashMap();
 	
-	private static final String[] driverClasses = new String[] 
+	public static final synchronized Driver getInstance(Class classname)
+	{
+		System.out.println("In Driver, trying to return " + classname.getName());
+		Driver singleton = (Driver)map.get(classname);
+
+		if(singleton != null)
 		{
-			"NullDriver", 
-			"NetEACDriver", 
-			"USBuEACDriver"
-		};
+			return singleton;
+		}
+		
+		try
+		{
+			singleton = (Driver)Class.forName(classname.getName()).newInstance();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		map.put(classname, singleton);
+		return singleton;
+	}
 	
 	
+//	private static final String[] driverClasses = new String[] 
+//		{
+//			"NullDriver", 
+//			"NetEACDriver", 
+//			"USBuEACDriver"
+//		};
+//	
 	
 	
+	public abstract Device[] getDevices();
 	
 	
 	// Make this into Singletons...
@@ -52,7 +59,7 @@ abstract class Driver
 		return new Driver[] { new NullDriver(), new NullDriver() };
 	}
 	
-	public abstract void testMe();
+//	public abstract void testMe();
 	
 	/**
 	 * 
@@ -78,8 +85,8 @@ abstract class Driver
 	 * @since              2.0.0
 	 * 
 	 */
-	public abstract Device returnDeviceFromIdentifier(String identifier);
-
-	public abstract Device[] getDeviceList();
-	
+//	public abstract Device returnDeviceFromIdentifier(String identifier);
+//
+//	public abstract Device[] getDeviceList();
+//	
 }
