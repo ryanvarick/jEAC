@@ -29,7 +29,7 @@ import edu.indiana.cs.eac.driver.*;
 import edu.indiana.cs.eac.testing.ui.*;
 
 /**
- * Menu event manager.
+ * Menu layout and event manager.
  * 
  * <p>This class defines the layout and behavior of the jEAC menubar.  It 
  * contains a number of listeners to handle menu events.  If you're trying to
@@ -46,7 +46,7 @@ import edu.indiana.cs.eac.testing.ui.*;
  */
 public class MenuManager
 {
-	
+	// FIXME: There is no need for any of these to be fields
 	private InterfaceManager ui;
 	
 	private JMenuBar menu;
@@ -277,13 +277,7 @@ public class MenuManager
 	
 	
 
-	/* === NOTES!! */
-	/*
-	 * This would be the perfect place to use generics.
-	 * 
-	 *   Maybe I'll work on it when I get more practice...
-	 * 
-	 */
+
 	private class ConsoleListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -291,48 +285,6 @@ public class MenuManager
 			InterfaceManager.getInstance().getDesktop().add(new TextFrame());
 		}
 	}
-	
-	
-	
-//	/**
-//	 * Adds an object reference to a normal <code>JCheckBoxMenuItem</code>.
-//	 * 
-//	 * <p>For dynamically generated menus, it is often helpful to tie a menu
-//	 * item to a particular object.  This class extends the standard
-//	 * <code>JCheckBoxMenuItem</code> by adding a private <code>Object</code> 
-//	 * field.  That way, when an <code>ActionEvent</code> is fired, it can be 
-//	 * associated with an existing object.
-//	 * 
-//	 * <p>Note that the dereferencing process can be rather cumbersome.  A 
-//	 * typical event handler may look something like the following:
-//	 * 
-//	 * <p><code>
-//	 * public void actionPerformed(ActionEvent ae) { <br>
-//	 *     Type obj = (Type)((ExtendedJCheckBoxMenuItem)ae.getSource()).getReference();<br>
-//	 *     ...<br>
-//	 * }</code>
-//	 * 
-//	 * <p>Generics could be used to reduce the number of explicit casts, but at
-//	 * the expense older JVMs.
-//	 * 
-//	 * @author   Ryan R. Varick
-//	 * @since    2.0.0
-//	 * 
-//	 */
-//	private class ExtendedJCheckBoxMenuItem extends JCheckBoxMenuItem
-//    {
-//        private Object reference;
-//
-//        public ExtendedJCheckBoxMenuItem(Object reference)
-//        {
-//            this.reference = reference;
-//        }
-//
-//        public Object getReference()
-//        {
-//            return reference;
-//        }
-//    }
 	
 	
 	/**
@@ -349,34 +301,34 @@ public class MenuManager
 		protected void buildMenu()
 		{
 			InterfaceManager ui = InterfaceManager.getInstance();
-//			
-//			Device[][] deviceList = ui.getDeviceList();
-//			int keyCounter = 0;
-//			for(int i = 0; i < deviceList.length; i++)
-//			{
-//				for(int j = 0; j < deviceList[i].length; j++)
-//				{
-//					Device d = deviceList[i][j];
-//					
-//					// create the menu item (and store the Device reference)
-//					ExtendedJCheckBoxMenuItem menuItem = new ExtendedJCheckBoxMenuItem(d);
-//					menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0 + keyCounter++, KeyEvent.CTRL_MASK));
-//					menuItem.setText(d.getTitle());
-//
-//					// add the listener
-//					menuItem.addActionListener(new ActionListener()
-//		            {
-//		            	public void actionPerformed(ActionEvent ae)
-//		            	{
-//		            		Device d = (Device)((ExtendedJCheckBoxMenuItem)ae.getSource()).getReference();
-//		            		System.out.println("Event fired:  Device=" + d.getTitle());
-//		                }
-//		            });
-//					
-//					add(menuItem);
-//				}
-//				add(new JSeparator());
-//			}
+			
+			Device[][] devices = ui.getValidDevices();
+			int keyCounter = 0;
+			for(int i = 0; i < devices.length; i++)
+			{
+				for(int j = 0; j < devices[i].length; j++)
+				{
+					Device d = devices[i][j];
+					
+					// create the menu item (and store the Device reference)
+					ExtendedJCheckBoxMenuItem menuItem = new ExtendedJCheckBoxMenuItem(d);
+					menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0 + keyCounter++, KeyEvent.CTRL_MASK));
+					menuItem.setText(d.getTitle());
+
+					// add the listener
+					menuItem.addActionListener(new ActionListener()
+		            {
+		            	public void actionPerformed(ActionEvent ae)
+		            	{
+		            		Device d = (Device)((ExtendedJCheckBoxMenuItem)ae.getSource()).getReference();
+		            		System.out.println("Event fired:  Device=" + d.getTitle());
+		                }
+		            });
+					
+					add(menuItem);
+				}
+				add(new JSeparator());
+			}
 		
 			add(new JMenuItem("Rescan"));
 			// TODO: Add listener
@@ -424,9 +376,6 @@ public class MenuManager
 	            }
 	        });
 	    	
-	    	
-	    	
-	    	
 	    	ExtendedJCheckBoxMenuItem menu;
 	        JInternalFrame[] array = InterfaceManager.getInstance().getDesktop().getAllFrames();
 
@@ -455,22 +404,7 @@ public class MenuManager
 	            add(menu);
 	        }
 	    }
-//
-//	    /* This JCheckBoxMenuItem descendant is used to track the child frame that corresponds
-//	       to a give menu. */
-//	    class ChildMenuItem extends JCheckBoxMenuItem
-//	    {
-//	        private JInternalFrame frame;
-//
-//	        public ChildMenuItem(JInternalFrame frame) {
-//	            super(frame.getTitle());
-//	            this.frame=frame;
-//	        }
-//
-//	        public JInternalFrame getFrame() {
-//	            return frame;
-//	        }
-//	    }
+
 	}
 
 }

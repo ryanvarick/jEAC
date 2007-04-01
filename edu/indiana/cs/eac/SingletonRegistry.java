@@ -2,12 +2,12 @@ package edu.indiana.cs.eac;
 
 import java.util.*;
 
-public final class ManagerRegistry
+public final class SingletonRegistry
 {
-	private static ManagerRegistry registry = new ManagerRegistry();
+	private static SingletonRegistry registry = new SingletonRegistry();
 	private static HashMap map = new HashMap();
 	
-	private ManagerRegistry()
+	private SingletonRegistry()
 	{
 		// thwart direct instantiation
 	}
@@ -43,7 +43,7 @@ public final class ManagerRegistry
 		return singleton;
 	}
 	
-	public static ManagerRegistry getRegistry()
+	public static SingletonRegistry getRegistry()
 	{
 		return registry;
 	}

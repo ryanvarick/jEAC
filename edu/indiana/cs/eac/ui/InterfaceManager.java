@@ -67,8 +67,7 @@ public class InterfaceManager extends JFrame
 
 	private JMenuBar menuBar;
 	
-	private String[][] validDeviceList;
-	private Device[][] deviceList;
+	private Device[][] validDevices;
 
 
 	public static InterfaceManager getInstance()
@@ -172,13 +171,13 @@ public class InterfaceManager extends JFrame
 	 * 
 	 * @return   Returns a validated list of drivers, organized by class.
 	 */
-	public Device[][] getDeviceList()
+	public Device[][] getValidDevices()
 	{
-		if(validDeviceList == null)
+		if(validDevices == null)
 		{
 			loadDrivers();
 		}
-		return null;
+		return validDevices;
 	}
 	
 	/**

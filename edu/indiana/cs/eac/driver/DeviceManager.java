@@ -33,40 +33,61 @@ import edu.indiana.cs.eac.JEAC;
  */
 public class DeviceManager
 {
+	/** Singleton instance of the class. */
+	private static DeviceManager INSTANCE;
 	
 	
 	
+	/* -------------------------[ Generic class methods ]------------------------- */
 	
-	private void test()
-	{
-
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// TODO: Implement as a singleton class using a hash map to 
-	// try to define a static (final) getInstance() method to power our
-	// Driver factories... try anyway.
-	// TODO: Singleton in general -- don't forget synchronization!
-
 	/**
+	 * Private contructor to prevent instantiation.
 	 * 
+	 * <p>This class follows the Singleton design pattern; it is not meant to
+	 * be instantiated directly.  Instead, the instance should be retrieved via
+	 * the <code>getInstance()</code> method.
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
 	 *
 	 */
-	public DeviceManager()
+	private DeviceManager() { }
+	
+	/**
+	 * Returns the single instance of the class.
+	 * 
+	 * <p>The idea is to prevent multiple instances of jEAC from running, in
+	 * the same JVM anyway.  There shouldn't be a need for simultaneous instances.
+	 * 
+	 * @return   Class instance.
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
+	 */
+	public static DeviceManager getInstance()
 	{
-		
+		if(INSTANCE == null)
+		{ 
+			INSTANCE = new DeviceManager();
+		}
+		return INSTANCE;
 	}
+	
+	/**
+	 * Prevents attempts to create multiple instances via cloning.
+	 * 
+	 * @throws   Don't copy that floppy!
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
+	 */
+	public Object clone() throws CloneNotSupportedException
+	{
+		throw new CloneNotSupportedException();
+	}
+
 	
 	
 	
