@@ -25,7 +25,7 @@ import ec.display.Console;
 import edu.indiana.cs.eac.*;
 //import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.eac.gradient.*;
-import edu.indiana.cs.eac.driver.*;
+import edu.indiana.cs.eac.hardware.*;
 import edu.indiana.cs.testing.ui.*;
 
 /**

@@ -18,7 +18,7 @@ import java.util.*;
 import java.awt.event.*;
 import java.awt.*;
 
-import edu.indiana.cs.eac.driver.*;
+import edu.indiana.cs.eac.hardware.*;
 import edu.indiana.cs.ga.snakeEvolver.*;
 import edu.indiana.cs.testing.ui.*;
 
@@ -191,20 +191,18 @@ public class InterfaceManager extends JFrame
 	 */
 	private void loadDrivers()
 	{
-		DeviceManager dm = DeviceManager.getInstance();
-		
-		// show a progress bar while loading
+		HardwareManager dm = HardwareManager.getInstance();
 		LoadingFrame lf = new LoadingFrame(dm.getDeviceCount());
 
-		// validate each option so the UI does not show unusable devices 
-		Device[][] rawDeviceList = dm.getDeviceList();
-		for(int i = 0; i < rawDeviceList.length; i++)
+		Device[][] rawDevices = dm.getDeviceList();
+		for(int i = 0; i < rawDevices.length; i++)
 		{
-			for(int j = 0; j < rawDeviceList[i].length; j++)
+			for(int j = 0; j < rawDevices[i].length; j++)
 			{
-				if(rawDeviceList[i][j].isValid())
+				int k = 0;
+				if(rawDevices[i][j].isValid())
 				{
-					deviceList[i][j] = rawDeviceList[i][j];
+					validDevices[i][k] = rawDevices[i][j];
 				}
 				lf.increment();
 			}
@@ -214,66 +212,66 @@ public class InterfaceManager extends JFrame
 	}
 
 
-	public void testMethod()
-	{
-		Game game = new Game();
-		
-		game.setManualControlEnabled(true);
-		game.setUseMomentum(true);
-		
-		game.setGrowSnake(true);
-		game.setIgnoreSelfCollisions(true);
-		game.setIgnoreWallCollisions(true);
-		
-		// allocate generation information panel
-		JPanel generalPanel = new JPanel(new GridLayout(2, 2));
-		generalPanel.setBorder(BorderFactory.createTitledBorder("General information"));
-		generalPanel.add(new JLabel(" Food eaten:"));
-//		generalPanel.add(foodEaten);
-		generalPanel.add(new JLabel(" Time remaining:"));
-//		generalPanel.add(timeLeft);
-		
-		// allocate world information panel
-		JPanel worldPanel = new JPanel(new GridLayout(5, 2));
-		worldPanel.setBorder(BorderFactory.createTitledBorder("World information"));
-		worldPanel.add(new JLabel(" Snake (x,y):"));
-//		worldPanel.add(snakeLocation);
-		worldPanel.add(new JLabel(" Food (x,y):"));
-//		worldPanel.add(foodLocation);
-		worldPanel.add(new JLabel(" Absolute dt:"));
-//		worldPanel.add(absoluteFoodDistance);
-		worldPanel.add(new JLabel(" Absolute direction:"));
-//		worldPanel.add(snakeDirection);
-		worldPanel.add(new JLabel(" Relative direction (dx,dy):"));
-//		worldPanel.add(relativeFoodDistance);
-
-		// allocate snake information panel
-		JPanel snakePanel = new JPanel(new GridLayout(3, 2));
-		snakePanel.setBorder(BorderFactory.createTitledBorder("Snake information"));
-		snakePanel.add(new JLabel(" Input vector:"));
-		snakePanel.add(new JLabel());
-		snakePanel.add(new JLabel(" Output vector:"));
-		snakePanel.add(new JLabel());
-		snakePanel.add(new JLabel(" Fitness score:"));
-//		snakePanel.add(fitness);
-
-		// finalize the window
-		// TODO: Register the game frame with the MDI manager
-		JInternalFrame gameWindow = new JInternalFrame();
-		gameWindow.setLayout(new BoxLayout(gameWindow.getContentPane(), BoxLayout.Y_AXIS));
-		gameWindow.add(game);
-		gameWindow.add(generalPanel);
-		gameWindow.add(worldPanel);
-		gameWindow.add(snakePanel);
-		gameWindow.setResizable(false);
-        gameWindow.setIconifiable(true);
-        gameWindow.setClosable(true);
-
-		gameWindow.setTitle("Snaaaaake!");
-		gameWindow.pack();
-		gameWindow.setVisible(true);
-		desktop.add(gameWindow);
-		
-		game.start();
-	}
+//	public void testMethod()
+//	{
+//		Game game = new Game();
+//		
+//		game.setManualControlEnabled(true);
+//		game.setUseMomentum(true);
+//		
+//		game.setGrowSnake(true);
+//		game.setIgnoreSelfCollisions(true);
+//		game.setIgnoreWallCollisions(true);
+//		
+//		// allocate generation information panel
+//		JPanel generalPanel = new JPanel(new GridLayout(2, 2));
+//		generalPanel.setBorder(BorderFactory.createTitledBorder("General information"));
+//		generalPanel.add(new JLabel(" Food eaten:"));
+////		generalPanel.add(foodEaten);
+//		generalPanel.add(new JLabel(" Time remaining:"));
+////		generalPanel.add(timeLeft);
+//		
+//		// allocate world information panel
+//		JPanel worldPanel = new JPanel(new GridLayout(5, 2));
+//		worldPanel.setBorder(BorderFactory.createTitledBorder("World information"));
+//		worldPanel.add(new JLabel(" Snake (x,y):"));
+////		worldPanel.add(snakeLocation);
+//		worldPanel.add(new JLabel(" Food (x,y):"));
+////		worldPanel.add(foodLocation);
+//		worldPanel.add(new JLabel(" Absolute dt:"));
+////		worldPanel.add(absoluteFoodDistance);
+//		worldPanel.add(new JLabel(" Absolute direction:"));
+////		worldPanel.add(snakeDirection);
+//		worldPanel.add(new JLabel(" Relative direction (dx,dy):"));
+////		worldPanel.add(relativeFoodDistance);
+//
+//		// allocate snake information panel
+//		JPanel snakePanel = new JPanel(new GridLayout(3, 2));
+//		snakePanel.setBorder(BorderFactory.createTitledBorder("Snake information"));
+//		snakePanel.add(new JLabel(" Input vector:"));
+//		snakePanel.add(new JLabel());
+//		snakePanel.add(new JLabel(" Output vector:"));
+//		snakePanel.add(new JLabel());
+//		snakePanel.add(new JLabel(" Fitness score:"));
+////		snakePanel.add(fitness);
+//
+//		// finalize the window
+//		// TODO: Register the game frame with the MDI manager
+//		JInternalFrame gameWindow = new JInternalFrame();
+//		gameWindow.setLayout(new BoxLayout(gameWindow.getContentPane(), BoxLayout.Y_AXIS));
+//		gameWindow.add(game);
+//		gameWindow.add(generalPanel);
+//		gameWindow.add(worldPanel);
+//		gameWindow.add(snakePanel);
+//		gameWindow.setResizable(false);
+//        gameWindow.setIconifiable(true);
+//        gameWindow.setClosable(true);
+//
+//		gameWindow.setTitle("Snaaaaake!");
+//		gameWindow.pack();
+//		gameWindow.setVisible(true);
+//		desktop.add(gameWindow);
+//		
+//		game.start();
+//	}
 }

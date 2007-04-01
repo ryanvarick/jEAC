@@ -15,7 +15,7 @@
  * 
  */
 
-package edu.indiana.cs.eac.driver;
+package edu.indiana.cs.eac.hardware;
 
 import java.io.*;
 import java.util.*;

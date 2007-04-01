@@ -20,8 +20,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import edu.indiana.cs.eac.driver.*;
 import edu.indiana.cs.eac.exceptions.*;
+import edu.indiana.cs.eac.hardware.*;
 
 public class ControlFrame extends JFrame
 {

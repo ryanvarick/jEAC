@@ -15,7 +15,8 @@
 package edu.indiana.cs.eac.gradient;
 
 import org.math.plot.*;
-import edu.indiana.cs.eac.driver.Device;
+
+import edu.indiana.cs.eac.hardware.Device;
 
 
 public class Gradient3D extends Plot3DPanel implements Gradient 

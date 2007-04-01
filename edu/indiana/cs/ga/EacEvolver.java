@@ -12,7 +12,7 @@
 
 package edu.indiana.cs.ga;
 
-import edu.indiana.cs.eac.driver.*;
+import edu.indiana.cs.eac.hardware.*;
 import edu.indiana.cs.ga.snakeEvolver.*;
 
 import org.jgap.*;

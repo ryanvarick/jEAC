@@ -28,8 +28,8 @@ import javax.xml.transform.stream.*;
 import ec.display.Console;
 
 import edu.indiana.cs.eac.*;
-import edu.indiana.cs.eac.driver.*;
 import edu.indiana.cs.eac.gradient.*;
+import edu.indiana.cs.eac.hardware.*;
 import edu.indiana.cs.eac.exceptions.*;
 import edu.indiana.cs.ga.*;
 import edu.indiana.cs.ga.snakeEvolver.*;

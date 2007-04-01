@@ -10,7 +10,7 @@
  * 
  */
 
-package edu.indiana.cs.eac.driver;
+package edu.indiana.cs.eac.hardware;
 
 import java.util.HashMap;
 
@@ -34,7 +34,7 @@ import edu.indiana.cs.eac.JEAC;
 public class DeviceManager
 {
 	/** Singleton instance of the class. */
-	private static DeviceManager INSTANCE;
+	private static HardwareManager INSTANCE;
 	
 	
 	
@@ -65,11 +65,11 @@ public class DeviceManager
 	 * @since    2.0.0
 	 * 
 	 */
-	public static DeviceManager getInstance()
+	public static HardwareManager getInstance()
 	{
 		if(INSTANCE == null)
 		{ 
-			INSTANCE = new DeviceManager();
+			INSTANCE = new HardwareManager();
 		}
 		return INSTANCE;
 	}
@@ -105,30 +105,14 @@ public class DeviceManager
 	 */
 	public Device[][] getDeviceList()
 	{
-		Driver[] driverClasses = Driver.getDriverClasses();
+		Driver[] drivers = Driver.getDrivers();
 		
-		
-		// iterate through each driver (pre Java 6 syntax) and stuff into a list
-		for(Driver i : driverClasses)
+		for(int i = 0; i < drivers.length; i++)
 		{
-			i.testMe();
-			
-			Driver.getInstance(driverClasses[i]);
+			deviceList[i] = driver.getDevices();
 		}
-//		
-		NullDriver nullDriver = new NullDriver();
-		Device[] virtualDrivers  = nullDriver.getDeviceList();
-//		Device[] networkDrivers = EthernetDriver.getDeviceList();
-//		Device[] localDrivers      = USBDriver.getDeviceList();
-		Device[][] deviceList    = new Device[][]
-			{
-				virtualDrivers,
-//				networkDrivers,
-//				localDrivers
-			};
 		
 		return deviceList;
-	}
-	
+	}	
 
 }

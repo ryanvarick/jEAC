@@ -15,16 +15,13 @@ package edu.indiana.cs.eac;
 import java.util.*;
 
 import edu.indiana.cs.eac.ui.*;
-import edu.indiana.cs.eac.driver.*;
+import edu.indiana.cs.eac.hardware.*;
 
 /**
  * Base class for jEAC.
  * 
- * <p>jEAC has been substantially redesigned for version 2.  Much of the 
- * functionality that used to be in this class has been moved to other
- * subordinate classes.  One of the primary goals for this release was to
- * "untangle" the class dependencies.  
- *
+ * <p>Much of the functionality that used to be in this class
+ * 
  * <p>jEAC was substantially redesigned for v2.0.  Much of the functionality
  * that used to be in this class has been moved to other subordinate classes.
  * One of the major goals for this release was to "untangle" the code and 
@@ -137,7 +134,7 @@ public final class JEAC
 			InterfaceManager ui = InterfaceManager.getInstance();
 			ui.init();
 			
-			DeviceManager dm = DeviceManager.getInstance();
+//			DeviceManager dm = DeviceManager.getInstance();
 //			ThreadManager thread = new ThreadManager();
 		
 //			ui.loadDrivers(deviceManager);

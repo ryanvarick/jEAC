@@ -1,8 +1,8 @@
-package edu.indiana.cs.eac.driver;
+package edu.indiana.cs.eac.hardware;
 
 import java.util.HashMap;
 
-public class Driver
+abstract class Driver
 {
 //	public static Driver Register = new Driver();
 //	private static HashMap map = new HashMap();
@@ -47,9 +47,9 @@ public class Driver
 	// 1. revert this to an interface
 	// 2. move this code into DeviceManager
 	//    (we cannot force subtypes to be Singletons)
-	public static String[] getDriverClasses()
+	public static Driver[] getDrivers()
 	{
-		return new String[] { new NullDriver(), new NullDriver() };
+		return new Driver[] { new NullDriver(), new NullDriver() };
 	}
 	
 	public abstract void testMe();

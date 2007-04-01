@@ -18,7 +18,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import edu.indiana.cs.eac.driver.*;
+import edu.indiana.cs.eac.hardware.*;
 
 
 public class LLAInspectorFrame extends JFrame 

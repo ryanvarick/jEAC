@@ -18,7 +18,7 @@ import javax.swing.*;
 import org.jgap.*;
 import org.jgap.impl.*;
 
-import edu.indiana.cs.eac.driver.*;
+import edu.indiana.cs.eac.hardware.*;
 import edu.indiana.cs.ga.*;
 
 /**

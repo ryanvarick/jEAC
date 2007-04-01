@@ -16,10 +16,10 @@ import java.util.*;
 import java.io.IOException;
 import edu.indiana.cs.eac.*;
 
-import edu.indiana.cs.eac.driver.Device;
 import edu.indiana.cs.eac.gradient.Gradient;
 import edu.indiana.cs.eac.gradient.Gradient2D;
 import edu.indiana.cs.eac.gradient.Gradient3D;
+import edu.indiana.cs.eac.hardware.Device;
 
 public class UpdateTask extends TimerTask
 {

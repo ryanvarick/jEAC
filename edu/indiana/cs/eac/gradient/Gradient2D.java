@@ -184,7 +184,7 @@ package edu.indiana.cs.eac.gradient;
 import java.awt.*;
 import javax.swing.*;
 
-import edu.indiana.cs.eac.driver.*;
+import edu.indiana.cs.eac.hardware.*;
 
 public class Gradient2D extends JPanel implements Gradient
 {	

@@ -20,8 +20,8 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 
-import edu.indiana.cs.eac.driver.*;
 import edu.indiana.cs.eac.exceptions.*;
+import edu.indiana.cs.eac.hardware.*;
 
 public class NodeMap extends JPanel implements ActionListener, Serializable
 {
