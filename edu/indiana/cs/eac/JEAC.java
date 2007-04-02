@@ -60,6 +60,7 @@ public final class JEAC
 	{
 		InterfaceManager ui = InterfaceManager.getInstance();
 		ui.init();
+		ui.loadDrivers();
 			
 //		DeviceManager dm = DeviceManager.getInstance();
 //		ThreadManager thread = new ThreadManager();

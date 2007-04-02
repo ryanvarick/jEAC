@@ -319,6 +319,7 @@ public class MenuManager
 				for(int j = 0; j < devices[i].length; j++)
 				{
 					Device d = devices[i][j];
+					System.out.println("adding device:  " + d.getTitle());
 					
 					// create the menu item (and store the Device reference)
 					ExtendedJCheckBoxMenuItem menuItem = new ExtendedJCheckBoxMenuItem(d);

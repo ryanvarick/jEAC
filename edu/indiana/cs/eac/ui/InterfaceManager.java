@@ -177,7 +177,7 @@ public class InterfaceManager extends JFrame
 	 * @since                 2.0.0
 	 * 
 	 */
-	private void loadDrivers()
+	public void loadDrivers()
 	{
 		// grab the raw list of devices
 		HardwareManager hm = HardwareManager.getInstance();
@@ -185,6 +185,50 @@ public class InterfaceManager extends JFrame
 
 		// prepare the loading frame
 		LoadingFrame lf = new LoadingFrame(hm.getDeviceCount());
+
+		// outer loop: verify each driver class
+		Device[][] kd = new Device[0][];   // outer accumulator
+		for(int i = 0; i < knownDevices.length; i++)
+		{
+			Device[] devices = new Device[0];   // inner accumulator
+
+			// inner loop: verify each device in the driver class
+			for(int j = 0; j < knownDevices[i].length; j++)
+			{				
+				if(knownDevices[i][j].isValid())
+				{
+					// allocate a larger array and insert the device at the end
+					Device[] newDevices = new Device[devices.length + 1];
+					newDevices[devices.length] = knownDevices[i][j];
+					
+					// merge the old accumulator when the array is larger than zero
+					if(devices.length > 0)
+					{
+						System.arraycopy(devices, 0, newDevices, 0, devices.length);
+					}
+					devices = newDevices;
+
+					// increment the progress bar
+					lf.increment();
+					System.out.println("Added device:  " + knownDevices[i][j].getTitle());
+				}
+			}
+			
+			// add the driver class if valid devices were found
+			if(devices.length > 0)
+			{
+				Device[][] newkd = new Device[kd.length + 1][];
+				newkd[kd.length] = devices;
+				
+				if(kd.length > 0)
+				{
+					System.arraycopy(kd, 0, newkd, 0, kd.length);
+				}
+				
+				kd = newkd;
+				System.out.println("Added driver: " + kd[i].toString());
+			}
+		}
 
 		/*
 		 * WARNING! Pain in the ass zone ahead!
@@ -229,7 +273,8 @@ public class InterfaceManager extends JFrame
 //		lf.dispose();
 //		validDevices = (Device[][])checkedDevices.toArray();
 		
-		validDevices = knownDevices;
+//		validDevices = knownDevices;
+		validDevices = kd;
 	}
 
 
