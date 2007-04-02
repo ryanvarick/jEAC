@@ -16,14 +16,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import ec.display.Console;
 import edu.indiana.cs.eac.*;
-import edu.indiana.cs.eac.Singleton;
 //import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.eac.gradient.*;
 import edu.indiana.cs.eac.hardware.*;
@@ -292,7 +295,42 @@ public class MenuManager
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			InterfaceManager.getInstance().getDesktop().add(new TextFrame());
+			FileDialog fd = new FileDialog(InterfaceManager.getInstance().getWindow());
+			fd.setTitle("Open");
+			fd.setDirectory(System.getProperty("user.dir"));
+			fd.setMode(FileDialog.LOAD);
+			fd.show();
+			
+			String f = fd.getFile();
+			if(f == null) return;
+			
+			File file = new File(f);
+			// pop up the file dialog
+//			JFileChooser fileChooser = new JFileChooser();
+//			fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+//			fileChooser.changeToParentDirectory();
+//			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+////			fileChooser.setFileFilter(new FileFilter());
+//			int result = fileChooser.showOpenDialog(InterfaceManager.getInstance().getDesktop());
+			
+			// handle cancel; otherwise, load up the file
+//			if (result == JFileChooser.CANCEL_OPTION) return;
+//			File fileName = fileChooser.getSelectedFile();
+			
+			// try to load the file
+//			try 
+//			{ 
+//				loadConfiguration(new FileInputStream(fileName));
+//			}
+//			catch(IOException e)
+//			{
+////				System.err.println("Exception: " + e.getMessage());
+//				e.printStackTrace();
+//				JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//				return;
+//			}
+			
+			InterfaceManager.getInstance().getDesktop().add(new TextFrame2(file));
 		}
 	}
 	

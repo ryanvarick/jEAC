@@ -38,7 +38,7 @@ import ec.display.*;
  * @since    2.0.0
  *
  */
-public class InterfaceManager extends JFrame
+public class InterfaceManager
 {
 	/* defaults (do not alter directly; use the API instead) */
 	private boolean useNativeLAF = true;
@@ -62,7 +62,9 @@ public class InterfaceManager extends JFrame
 	
 	/* UI components (do not alter) */
 	
+	private JFrame mainWindow;
 	private MDIDesktopPane desktop;
+	
 	
 	private Device[][] validDevices;
 
@@ -72,6 +74,10 @@ public class InterfaceManager extends JFrame
 	public MDIDesktopPane getDesktop()
 	{
 		return desktop;
+	}
+	public JFrame getWindow()
+	{
+		return mainWindow;
 	}
 	
 	
@@ -115,13 +121,14 @@ public class InterfaceManager extends JFrame
 		}
 
 		// build the UI skeleton 
+		mainWindow = new JFrame();
 		desktop = new MDIDesktopPane();
 		desktop.setBackground(desktopColor);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.getViewport().add(desktop);
-		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(scrollPane, BorderLayout.CENTER);
+		mainWindow.getContentPane().setLayout(new BorderLayout());
+		mainWindow.getContentPane().add(scrollPane, BorderLayout.CENTER);
 	
 //		TODO: Add statusbar
 //		getContentPane().add(new StatusBarManager(), BorderLayout.SOUTH);
@@ -129,22 +136,22 @@ public class InterfaceManager extends JFrame
 		// hook up the menu manager
 		MenuManager menu = MenuManager.getInstance();
 //		MenuManager menu = (MenuManager)MenuManager.getInstance(MenuManager.class);
-		setJMenuBar(menu.getMenu());
+		mainWindow.setJMenuBar(menu.getMenu());
 		
 		// specify UI appearance and behavior
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setResizable(true);
-		setSize(new Dimension(INITIAL_SIZE_X, INITIAL_SIZE_Y));
-		setTitle(APPLICATION_TITLE);
+		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainWindow.setResizable(true);
+		mainWindow.setSize(new Dimension(INITIAL_SIZE_X, INITIAL_SIZE_Y));
+		mainWindow.setTitle(APPLICATION_TITLE);
 
 		// center UI on screen
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (screenSize.width - getWidth()) / 2;
-		int y = (screenSize.height - getHeight()) / 2;
-		setLocation(new Point(x, y));
+		int x = (screenSize.width - mainWindow.getWidth()) / 2;
+		int y = (screenSize.height - mainWindow.getHeight()) / 2;
+		mainWindow.setLocation(new Point(x, y));
 		
 		// show the world our beautiful creation
-		setVisible(true);
+		mainWindow.setVisible(true);
 
 		// this how we register with the MDI manager
 //		newMenu.addActionListener(new ActionListener() {

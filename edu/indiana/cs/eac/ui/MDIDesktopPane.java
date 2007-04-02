@@ -17,7 +17,7 @@ public class MDIDesktopPane extends JDesktopPane {
     public MDIDesktopPane() {
         manager=new MDIDesktopManager(this);
         setDesktopManager(manager);
-        setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
+        setDragMode(JDesktopPane.LIVE_DRAG_MODE);
     }
 
     public void setBounds(int x, int y, int w, int h) {
