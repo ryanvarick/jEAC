@@ -30,6 +30,7 @@ import edu.indiana.cs.eac.*;
 //import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.eac.gradient.*;
 import edu.indiana.cs.eac.hardware.*;
+import edu.indiana.cs.eac.ui.listeners.ConnectMenuEventListener;
 import edu.indiana.cs.testing.ui.*;
 
 /**
@@ -147,6 +148,7 @@ public class MenuManager
 		connectMenu = new ConnectMenuManager();
 		connectMenu.setText("Connect to EAC");
 		connectMenu.setIcon(new BlankIcon(16, 16));
+		connectMenu.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_reset.png")));
 		deviceMenu.add(connectMenu);
 
 		deviceMenu.add(new JSeparator());
@@ -335,6 +337,8 @@ public class MenuManager
 	}
 	
 	
+
+		
 	/**
 	 * Manages the list of available devices.
 	 * 
@@ -361,18 +365,9 @@ public class MenuManager
 					
 					// create the menu item (and store the Device reference)
 					ExtendedJCheckBoxMenuItem menuItem = new ExtendedJCheckBoxMenuItem(d);
+					menuItem.addActionListener(new ConnectMenuEventListener());
 					menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0 + keyCounter++, KeyEvent.CTRL_MASK));
 					menuItem.setText(d.getTitle());
-
-					// add the listener
-					menuItem.addActionListener(new ActionListener()
-		            {
-		            	public void actionPerformed(ActionEvent ae)
-		            	{
-		            		Device d = (Device)((ExtendedJCheckBoxMenuItem)ae.getSource()).getReference();
-		            		System.out.println("Event fired:  Device=" + d.getTitle());
-		                }
-		            });
 					
 					add(menuItem);
 				}
@@ -382,12 +377,8 @@ public class MenuManager
 			add(new JMenuItem("Rescan"));
 			// TODO: Add listener
 
-		}
-		
-		
-
-		
-	}	
+		}	
+	}
 	
 	
 	

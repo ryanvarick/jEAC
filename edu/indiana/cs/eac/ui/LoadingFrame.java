@@ -24,7 +24,7 @@ import javax.swing.*;
  */
 
 // TODO: Split this into ProgressBar and LoadingFrame functionality.
-public class LoadingFrame extends JInternalFrame
+public class LoadingFrame
 {
 	private static final int PROGRESS_MIN = 0;
 	private static final int PROGRESS_MAX = 100;
@@ -36,6 +36,7 @@ public class LoadingFrame extends JInternalFrame
 	
 	private int stepSize;
 	private JProgressBar progress;
+	private JInternalFrame frame;
 	
 	
 	
@@ -61,24 +62,27 @@ public class LoadingFrame extends JInternalFrame
 	    progress.setMaximum(PROGRESS_MAX);
 	    progress.setValue(0);
 	    
+	    frame = new JInternalFrame();
+	    InterfaceManager.getInstance().getDesktop().add(frame);
+	    
 //		frame.setUndecorated(true);
-	    add(progress);
+	    frame.add(progress);
 
-	    pack();
-	    setSize(FRAME_SIZE_X, FRAME_SIZE_Y);
+	    frame.pack();
+	    frame.setSize(FRAME_SIZE_X, FRAME_SIZE_Y);
 	    
 		// center on screen
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (screenSize.width - getWidth()) / 2;
-		int y = (screenSize.height - getHeight()) / 2;
-		setLocation(x, y);
+		int x = (screenSize.width - frame.getWidth()) / 2;
+		int y = (screenSize.height - frame.getHeight()) / 2;
+//		frame.setLocation(x, y);
 		
 		// finalize
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		frame.setIconImage(JEAC.getApplicationIcon());
-		setResizable(false);
-		setTitle(TITLE);
-		setVisible(true);
+		frame.setResizable(false);
+		frame.setTitle(TITLE);
+		frame.setVisible(true);
 
 		// start with some progress!
 		increment();
@@ -103,6 +107,16 @@ public class LoadingFrame extends JInternalFrame
 		// TODO: Handle more than 100 steps
 		int value = progress.getValue() + stepSize;
 		progress.setValue(value);
+	}
+	
+	public void close()
+	{
+		frame.dispose();
+	}
+	
+	public void setTitle(String title)
+	{
+		frame.setTitle(title);
 	}
 	
 }

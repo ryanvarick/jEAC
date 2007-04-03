@@ -45,8 +45,10 @@ public class HardwareManager
 	private static Driver[] drivers = new Driver[]
 	{
 		Driver.getInstance(NullDriver.class),
+		Driver.getInstance(RandomDriver.class),
+//		Driver.getInstance(NullDriver3.class),
 //		Driver.getInstance(NetEACDriver.class),
-//		Driver.getInstance(USBuEACDriver.class)
+		Driver.getInstance(USBuEACDriver.class)
 	};
 	
 	
@@ -97,5 +99,17 @@ public class HardwareManager
 		
 		return devices;
 	}	
+
+//	public Vector<Vector<Device>> getKnownDevices2()
+//	{
+//		Device[][] devices = new Device[drivers.length][];
+//		
+//		for(int i = 0; i < drivers.length; i++)
+//		{
+//			devices[i] = drivers[i].getDevices();
+//		}
+//		
+//		return devices;
+//	}	
 
 }

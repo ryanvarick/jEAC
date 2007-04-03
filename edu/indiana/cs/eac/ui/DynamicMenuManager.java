@@ -3,7 +3,7 @@ package edu.indiana.cs.eac.ui;
 import javax.swing.*;
 import javax.swing.event.*;
 
-abstract class DynamicMenuManager extends JMenu
+public abstract class DynamicMenuManager extends JMenu
 {
 	/**
 	 * 

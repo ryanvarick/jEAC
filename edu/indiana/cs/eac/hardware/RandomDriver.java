@@ -13,6 +13,7 @@
 package edu.indiana.cs.eac.hardware;
 
 import java.io.*;
+import java.util.*;
 import java.net.*;
 
 // TODO: Remove superfluous references
@@ -20,7 +21,7 @@ import edu.indiana.cs.eac.exceptions.*;
 import edu.indiana.cs.eac.ui.JEACNode;
 import edu.indiana.cs.eac.ui.NodeMap;
 
-public class NullDriver extends Driver
+public class RandomDriver extends Driver
 {
 
 //	// API-mapped (added 03/29/2007, rvarick)
@@ -33,13 +34,7 @@ public class NullDriver extends Driver
 	{
     	return new Device[] 
 		{ 
-    		returnDeviceFromIdentifier("Null driver"),
-    		returnDeviceFromIdentifier("Null driver1"),
-    		returnDeviceFromIdentifier("Null driver2"),
-    		returnDeviceFromIdentifier("Null driver3"),
-    		returnDeviceFromIdentifier("Null driver4"),
-    		returnDeviceFromIdentifier("Null driver5"),
-    		returnDeviceFromIdentifier("Null driver6"),
+    		returnDeviceFromIdentifier("Random (offline test)"),
     	};
 	}
    
@@ -153,16 +148,19 @@ public class NullDriver extends Driver
 			
 		}
 		
-		public double[][] getVoltageGradient() throws IOException{
-	    		
-			return new double[][]{
-				{0.957, 1.064, 1.416, 1.016, 0.986}, 
-				{0.947, 0.947, 0.957, 0.996, 0.967}, 
-				{0.850, 0.820, 0.908, 0.859, 0.859},
-				{0.820, 0.791, 0.244, 0.752, 0.908}, 
-				{0.850, 0.840, 0.752, 0.771, 0.879}, 
-				{0.869, 0.928, 0.879, 0.840, 0.850}, 
-				{0.947, 0.918, 1.103, 0.976, 0.967}, 
+		public double[][] getVoltageGradient() throws IOException
+		{
+			Random r = new Random();
+				    		
+			return new double[][]
+			{
+				{ r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble() }, 
+				{ r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble() }, 
+				{ r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble() }, 
+				{ r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble() }, 
+				{ r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble() }, 
+				{ r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble() }, 
+				{ r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble() }, 
 			};
 	    }
 	    

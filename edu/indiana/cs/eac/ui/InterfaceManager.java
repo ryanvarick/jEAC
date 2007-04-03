@@ -175,6 +175,19 @@ public class InterfaceManager
 		return validDevices;
 	}
 	
+//	public Vector<Vector<Device>> getValidDevices2()
+//	{
+////		// grab the raw list of devices
+////		HardwareManager hm = HardwareManager.getInstance();
+////		Device[][] knownDevices = hm.getKnownDevices2();
+////
+////		// prepare the loading frame
+////		LoadingFrame lf = new LoadingFrame(hm.getDeviceCount());
+////		
+////		
+////		return new Vector();
+//	}
+	
 	/**
 	 * ...
 	 * 
@@ -192,12 +205,36 @@ public class InterfaceManager
 
 		// prepare the loading frame
 		LoadingFrame lf = new LoadingFrame(hm.getDeviceCount());
+		
+		/*
+		 * WARNING! Pain in the ass zone ahead! (I apologize to anyone that 
+		 * has to maintain this code down the line.)
+		 * 
+		 * We need to verify the list of devices given by the HardwareManager.
+		 * Why?  Because we want to provide UI feedback while validating.  While
+		 * we could put this process on its own thread, we'll want to scan for 
+		 * devices initially before finalizing the interface.  Our choices are
+		 * to either make the hardware layer aware of UI (jEAC version 1) or 
+		 * make the UI aware of the hardware layer.  This method represents the
+		 * latter.
+		 * 
+		 * So what's the problem?  The HardwareManager returns a 2D array of 
+		 * devices, some or many of which may be invalid.  Thus we will have to
+		 * remove elements from the array.  We could use Vectors and generics, 
+		 * but because of type erasure, we end up with a rather nasty cast
+		 * situation.  What lies below is a wasteful, complicated mess of array
+		 * copies.  Cleary this entire algorithm needs to be reworked.
+		 * 
+		 * FIXME: Convert entire call chain to Vector, or similar.
+		 * 
+		 */
 
 		// outer loop: verify each driver class
-		Device[][] kd = new Device[0][];   // outer accumulator
+		Device[][] driverHolder = new Device[0][];   // outer accumulator
 		for(int i = 0; i < knownDevices.length; i++)
 		{
-			Device[] devices = new Device[0];   // inner accumulator
+			Device[] deviceHolder = new Device[0];   // inner accumulator
+			lf.setTitle("Looking for EACs (" + (i + 1) + "/" + knownDevices.length + ")...");
 
 			// inner loop: verify each device in the driver class
 			for(int j = 0; j < knownDevices[i].length; j++)
@@ -205,83 +242,37 @@ public class InterfaceManager
 				if(knownDevices[i][j].isValid())
 				{
 					// allocate a larger array and insert the device at the end
-					Device[] newDevices = new Device[devices.length + 1];
-					newDevices[devices.length] = knownDevices[i][j];
+					Device[] newDeviceHolder = new Device[deviceHolder.length + 1];
+					newDeviceHolder[deviceHolder.length] = knownDevices[i][j];
 					
 					// merge the old accumulator when the array is larger than zero
-					if(devices.length > 0)
+					if(deviceHolder.length > 0)
 					{
-						System.arraycopy(devices, 0, newDevices, 0, devices.length);
+						System.arraycopy(deviceHolder, 0, newDeviceHolder, 0, deviceHolder.length);
 					}
-					devices = newDevices;
+					deviceHolder = newDeviceHolder;
 
 					// increment the progress bar
 					lf.increment();
-					System.out.println("Added device:  " + knownDevices[i][j].getTitle());
 				}
 			}
 			
 			// add the driver class if valid devices were found
-			if(devices.length > 0)
+			if(deviceHolder.length > 0)
 			{
-				Device[][] newkd = new Device[kd.length + 1][];
-				newkd[kd.length] = devices;
+				Device[][] newDriverHolder = new Device[driverHolder.length + 1][];
+				newDriverHolder[driverHolder.length] = deviceHolder;
 				
-				if(kd.length > 0)
+				if(driverHolder.length > 0)
 				{
-					System.arraycopy(kd, 0, newkd, 0, kd.length);
+					System.arraycopy(driverHolder, 0, newDriverHolder, 0, driverHolder.length);
 				}
-				
-				kd = newkd;
-				System.out.println("Added driver: " + kd[i].toString());
+				driverHolder = newDriverHolder;
 			}
 		}
 
-		/*
-		 * WARNING! Pain in the ass zone ahead!
-		 * 
-		 * We need to verify the devices returned by the hardware manager.
-		 * Since it is possible likely that a number of devices (or entire
-		 * driver classes) will fail to verify, we cannot allocate the 
-		 * verifiedDevices array ahead of time.
-		 * 
-		 * We could use vectors here, but that involves a lot of superflous
-		 * casting.  Generics don't help because of type erasure.  So instead
-		 * we'll use a combination of counters and parameterized methods to
-		 * build the valid devices array.  There's probably a much simpler way
-		 * to do this. 
-		 * 
-		 */
-//		Vector<Device[]> checkedDevices = new Vector<Device[]>();
-//		int goodDriverCnt = 0;
-//		
-//		for(int i = 0; i < knownDevices.length; i++)
-//		{
-//			Vector<Device> goodDevices = new Vector<Device>();
-//			int goodDeviceCnt = 0;
-//			
-//			for(int j = 0; j < knownDevices[i].length; j++)
-//			{
-//				
-//				if(knownDevices[i][j].isValid())
-//				{
-//					goodDevices.add(knownDevices[i][j]);
-//					goodDeviceCnt++;
-//				}
-//				lf.increment();
-//			}
-//			
-//			Device[] dok = new Device[goodDeviceCnt];
-//			dok = goodDevices.toArray(dok);
-//			
-//			checkedDevices.add(dok);
-//		}
-//		
-//		lf.dispose();
-//		validDevices = (Device[][])checkedDevices.toArray();
-		
-//		validDevices = knownDevices;
-		validDevices = kd;
+		lf.close();
+		validDevices = driverHolder;
 	}
 
 

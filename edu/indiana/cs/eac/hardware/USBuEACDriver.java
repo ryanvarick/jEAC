@@ -31,10 +31,33 @@ import edu.indiana.cs.eac.ui.NodeMap;
 
 import javax.swing.*;
 
-public class USBuEACDriver implements Device, Serializable
+public class USBuEACDriver extends Driver implements Device
 {
+	
+	public String getTitle()
+	{
+		return "uEAC on " + portName;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// print useful debugging information when enabled
-	private static boolean DEBUG = false;
+	private static boolean DEBUG = true;
 	
 	// driver configuration
 	private String portName;
@@ -1131,6 +1154,21 @@ public class USBuEACDriver implements Device, Serializable
 //		return ports.size();
 		return 5;
 	}
+
+	public Device[] getDevices()
+	{
+		String[] s = getDeviceList();
+		Device[] d = new Device[s.length];
+		
+		for(int i = 0; i < d.length; i++)
+		{
+			if(DEBUG) { System.out.println("Candidate device: " + s[i]); }
+			d[i] = new USBuEACDriver(s[i]);
+		}
+		
+		return d;	
+	}
+
 	
 	/**
 	 * Lists available ports that RXTX knows about.
@@ -1161,31 +1199,31 @@ public class USBuEACDriver implements Device, Serializable
 			}
 			
 			// now probe the port
-			if(try_port)
-			{
-				if(DEBUG) System.out.println("\nProbing " + port.getName() + "...");
-	
-				// try to connect, then probe the driver
-				boolean isValid  = false;
-				try
-				{
-					USBuEACDriver driver = new USBuEACDriver(port.getName());
-					driver.connect();
-					if(driver.writeSentence("NOK_TEST")) { isValid = true; }
-					driver.disconnect();
-				}
-				catch(Exception e) { /* Do nothing. */ }
-				
-				if(isValid) 
-				{ 
+//			if(try_port)
+//			{
+//				if(DEBUG) System.out.println("\nProbing " + port.getName() + "...");
+//	
+//				// try to connect, then probe the driver
+//				boolean isValid  = false;
+//				try
+//				{
+//					USBuEACDriver driver = new USBuEACDriver(port.getName());
+//					driver.connect();
+//					if(driver.writeSentence("NOK_TEST")) { isValid = true; }
+//					driver.disconnect();
+//				}
+//				catch(Exception e) { /* Do nothing. */ }
+//				
+//				if(isValid) 
+//				{ 
 					validPorts.add(port);
-					if(DEBUG) System.out.println(port.getName() + " is valid.");
-				}
-				else
-				{
-					if(DEBUG) System.out.println(port.getName() + " is not valid.");				
-				}
-			}
+//					if(DEBUG) System.out.println(port.getName() + " is valid.");
+//				}
+//				else
+//				{
+//					if(DEBUG) System.out.println(port.getName() + " is not valid.");				
+//				}
+//			}
 		}
 		
 		return validPorts.toArray();
@@ -1277,5 +1315,17 @@ public class USBuEACDriver implements Device, Serializable
 	public boolean isValid()
 	{
 		return true;
+//		boolean isV = false;
+//		try
+//		{
+//			connect();
+//			if(writeSentence("NOK_TEST")) { isV = true; }
+//			disconnect();
+//		}
+//		catch(Exception e)
+//		{
+//			e.printStackTrace();
+//		}
+//		return isV;
 	}
 }

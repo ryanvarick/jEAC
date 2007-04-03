@@ -20,7 +20,7 @@ import edu.indiana.cs.eac.exceptions.*;
 import edu.indiana.cs.eac.ui.JEACNode;
 import edu.indiana.cs.eac.ui.NodeMap;
 
-public class NullDriver extends Driver
+public class NullDriver3 extends Driver
 {
 
 //	// API-mapped (added 03/29/2007, rvarick)
@@ -33,13 +33,13 @@ public class NullDriver extends Driver
 	{
     	return new Device[] 
 		{ 
-    		returnDeviceFromIdentifier("Null driver"),
-    		returnDeviceFromIdentifier("Null driver1"),
-    		returnDeviceFromIdentifier("Null driver2"),
-    		returnDeviceFromIdentifier("Null driver3"),
-    		returnDeviceFromIdentifier("Null driver4"),
-    		returnDeviceFromIdentifier("Null driver5"),
-    		returnDeviceFromIdentifier("Null driver6"),
+        		returnDeviceFromIdentifier("Null driver"),
+        		returnDeviceFromIdentifier("Null driverA"),
+        		returnDeviceFromIdentifier("Null driverB"),
+        		returnDeviceFromIdentifier("Null driverC"),
+        		returnDeviceFromIdentifier("Null driverD"),
+        		returnDeviceFromIdentifier("Null driverE"),
+        		returnDeviceFromIdentifier("Null driverF"),
     	};
 	}
    
@@ -201,16 +201,8 @@ public class NullDriver extends Driver
 	    
 	    public boolean isValid()
 	    {
-	    	try
-	    	{
-	    		Thread.sleep(1000);
-	    	}
-	    	catch(Exception e)
-	    	{
-	    		
-	    	}
+	    	if(getTitle() == "Null driver" || getTitle() == "Null driver5" || getTitle() == "Null driver6") return false;
 	    	return true;
-	    	
 	    }
 	}
 	
