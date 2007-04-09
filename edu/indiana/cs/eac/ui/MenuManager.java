@@ -303,10 +303,12 @@ public class MenuManager
 			fd.setMode(FileDialog.LOAD);
 			fd.show();
 			
-			String f = fd.getFile();
+			String f = fd.getDirectory() + fd.getFile();
 			if(f == null) return;
 			
 			File file = new File(f);
+			System.out.println("Trying to open:  " + f);
+			
 			// pop up the file dialog
 //			JFileChooser fileChooser = new JFileChooser();
 //			fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));

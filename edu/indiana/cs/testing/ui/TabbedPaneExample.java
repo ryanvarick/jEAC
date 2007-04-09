@@ -4,6 +4,8 @@ import java.awt.*;
 import javax.swing.*;
 
 import net.infonode.tabbedpanel.*;
+import net.infonode.gui.laf.*;
+import net.infonode.tabbedpanel.theme.*;
 
 class TabbedPaneExample
 		extends 	JFrame
@@ -23,7 +25,8 @@ class TabbedPaneExample
 		
 		try
 		{
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//			UIManager.setLookAndFeel(new GradientTheme());
 		} 
 		catch(Exception e)
 		{
@@ -33,6 +36,8 @@ class TabbedPaneExample
 		setTitle( "Tabbed Pane Application" );
 		setSize( 300, 200 );
 		setBackground( Color.gray );
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout( new BorderLayout() );
@@ -51,8 +56,8 @@ class TabbedPaneExample
 		tabbedPane.addTab( "Page 3", panel3 );
 		topPanel.add( tabbedPane, BorderLayout.CENTER );
 		
-		
-		TabbedPanel tp = new TabbedPanel();
+//		
+//		TabbedPanel tp = new TabbedPanel();
 		
 	}
 
