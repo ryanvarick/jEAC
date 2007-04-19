@@ -61,8 +61,8 @@ public class AboutFrame extends JFrame
 		JLabel tagline = new JLabel("Real-time 2D/3D EAC Interaction", JLabel.CENTER);
 		info.add(tagline);
 
-		JLabel version = new JLabel("v" + JEAC.getVersion() + ", build " + JEAC.getBuild(), JLabel.CENTER);
-		info.add(version);
+//		JLabel version = new JLabel("v" + JEAC.getVersion() + ", build " + JEAC.getBuild(), JLabel.CENTER);
+//		info.add(version);
 		
 		JLabel blank1 = new JLabel("", JLabel.CENTER);
 		info.add(blank1);
@@ -122,7 +122,7 @@ public class AboutFrame extends JFrame
 		int y = (screenSize.height - getHeight()) / 2;
 		setLocation(x, y);
 
-		setIconImage(JEAC.getApplicationIcon());
+//		setIconImage(JEAC.getApplicationIcon());
 		setResizable(false);
 		setTitle("About jEAC");
 		setVisible(true);

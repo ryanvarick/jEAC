@@ -3,10 +3,16 @@ package edu.indiana.cs.testing.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import edu.indiana.cs.eac.ui.InterfaceManager;
 import edu.indiana.cs.eac.ui.MDIDesktopPane;
 import edu.indiana.cs.eac.ui.MenuManager;
 
@@ -45,17 +51,33 @@ public class NewUI
 		JFrame frame = new JFrame();
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(new Dimension(640, 480));
-		frame.setTitle("Infonode docking test");
+		frame.setTitle("jEAC - An integrated EAC development environment");
 
 		// views
 		ViewMap viewMap = new ViewMap();
-		View cm = new View("Workbench", null, new MDIDesktopPane());
+		
+		InterfaceManager im = InterfaceManager.getInstance();
+		im.run();
+		
+		View cm = new View("Workspace", null, im.getDesktop());
+		cm.getWindowProperties().setCloseEnabled(false);
+		cm.getWindowProperties().setUndockEnabled(false);
+		cm.getWindowProperties().setMaximizeEnabled(false);
+		cm.getWindowProperties().setMinimizeEnabled(false);
+		cm.getWindowProperties().setDragEnabled(false);
+
+		
+		View cm2 = new View("Evolver", null, new MDIDesktopPane());
+		View cm3 = new View("LLA Editor", null, new MDIDesktopPane());
+		
 		View dm = new View("Device Manager", null, getDevicePanel());
 		
 
 		
 		viewMap.addView(1, cm);
-		viewMap.addView(2, dm);
+		viewMap.addView(2, cm2);
+		viewMap.addView(3, cm3);
+		viewMap.addView(4, dm);
 		
 //		View[] views = new View[5];
 //		for (int i = 0; i < views.length; i++)
@@ -68,7 +90,7 @@ public class NewUI
 		
 		
 		RootWindow rootWindow = DockingUtil.createRootWindow(viewMap, true);
-		rootWindow.setWindow(new SplitWindow(true, 0.4f, cm, dm));
+		rootWindow.setWindow(new SplitWindow(true, 0.7f, cm, dm));
 
 //		rootWindow.getRootWindowProperties().getDockingWindowProperties().setCloseEnabled(false);
 //		rootWindow.getRootWindowProperties().getDockingWindowProperties().setMaximizeEnabled(false);
@@ -97,7 +119,7 @@ public class NewUI
 //		MenuManager menu = (MenuManager)MenuManager.getInstance(MenuManager.class);
 		frame.setJMenuBar(menu.getMenu());
 		
-		JLabel sb = new JLabel("Status bar: status");
+		JLabel sb = new JLabel(" Status: Disconnected");
 		
 		// finalize
 		frame.setLayout(new BorderLayout());
@@ -138,6 +160,10 @@ public class NewUI
 		    {
 		    	tree.expandRow(i);
 		    }
+		    
+		    tree.addTreeSelectionListener(new DeviceTreeListener());
+		    tree.addMouseListener(new DeviceTreeMouseListener());
+		    
 		    return tree;
 	}
 	
@@ -159,6 +185,13 @@ public class NewUI
 
 	  private JPanel getDevicePanel()
 	  {
+		  
+		  
+		  
+		  
+		  
+		  
+		  
 		  JPanel panel = new JPanel();
 		  panel.setLayout(new BorderLayout());
 
@@ -182,9 +215,69 @@ public class NewUI
 		  panel.add(tools, BorderLayout.NORTH);
 		  
 		  JTree jt = getTree();
-		  panel.add(jt, BorderLayout.CENTER);
+//		  panel.add(jt, BorderLayout.CENTER);
 
+
+		  
+		  JScrollPane deviceListPane = new JScrollPane(jt, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		  JPanel devicePropertiesPanel = new JPanel();
+		  devicePropertiesPanel.add(new JLabel("Properties go here."));
+		  
+		  JSplitPane devicePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, deviceListPane, devicePropertiesPanel);
+		  panel.add(devicePane);
+		  
 		  return panel;  
 	  }
 	
+	  private class DeviceTreeListener implements TreeSelectionListener
+	  {
+		  public void valueChanged(TreeSelectionEvent e)
+		  {
+//		        DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+			  DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
+			  
+			  if(node == null)
+				  {
+				  	System.out.println("Null: "); return;
+				  }
+			  Object nodeInfo = node.getUserObject();
+			  
+		      if (node.isLeaf())
+		      {
+		    	  System.out.println("Leaf: " + node.toString());
+		      }
+		      else
+		      {
+		    	  System.out.println("Branch: " + node.toString()); 
+		      }
+		  }
+	  }
+	  
+	  private class DeviceTreeMouseListener extends MouseAdapter {
+		  public void mousePressed(MouseEvent e)
+		  {
+			  maybeShowPopup(e);
+		  }
+
+		  public void mouseReleased(MouseEvent e)
+		  {
+			  maybeShowPopup(e);
+		  }
+
+		  private void maybeShowPopup(MouseEvent e)
+		  {
+			  if(e.isPopupTrigger())
+			  {
+				  JPopupMenu p  = new JPopupMenu();
+				  JMenuItem jmi = new JMenuItem("Test");
+				  JMenuItem jmi2 = new JMenuItem("Test");
+				  JMenuItem jmi3 = new JMenuItem("Test");
+				  p.add(jmi);
+				  p.add(jmi2);
+				  p.add(jmi3);
+				  
+				  p.show(e.getComponent(), e.getX(), e.getY());
+			  }
+		  }
+		  }
 }

@@ -30,7 +30,7 @@ import edu.indiana.cs.eac.*;
 //import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.eac.gradient.*;
 import edu.indiana.cs.eac.hardware.*;
-import edu.indiana.cs.eac.ui.listeners.ConnectMenuEventListener;
+import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.testing.ui.*;
 
 /**
@@ -88,79 +88,46 @@ public class MenuManager
 	// constructor
 	public void init()
 	{
-		// cache the InterfaceManager--we need to know where to send menu events
-		ui = InterfaceManager.getInstance();
-		
 		menu = new JMenuBar();
-		
-		
-		
-		/* ---------------[ JEAC menu ]--------------- */
-		
-		JMenu jeacMenu = new JMenu("jEAC");
-		jeacMenu.setMnemonic('J');
-
-
-		// jeac > load
-		loadMenuItem = new JMenuItem("Load configuration...", 'L');
-//		loadMenuItem.addActionListener(new FileIOListener(this));
-		loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
-		loadMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_open.gif")));
-		loadMenuItem.setEnabled(false);
-		jeacMenu.add(loadMenuItem);
-		
-		jeacMenu.add(new JSeparator());
-
-		
-		// jeac > save
-		saveMenuItem = new JMenuItem("Save configuration", 'S');
-//		saveMenuItem.addActionListener(new FileIOListener(this));
-		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-		saveMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_save.gif")));
-		saveMenuItem.setEnabled(false);
-		jeacMenu.add(saveMenuItem);
-		
-		// jeac > save as
-		saveAsMenuItem = new JMenuItem("Save configuration as...", 'A');
-		saveAsMenuItem.setIcon(new BlankIcon(16, 16));
-//		saveAsMenuItem.addActionListener(new FileIOListener(this));
-		saveAsMenuItem.setEnabled(false);
-		jeacMenu.add(saveAsMenuItem);
-		
-		jeacMenu.add(new JSeparator());
-
-		// jeac > exit
-		JMenuItem exitMenuItem = new JMenuItem("Exit", 'X');
-//		exitMenuItem.addActionListener(new ExitListener());
-		exitMenuItem.setIcon(new BlankIcon(16, 16));
-		exitMenuItem.setEnabled(false);
-		jeacMenu.add(exitMenuItem);
-
-		menu.add(jeacMenu);
-
-
 
 		/* DEVICE MENU */
 		JMenu deviceMenu = new JMenu("Device");
 		deviceMenu.setMnemonic('D');
 
-		// device > connect 
-		connectMenu = new ConnectMenuManager();
-		connectMenu.setText("Connect to EAC");
-		connectMenu.setIcon(new BlankIcon(16, 16));
-		connectMenu.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_reset.png")));
+		JMenu connectMenu = new ConnectMenuManager();
 		deviceMenu.add(connectMenu);
+		
+		loadMenuItem = new JMenuItem("Load configuration...", 'L');
+//		loadMenuItem.addActionListener(new FileIOListener(this));
+		loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+		loadMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_open.gif")));
+		loadMenuItem.setEnabled(false);
+		deviceMenu.add(loadMenuItem);
+		
+		deviceMenu.add(new JSeparator());
 
+		saveMenuItem = new JMenuItem("Save configuration", 'S');
+//		saveMenuItem.addActionListener(new FileIOListener(this));
+		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+		saveMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_save.gif")));
+		saveMenuItem.setEnabled(false);
+		deviceMenu.add(saveMenuItem);
+		
+		saveAsMenuItem = new JMenuItem("Save configuration as...", 'A');
+		saveAsMenuItem.setIcon(new BlankIcon(16, 16));
+//		saveAsMenuItem.addActionListener(new FileIOListener(this));
+		saveAsMenuItem.setEnabled(false);
+		deviceMenu.add(saveAsMenuItem);
+		
 		deviceMenu.add(new JSeparator());
 		
-		ledMenuItem = new JCheckBoxMenuItem("uEAC LEDs");
-//		ledMenuItem.addActionListener(new LEDListener());
-		ledMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_MASK));
-		ledMenuItem.setMnemonic('L');
-		ledMenuItem.setEnabled(false);
-		deviceMenu.add(ledMenuItem);
+//		ledMenuItem = new JCheckBoxMenuItem("uEAC LEDs");
+////		ledMenuItem.addActionListener(new LEDListener());
+//		ledMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_MASK));
+//		ledMenuItem.setMnemonic('L');
+//		ledMenuItem.setEnabled(false);
+//		deviceMenu.add(ledMenuItem);
 
-		// device > reset
 		resetMenuItem = new JMenuItem("Reset");
 //		resetMenuItem.addActionListener(new TestListener());
 		resetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
@@ -169,53 +136,55 @@ public class MenuManager
 		resetMenuItem.setEnabled(false);
 		deviceMenu.add(resetMenuItem);
 
-		deviceMenu.add(new JSeparator());
-
-		// device > disconnect
 		disconnectMenuItem = new JMenuItem("Disconnect", 'D');
 //		disconnectMenuItem.addActionListener(new DisconnectListener());
 		disconnectMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_MASK));
 		disconnectMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_disconnect.png")));
 		deviceMenu.add(disconnectMenuItem);
+
+		deviceMenu.add(new JSeparator());
 		
+		JMenuItem exitMenuItem = new JMenuItem("Exit", 'X');
+//		exitMenuItem.addActionListener(new ExitListener());
+		exitMenuItem.setIcon(new BlankIcon(16, 16));
+		exitMenuItem.setEnabled(false);
+		deviceMenu.add(exitMenuItem);
+
 
 		menu.add(deviceMenu);
-
 		
-
+		
 		
 		/* ---------------[ Tools ]--------------- */
 		
-		JMenu viewMenu = new JMenu("View");
-		viewMenu.setMnemonic('V');
+		JMenu viewMenu = new JMenu("Data");
+		viewMenu.setMnemonic('A');
 		
-		JMenuItem consoleMenuItem = new JMenuItem("Console");
-		consoleMenuItem.addActionListener(new ConsoleListener());
-		viewMenu.add(consoleMenuItem);
+		// tools > evolver
+		evolverMenuItem = new JCheckBoxMenuItem("Raw Data");
+//		evolverMenuItem.addActionListener(new EvolverListener());
+		evolverMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK));
+		evolverMenuItem.setIcon(new BlankIcon(16, 16));
+		evolverMenuItem.setMnemonic('E');
+		viewMenu.add(evolverMenuItem);
 		
-
-		// tools > visualization
-		JMenu visualizationMenu = new JMenu("Visualization");
-		visualizationMenu.setIcon(new BlankIcon(16, 16));
-		visualizationMenu.setMnemonic('G');
+		viewMenu.add(new JSeparator());
 
 		gradient2DMenuItem = new JCheckBoxMenuItem("2D Gradient");
 //		gradient2DMenuItem.addActionListener(new NewGradientModeListener());
 		gradient2DMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.ALT_MASK));
 		gradient2DMenuItem.setMnemonic('2');
 		gradient2DMenuItem.setSelected(false);
+		viewMenu.add(gradient2DMenuItem);
 
 		gradient3DMenuItem = new JCheckBoxMenuItem("3D Gradient");
 //		gradient3DMenuItem.addActionListener(new NewGradientModeListener());
 		gradient3DMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.ALT_MASK));
 		gradient3DMenuItem.setMnemonic('3');
 		gradient3DMenuItem.setSelected(true);
-		
-		
-	
-		visualizationMenu.add(gradient2DMenuItem);
-		visualizationMenu.add(gradient3DMenuItem);
-		visualizationMenu.add(new JSeparator());
+		viewMenu.add(gradient3DMenuItem);
+
+		viewMenu.add(new JSeparator());
 		
 		// tools > lla inspector
 		llaViewerMenuItem = new JCheckBoxMenuItem("LLA Inspector");
@@ -224,32 +193,37 @@ public class MenuManager
 		llaViewerMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_inspector.gif")));
 		llaViewerMenuItem.setMnemonic('L');
 		llaViewerMenuItem.setState(false);
-		
-		// tools > evolver
-		evolverMenuItem = new JCheckBoxMenuItem("Evolver (experimental!)");
-//		evolverMenuItem.addActionListener(new EvolverListener());
-		evolverMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK));
-		evolverMenuItem.setIcon(new BlankIcon(16, 16));
-		evolverMenuItem.setMnemonic('E');
-
-		// tools > reset
-//		resetMenuItem = new JMenuItem("Spawn a new frame");
-//		resetMenuItem.addActionListener(new TestListener());
-//		resetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
-//		resetMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_reset.png")));
-//		resetMenuItem.setMnemonic('R');
-		
-
-		
-		// build the tools menu
-		viewMenu.add(visualizationMenu);
-		viewMenu.add(new JSeparator());
 		viewMenu.add(llaViewerMenuItem);
-		viewMenu.add(evolverMenuItem);
-		viewMenu.add(new JSeparator());
-//		toolMenu.add(resetMenuItem);
+		
 
 		menu.add(viewMenu);
+		
+		
+		
+		/* --- tools */ 
+		
+		JMenu toolMenu = new JMenu("Tools");
+		
+		JMenuItem consoleMenuItem = new JMenuItem("Window Manager Test...");
+		consoleMenuItem.addActionListener(new ConsoleListener());
+		toolMenu.add(consoleMenuItem);
+		
+		toolMenu.add(new JSeparator());
+		
+
+		
+		JMenuItem deviceManagerMenuItem = new JMenuItem("Device Manager");
+		toolMenu.add(deviceManagerMenuItem);
+		
+		JMenuItem evolverMenuItem = new JMenuItem("Evolver");
+		toolMenu.add(evolverMenuItem);
+		
+		JMenuItem llaEditorMenuItem = new JMenuItem("LLA Editor");
+		toolMenu.add(llaEditorMenuItem);
+		
+		menu.add(toolMenu);
+		
+		
 		
 
 				
@@ -264,11 +238,17 @@ public class MenuManager
 		
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic('H');
+		
+		JMenuItem releaseNotesMenuItem = new JMenuItem("Release Notes", 'R');
+		// listener
+		helpMenu.add(releaseNotesMenuItem);
+		
+		helpMenu.add(new JSeparator());
 
-		JMenuItem about = new JMenuItem("About", 'A');
-//		about.addActionListener(new AboutListener());
+		JMenuItem aboutMenuItem = new JMenuItem("About", 'A');
+		aboutMenuItem.addActionListener(new AboutMenuItemListener());
 
-		helpMenu.add(about);
+		helpMenu.add(aboutMenuItem);
 		menu.add(helpMenu);
 	
 	}

@@ -38,14 +38,8 @@ import edu.indiana.cs.eac.hardware.*;
  */
 public final class JEAC
 {
-	private JEAC()
-	{
-		
-	}
-	public static final JEAC getInstance()
-	{
-		return new JEAC();
-	}
+	// private constructor
+	private JEAC() { }
 	
 	/**
 	 * Responsible for getting the good Mr. jEAC up and running.  
@@ -58,12 +52,18 @@ public final class JEAC
 	 */
 	public static void main(String[] args)
 	{
+		HardwareManager hm = HardwareManager.getInstance();
+		
 		InterfaceManager ui = InterfaceManager.getInstance();
-		ui.init();
-		ui.loadDrivers();
-			
+//		ui.run();
+//		ui.loadDrivers();
 //		DeviceManager dm = DeviceManager.getInstance();
 //		ThreadManager thread = new ThreadManager();
+
+		// MVC
+//		JeacModel      model      = new JeacModel();
+//		JeacView       view       = new JeacView(model);
+//		JeacController controller = new JeacController(model, view);
 	}
 
 }

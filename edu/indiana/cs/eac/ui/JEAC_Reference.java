@@ -696,7 +696,7 @@ public class JEAC_Reference extends JInternalFrame
 	 */
 	public static Image getImage(String imageName)
 	{
-		java.net.URL imageURL = JEAC_Reference.class.getResource("../images/" + imageName);
+		java.net.URL imageURL = JEAC.class.getResource("resources/" + imageName);
 		
 		ImageIcon icon = null;
 		if (imageURL != null) {
