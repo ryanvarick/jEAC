@@ -53,8 +53,11 @@ public final class JEAC
 	public static void main(String[] args)
 	{
 		HardwareManager hm = HardwareManager.getInstance();
+//		hm.validateDevices();
 		
 		InterfaceManager ui = InterfaceManager.getInstance();
+		ui.validateDevices();
+		
 //		ui.run();
 //		ui.loadDrivers();
 //		DeviceManager dm = DeviceManager.getInstance();

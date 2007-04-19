@@ -73,11 +73,11 @@ public class InterfaceManager
 	
 	/* UI components (do not alter) */
 	
-	private JFrame mainWindow;
+	private JFrame frame;
 	private MDIDesktopPane desktop;
 	
 	
-	private Device[][] validDevices;
+	private Device[][] verifiedDevices;
 
 
 
@@ -88,7 +88,7 @@ public class InterfaceManager
 	}
 	public JFrame getWindow()
 	{
-		return mainWindow;
+		return frame;
 	}
 	
 	
@@ -97,37 +97,38 @@ public class InterfaceManager
 	private static InterfaceManager instance;
 	private InterfaceManager()
 	{
-		// best applied before Swing components are added
+		// should be applied first
 		setLookAndFeel();
-
+		
+		
+		
 		// add views to view map (see InfoNode documentation)
 		int view = 1;
 		ViewMap viewMap = new ViewMap();
 
 		View desktopView = getDesktopView();
-		desktopView.getCustomTitleBarComponents();
-		
-		viewMap.addView(view++, getDesktopView());
+//		desktopView.getCustomTitleBarComponents();
+		viewMap.addView(view++, desktopView);
 
 		View evolverView = new View("Evolver", null, new MDIDesktopPane());
 		viewMap.addView(view++, evolverView);
 
-//		View editorView = new View("LLA Editor", null, new MDIDesktopPane());
-//		viewMap.addView(view++, editorView);
+		View editorView = new View("LLA Editor", null, new MDIDesktopPane());
+		viewMap.addView(view++, editorView);
 
 		View deviceManagerView = new View("Device Manager", null, getDevicePanel());
 		viewMap.addView(view++, deviceManagerView);
 		
 		
 		
-		
-		
+		//
 		SplitWindow testWindow = new SplitWindow(true, 0.7f, desktopView, deviceManagerView);
 		SplitWindow toolWindow = new SplitWindow(false, 0.3f, deviceManagerView, evolverView);
-		SplitWindow mainWindow1 = new SplitWindow(true,  0.7f, desktopView, toolWindow);
+		SplitWindow mainWindow = new SplitWindow(true,  0.7f, desktopView, toolWindow);
 		
 		RootWindow rootWindow = DockingUtil.createRootWindow(viewMap, true);
-		rootWindow.setWindow(testWindow);
+		rootWindow.setWindow(mainWindow);
+//		rootWindow.setWindow(testWindow);
 
 		// theme
 		DockingWindowsTheme theme = new ShapedGradientDockingTheme();
@@ -151,36 +152,36 @@ public class InterfaceManager
 		
 		
 		// build the UI skeleton 
-		mainWindow = new JFrame();
+		frame = new JFrame();
 	
 //		TODO: Add statusbar
 		JLabel sb = new JLabel(" Status: Disconnected");
 //		getContentPane().add(new StatusBarManager(), BorderLayout.SOUTH);
 		
 //		// finalize
-		mainWindow.setLayout(new BorderLayout());
-	    mainWindow.add(rootWindow, BorderLayout.CENTER);
-	    mainWindow.add(sb, BorderLayout.SOUTH);
+		frame.setLayout(new BorderLayout());
+	    frame.add(rootWindow, BorderLayout.CENTER);
+	    frame.add(sb, BorderLayout.SOUTH);
 
 
 		// hook up the menu manager
 		MenuManager menu = MenuManager.getInstance();
-		mainWindow.setJMenuBar(menu.getMenu());
+		frame.setJMenuBar(menu.getMenu());
 		
 		// specify UI appearance and behavior
-		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainWindow.setResizable(true);
-		mainWindow.setSize(new Dimension(INITIAL_SIZE_X, INITIAL_SIZE_Y));
-		mainWindow.setTitle(APPLICATION_TITLE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(true);
+		frame.setSize(new Dimension(INITIAL_SIZE_X, INITIAL_SIZE_Y));
+		frame.setTitle(APPLICATION_TITLE);
 
 		// center UI on screen
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (screenSize.width - mainWindow.getWidth()) / 2;
-		int y = (screenSize.height - mainWindow.getHeight()) / 2;
-		mainWindow.setLocation(new Point(x, y));
+		int x = (screenSize.width - frame.getWidth()) / 2;
+		int y = (screenSize.height - frame.getHeight()) / 2;
+		frame.setLocation(new Point(x, y));
 		
 		// show the world our beautiful creation
-		mainWindow.setVisible(true);
+		frame.setVisible(true);
 
 		
 	}
@@ -234,11 +235,11 @@ public class InterfaceManager
 	 */
 	public Device[][] getValidDevices()
 	{
-		if(validDevices == null)
+		if(verifiedDevices == null)
 		{
-			loadDrivers();
+			validateDevices();
 		}
-		return validDevices;
+		return verifiedDevices;
 	}
 	
 //	public Vector<Vector<Device>> getValidDevices2()
@@ -255,90 +256,55 @@ public class InterfaceManager
 //	}
 	
 	/**
-	 * ...
+	 * Validates the list of devices provided by the <code>HardwareManager</code>.
 	 * 
-	 * @param deviceManager   .
+	 * <p>The <code>HardwareManager</code> maintains a list of potential EAC
+	 * devices; however, most of these devices are invalid for one reason or
+	 * another.  Verifying the list of devices usually takes a few seconds.
+	 * While it would be trivial to run the verification process at the hardware
+	 * level, we could not provide UI feedback without crossing the 
+	 * interface/hardware abstraction barrier.  Since the interface is already
+	 * hardware-aware, verification is done here at the interface level instead.
 	 * 
-	 * @author                Ryan R. Varick
-	 * @since                 2.0.0
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
 	 * 
 	 */
-	public void loadDrivers()
-	{
-		// grab the raw list of devices
+	public void validateDevices()
+	{	
+		// grab the list of unverified devices
 		HardwareManager hm = HardwareManager.getInstance();
-		Device[][] knownDevices = hm.getKnownDevices();
+		Device[][] unverifiedDevices = hm.getKnownDevices();
 
 		// prepare the loading frame
 		LoadingFrame lf = new LoadingFrame(hm.getDeviceCount());
 		
-		/*
-		 * WARNING! Pain in the ass zone ahead! (I apologize to anyone that 
-		 * has to maintain this code down the line.)
-		 * 
-		 * We need to verify the list of devices given by the HardwareManager.
-		 * Why?  Because we want to provide UI feedback while validating.  While
-		 * we could put this process on its own thread, we'll want to scan for 
-		 * devices initially before finalizing the interface.  Our choices are
-		 * to either make the hardware layer aware of UI (jEAC version 1) or 
-		 * make the UI aware of the hardware layer.  This method represents the
-		 * latter.
-		 * 
-		 * So what's the problem?  The HardwareManager returns a 2D array of 
-		 * devices, some or many of which may be invalid.  Thus we will have to
-		 * remove elements from the array.  We could use Vectors and generics, 
-		 * but because of type erasure, we end up with a rather nasty cast
-		 * situation.  What lies below is a wasteful, complicated mess of array
-		 * copies.  Cleary this entire algorithm needs to be reworked.
-		 * 
-		 * FIXME: Convert entire call chain to Vector, or similar.
-		 * 
-		 */
-
-		// outer loop: verify each driver class
-		Device[][] driverHolder = new Device[0][];   // outer accumulator
-		for(int i = 0; i < knownDevices.length; i++)
+		// verify each device
+		Vector<Device[]> drivers = new Vector<Device[]>();      // outer accumulator (drivers)
+		for(int i = 0; i < unverifiedDevices.length; i++)
 		{
-			Device[] deviceHolder = new Device[0];   // inner accumulator
-			lf.setTitle("Looking for EACs (" + (i + 1) + "/" + knownDevices.length + ")...");
-
-			// inner loop: verify each device in the driver class
-			for(int j = 0; j < knownDevices[i].length; j++)
-			{				
-				if(knownDevices[i][j].isValid())
+			Vector<Device> devices = new Vector<Device>();      // inner accumulator (devices)
+			for(int j = 0; j < unverifiedDevices[i].length; j++)
+			{
+				if(unverifiedDevices[i][j].isValid())
 				{
-					// allocate a larger array and insert the device at the end
-					Device[] newDeviceHolder = new Device[deviceHolder.length + 1];
-					newDeviceHolder[deviceHolder.length] = knownDevices[i][j];
-					
-					// merge the old accumulator when the array is larger than zero
-					if(deviceHolder.length > 0)
-					{
-						System.arraycopy(deviceHolder, 0, newDeviceHolder, 0, deviceHolder.length);
-					}
-					deviceHolder = newDeviceHolder;
-
-					// increment the progress bar
-					lf.increment();
+					devices.add(unverifiedDevices[i][j]);
 				}
+				lf.increment();
 			}
 			
-			// add the driver class if valid devices were found
-			if(deviceHolder.length > 0)
+			// only add the driver class if it contains valid devices
+			if(devices.size() > 0)
 			{
-				Device[][] newDriverHolder = new Device[driverHolder.length + 1][];
-				newDriverHolder[driverHolder.length] = deviceHolder;
-				
-				if(driverHolder.length > 0)
-				{
-					System.arraycopy(driverHolder, 0, newDriverHolder, 0, driverHolder.length);
-				}
-				driverHolder = newDriverHolder;
+				Device[] verified = new Device[devices.size()];
+				verified = devices.toArray(verified);
+				drivers.add(verified);
 			}
 		}
-
+		verifiedDevices = new Device[drivers.size()][];
+		verifiedDevices = drivers.toArray(verifiedDevices);
+		
 		lf.close();
-		validDevices = driverHolder;
 	}
 
 

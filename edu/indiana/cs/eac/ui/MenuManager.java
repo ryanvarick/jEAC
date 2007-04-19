@@ -95,6 +95,8 @@ public class MenuManager
 		deviceMenu.setMnemonic('D');
 
 		JMenu connectMenu = new ConnectMenuManager();
+		connectMenu.setText("Connect");
+		connectMenu.setMnemonic('C');
 		deviceMenu.add(connectMenu);
 		
 		loadMenuItem = new JMenuItem("Load configuration...", 'L');
@@ -331,9 +333,9 @@ public class MenuManager
 	 *
 	 */
 	private class ConnectMenuManager extends DynamicMenuManager
-	{		
+	{	
 		protected void buildMenu()
-		{
+		{			
 			InterfaceManager ui = InterfaceManager.getInstance();
 			
 			Device[][] devices = ui.getValidDevices();
