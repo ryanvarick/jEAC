@@ -56,10 +56,9 @@ public final class JEAC
 //		hm.validateDevices();
 		
 		InterfaceManager ui = InterfaceManager.getInstance();
-		ui.validateDevices();
-		
-//		ui.run();
-//		ui.loadDrivers();
+		ui.verifyDevices();
+		ui.show();
+
 //		DeviceManager dm = DeviceManager.getInstance();
 //		ThreadManager thread = new ThreadManager();
 

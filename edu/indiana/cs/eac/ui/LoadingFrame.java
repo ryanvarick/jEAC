@@ -29,14 +29,15 @@ public class LoadingFrame
 	private static final int PROGRESS_MIN = 0;
 	private static final int PROGRESS_MAX = 100;
 
-	private static final String TITLE = "Looking for local uEACs...";
+	private static final String TITLE = "Searching for EACs...";
 	private static final int FRAME_SIZE_X = 300;
 	private static final int FRAME_SIZE_Y = 50;
 	
 	
 	private int stepSize;
 	private JProgressBar progress;
-	private JInternalFrame frame;
+//	private JInternalFrame frame;
+	private JFrame frame;
 	
 	
 	
@@ -62,8 +63,9 @@ public class LoadingFrame
 	    progress.setMaximum(PROGRESS_MAX);
 	    progress.setValue(0);
 	    
-	    frame = new JInternalFrame();
-	    InterfaceManager.getInstance().getDesktop().add(frame);
+//	    frame = new JInternalFrame();
+//	    InterfaceManager.getInstance().getDesktop().add(frame);
+	    frame = new JFrame();
 	    
 //		frame.setUndecorated(true);
 	    frame.add(progress);
@@ -75,7 +77,7 @@ public class LoadingFrame
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (screenSize.width - frame.getWidth()) / 2;
 		int y = (screenSize.height - frame.getHeight()) / 2;
-//		frame.setLocation(x, y);
+		frame.setLocation(x, y);
 		
 		// finalize
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,6 +85,8 @@ public class LoadingFrame
 		frame.setResizable(false);
 		frame.setTitle(TITLE);
 		frame.setVisible(true);
+		
+		
 
 		// start with some progress!
 		increment();

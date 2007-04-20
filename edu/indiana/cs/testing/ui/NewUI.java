@@ -43,7 +43,7 @@ public class NewUI
 		}
 		
 		InterfaceManager im = InterfaceManager.getInstance();
-		im.run();
+		im.show();
 
 		// internal theme
 //		ShapedGradientTheme theme = new ShapedGradientTheme();

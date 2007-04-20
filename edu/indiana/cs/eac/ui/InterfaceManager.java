@@ -138,6 +138,7 @@ public class InterfaceManager
 
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getMaximizeButtonProperties().setVisible(false);
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getMinimizeButtonProperties().setVisible(false);
+		rootWindow.getRootWindowProperties().getTabWindowProperties().getDockButtonProperties().setVisible(false);
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getUndockButtonProperties().setVisible(false);
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getCloseButtonProperties().setVisible(false);
 
@@ -178,9 +179,6 @@ public class InterfaceManager
 
 		JLabel sb = new JLabel(" Status: Disconnected");
 	    frame.add(sb, BorderLayout.SOUTH);
-		
-		// show the world our beautiful creation
-		frame.setVisible(true);
 	}
 	
 	public static final InterfaceManager getInstance()
@@ -221,9 +219,9 @@ public class InterfaceManager
 	 * needs to be separate from the constructor
 	 *
 	 */
-	public void run()
+	public void show()
 	{
-
+		frame.setVisible(true);
 	}
 	
 	
@@ -235,7 +233,7 @@ public class InterfaceManager
 	{
 		if(verifiedDevices == null)
 		{
-			validateDevices();
+			verifyDevices();
 		}
 		return verifiedDevices;
 	}
@@ -268,7 +266,10 @@ public class InterfaceManager
 	 * @since    2.0.0
 	 * 
 	 */
-	public void validateDevices()
+	
+	// TODO: validate vs. verify
+
+	public void verifyDevices()
 	{	
 		// grab the list of unverified devices
 		HardwareManager hm = HardwareManager.getInstance();
