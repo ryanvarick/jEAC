@@ -56,10 +56,10 @@ public class InterfaceManager
 	private static final String APPLICATION_TITLE = "jEAC - Cross-platform EAC development environment";
 	
 	/** Initial width of the UI. */
-	public static int INITIAL_SIZE_X = 800;
+	public static int INITIAL_WIDTH = 800;
 	
 	/** Initial height of the UI. */
-	public static int INITIAL_SIZE_Y = 600;
+	public static int INITIAL_HEIGHT = 600;
 	
 	
 	private static final String DESKTOP_TITLE = "Workspace";
@@ -97,12 +97,19 @@ public class InterfaceManager
 	private static InterfaceManager instance;
 	private InterfaceManager()
 	{
-		// should be applied first
+		// always set first
 		setLookAndFeel();
 		
 		
 		
-		// add views to view map (see InfoNode documentation)
+		/* --------------------[ Custom component setup ]-------------------- */
+		
+		// 
+		// For a more robust UI, we are using InfoNode's dockable window components. 
+		// See the InfoNode documentation for more information.
+		//
+		
+		// allocate views (similar to JPanel)
 		int view = 1;
 		ViewMap viewMap = new ViewMap();
 
@@ -119,72 +126,63 @@ public class InterfaceManager
 		View deviceManagerView = new View("Device Manager", null, getDevicePanel());
 		viewMap.addView(view++, deviceManagerView);
 		
-		
-		
-		//
-		SplitWindow testWindow = new SplitWindow(true, 0.7f, desktopView, deviceManagerView);
-		SplitWindow toolWindow = new SplitWindow(false, 0.3f, deviceManagerView, evolverView);
-		SplitWindow mainWindow = new SplitWindow(true,  0.7f, desktopView, toolWindow);
-		
-		RootWindow rootWindow = DockingUtil.createRootWindow(viewMap, true);
-		rootWindow.setWindow(mainWindow);
-//		rootWindow.setWindow(testWindow);
+		// allocate main window (similiar to JFrame)
+		//  NOTE: RootWindow *must* be allocated before other Windows
+		RootWindow rootWindow = DockingUtil.createRootWindow(viewMap, false);
 
-		// theme
+		// customize: apply theme (similar to Swing LAF); specify tab layout; reduce clutter
 		DockingWindowsTheme theme = new ShapedGradientDockingTheme();
-		rootWindow.getRootWindowProperties().addSuperObject(theme.getRootWindowProperties());
-		
-		// turn off tab window controls (too much clutter)
-		rootWindow.getRootWindowProperties().getTabWindowProperties().getCloseButtonProperties().setVisible(false);
-		rootWindow.getRootWindowProperties().getTabWindowProperties().getDockButtonProperties().setVisible(false);
+		rootWindow.getRootWindowProperties().addSuperObject(theme.getRootWindowProperties());		
+
+		rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
+
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getMaximizeButtonProperties().setVisible(false);
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getMinimizeButtonProperties().setVisible(false);
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getUndockButtonProperties().setVisible(false);
+		rootWindow.getRootWindowProperties().getTabWindowProperties().getCloseButtonProperties().setVisible(false);
 
-		// add menu bar
-		rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
+		// specify view layout (similar to JSplitPane)
+		SplitWindow toolWindow = new SplitWindow(false, 0.5f, deviceManagerView, evolverView);
+		SplitWindow mainWindow = new SplitWindow(true,  0.7f, desktopView, toolWindow);
+
+		rootWindow.setWindow(mainWindow);
 		
 		
 		
+		/* --------------------[ Swing component setup ]-------------------- */
 		
+		//
+		// We use standard Swing components for the overall UI skeleton.  The 
+		// InfoNode components defined above are treated as normal Swing components.
+		//
 		
-		
-		
-		
-		// build the UI skeleton 
 		frame = new JFrame();
-	
-//		TODO: Add statusbar
-		JLabel sb = new JLabel(" Status: Disconnected");
-//		getContentPane().add(new StatusBarManager(), BorderLayout.SOUTH);
-		
-//		// finalize
-		frame.setLayout(new BorderLayout());
-	    frame.add(rootWindow, BorderLayout.CENTER);
-	    frame.add(sb, BorderLayout.SOUTH);
 
-
-		// hook up the menu manager
-		MenuManager menu = MenuManager.getInstance();
-		frame.setJMenuBar(menu.getMenu());
-		
-		// specify UI appearance and behavior
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
 		frame.setResizable(true);
-		frame.setSize(new Dimension(INITIAL_SIZE_X, INITIAL_SIZE_Y));
+		frame.setSize(new Dimension(INITIAL_WIDTH, INITIAL_HEIGHT));
 		frame.setTitle(APPLICATION_TITLE);
 
-		// center UI on screen
+		// center on screen
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (screenSize.width - frame.getWidth()) / 2;
 		int y = (screenSize.height - frame.getHeight()) / 2;
 		frame.setLocation(new Point(x, y));
 		
+		// add the main menu, the InfoNode components, and the status bar
+		MenuManager menu = MenuManager.getInstance();
+		frame.setJMenuBar(menu.getMenu());
+		
+	    frame.add(rootWindow, BorderLayout.CENTER);
+
+		JLabel sb = new JLabel(" Status: Disconnected");
+	    frame.add(sb, BorderLayout.SOUTH);
+		
 		// show the world our beautiful creation
 		frame.setVisible(true);
-
-		
 	}
+	
 	public static final InterfaceManager getInstance()
 	{
 		if(instance == null) { instance = new InterfaceManager(); }

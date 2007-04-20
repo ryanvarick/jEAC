@@ -42,22 +42,17 @@ public class NewUI
 			System.err.println("Could not load platform-native look-and-feel.");
 		}
 		
+		InterfaceManager im = InterfaceManager.getInstance();
+		im.run();
+
 		// internal theme
 //		ShapedGradientTheme theme = new ShapedGradientTheme();
 //		TitledTabProperties titledTabProperties = new TitledTabProperties();
 //	    titledTabProperties.addSuperObject(theme.getTitledTabProperties());
 
-	    // jframe container
-		JFrame frame = new JFrame();
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(new Dimension(640, 480));
-		frame.setTitle("jEAC - An integrated EAC development environment");
 
 		// views
 		ViewMap viewMap = new ViewMap();
-		
-		InterfaceManager im = InterfaceManager.getInstance();
-		im.run();
 		
 		View cm = new View("Workspace", null, im.getDesktop());
 		cm.getWindowProperties().setCloseEnabled(false);
@@ -65,14 +60,11 @@ public class NewUI
 		cm.getWindowProperties().setMaximizeEnabled(false);
 		cm.getWindowProperties().setMinimizeEnabled(false);
 		cm.getWindowProperties().setDragEnabled(false);
-
 		
 		View cm2 = new View("Evolver", null, new MDIDesktopPane());
 		View cm3 = new View("LLA Editor", null, new MDIDesktopPane());
 		
 		View dm = new View("Device Manager", null, getDevicePanel());
-		
-
 		
 		viewMap.addView(1, cm);
 		viewMap.addView(2, cm2);
@@ -87,7 +79,6 @@ public class NewUI
 //			
 //			viewMap.addView(i, views[i]);
 //		}
-		
 		
 		RootWindow rootWindow = DockingUtil.createRootWindow(viewMap, true);
 		rootWindow.setWindow(new SplitWindow(true, 0.7f, cm, dm));
@@ -113,6 +104,12 @@ public class NewUI
 		// add menu bar
 		rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
 //		rootWindow.getWindowBar(Direction.RIGHT).addTab(views[3]);
+
+	    // jframe container
+		JFrame frame = new JFrame();
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(new Dimension(640, 480));
+		frame.setTitle("jEAC - An integrated EAC development environment");
 		
 		// hook up the menu manager
 		MenuManager menu = MenuManager.getInstance();
