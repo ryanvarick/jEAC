@@ -43,12 +43,15 @@ public final class JEAC
 	public static void main(String[] args)
 	{
 		HardwareManager hm = HardwareManager.getInstance();
-//		TimingManager   tm = TimingManager.getInstance();
-//		hm.validateDevices();
+		TimingManager   tm = TimingManager.getInstance();
 		
-		InterfaceManager ui = new InterfaceManager();
+		InterfaceManager ui = new InterfaceManager(hm, tm);
 		ui.init();
 		ui.show();
+		
+		ui.getDevices();
+		ui.getDevices();
+		ui.getDevices();		
 	}
 
 }

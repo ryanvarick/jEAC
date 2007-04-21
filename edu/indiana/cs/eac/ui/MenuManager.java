@@ -338,7 +338,7 @@ public class MenuManager
 		{			
 			InterfaceManager ui = InterfaceManager.getInstance();
 			
-			Device[][] devices = ui.getValidDevices();
+			Device[][] devices = ui.getDevices();
 			int keyCounter = 0;
 			for(int i = 0; i < devices.length; i++)
 			{

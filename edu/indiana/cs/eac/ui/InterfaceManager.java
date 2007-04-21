@@ -13,18 +13,18 @@
 package edu.indiana.cs.eac.ui;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
-
 import javax.swing.*;
-import javax.swing.event.*;
 import javax.swing.tree.*;
 
 import net.infonode.docking.*;
 import net.infonode.docking.theme.*;
 import net.infonode.docking.util.*;
 import net.infonode.util.*;
+
+import edu.indiana.cs.eac.*;
 import edu.indiana.cs.eac.hardware.*;
+import edu.indiana.cs.eac.ui.listeners.*;
 
 
 
@@ -63,16 +63,34 @@ public class InterfaceManager
 	private JTree deviceTree;
 	
 	/* device cache */
-	private Device[][] verifiedDevices;
+	private HardwareManager hm;
+	private Device[][] validDevices;
 	private HashMap<String, Device> deviceList = new HashMap<String, Device>();
+	
+	private TimingManager tm;
 
 	
 	
 	/**
+	 * Returns a new <code>InterfaceManager</code> object.
+	 * 
+	 * <p>The constructor prepares the user interface and initializes other
+	 * managers (e.g. <code>MenuManager</code>) as needed.  Note that
+	 * it <b>does not</b> finalize or show UI.  These tasks are handled by
+	 * <code>init()</code> and <code>show()</code>, respectively.   
+	 * 
+	 * @param hm   <code>HardwareManager</code> to use.
+	 * @param tm   <code>TimingManager</code> to use.
+	 * 
+	 * @author     Ryan R. Varick
+	 * @since      2.0.0
 	 *
 	 */
-	public InterfaceManager()
+	public InterfaceManager(HardwareManager hm, TimingManager tm)
 	{
+		this.hm = hm;
+		this.tm = tm;
+		
 		// always set first
 		setLookAndFeel();
 		
@@ -83,7 +101,7 @@ public class InterfaceManager
 		frame.setResizable(true);
 		frame.setTitle(APPLICATION_TITLE);
 		
-		// start maximized, when supported
+		// start maximized where supported
 		frame.setSize(new Dimension(INITIAL_WIDTH, INITIAL_HEIGHT));
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
@@ -110,10 +128,10 @@ public class InterfaceManager
 	 * floating windows.  Free-floating windows are contained within the desktop 
 	 * area, which behaves like a standard multi-document interface (MDI).
 	 * 
+	 * @return   MDI desktop component.
+	 * 
 	 * @author   Ryan R. Varick
 	 * @since    2.0.0
-	 * 
-	 * @return   MDI desktop component.
 	 * 
 	 */
 	private View getDesktopView()
@@ -139,6 +157,67 @@ public class InterfaceManager
 		return scrollableDesktop;
 	}
 	
+	/**
+	 * Returns an array of validated devices, organized by driver class.
+	 * 
+	 * @return   <code>array[][]</code> of validated devices.
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
+	 */
+	public Device[][] getDevices()
+	{
+		if(validDevices == null)
+		{
+			validDevices = validateDevices();
+		}
+		return validDevices;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @return   Device panel component.
+	 * 
+	 *  TODO: finish device panel
+	 * 
+	 */
+	private JPanel getDevicePanel()
+	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+
+		JToolBar tools = new JToolBar();
+		tools.setFloatable(false);
+		  
+		JButton b = new JButton();
+		b.setText("Rescan");
+		b.setToolTipText("Scans for new devices");
+		JButton c = new JButton();
+		c.setText("Connect");
+		c.setToolTipText("Scans for new devices");
+		JButton d = new JButton();
+		d.setText("Reset");
+		d.setToolTipText("Scans for new devices");
+		tools.add(b);
+		tools.addSeparator();
+		tools.add(c);
+		tools.add(d);
+		
+		panel.add(tools, BorderLayout.NORTH);
+		
+		deviceTree = new JTree();
+		JScrollPane deviceListPane = new JScrollPane(deviceTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JPanel devicePropertiesPanel = new JPanel();
+		devicePropertiesPanel.add(new JLabel("Properties go here."));
+		  
+		JSplitPane devicePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, deviceListPane, devicePropertiesPanel);
+		panel.add(devicePane);
+		  
+		return panel;  
+	}
+		
 	/**
 	 * Builds the overall UI structure.
 	 * 
@@ -200,100 +279,6 @@ public class InterfaceManager
 	
 	
 	
-	/**
-	 * 
-	 *
-	 */
-	public void init()
-	{
-		deviceTree = getDeviceTree();
-	}
-	
-	/**
-	 * Starts the interface.
-	 * 
-	 * needs to be separate from the constructor
-	 *
-	 */
-	public void show()
-	{
-		frame.setVisible(true);
-//		frame.setEnabled(false);
-	}
-	
-	
-	
-	/**
-	 * 
-	 * @return   Returns a validated list of drivers, organized by class.
-	 * 
-	 */
-	public Device[][] getValidDevices()
-	{
-		if(verifiedDevices == null)
-		{
-			verifyDevices();
-		}
-		return verifiedDevices;
-	}
-	
-	/**
-	 * Validates the list of devices provided by the <code>HardwareManager</code>.
-	 * 
-	 * <p>The <code>HardwareManager</code> maintains a list of potential EAC
-	 * devices; however, most of these devices are invalid for one reason or
-	 * another.  Verifying the list of devices usually takes a few seconds.
-	 * While it would be trivial to run the verification process at the hardware
-	 * level, we could not provide UI feedback without crossing the 
-	 * interface/hardware abstraction barrier.  Since the interface is already
-	 * hardware-aware, verification is done here at the interface level instead.
-	 * 
-	 * @author   Ryan R. Varick
-	 * @since    2.0.0
-	 * 
-	 */
-	
-	// TODO: validate vs. verify
-
-	public void verifyDevices()
-	{	
-		// grab the list of unverified devices
-		HardwareManager hm = HardwareManager.getInstance();
-		Device[][] unverifiedDevices = hm.getKnownDevices();
-
-		// prepare the loading frame
-		LoadingFrame lf = new LoadingFrame(hm.getDeviceCount());
-		
-		// verify each device
-		Vector<Device[]> drivers = new Vector<Device[]>();      // outer accumulator (drivers)
-		for(int i = 0; i < unverifiedDevices.length; i++)
-		{
-			Vector<Device> devices = new Vector<Device>();      // inner accumulator (devices)
-			for(int j = 0; j < unverifiedDevices[i].length; j++)
-			{
-				Device d = unverifiedDevices[i][j];
-				
-				if(d.isValid())
-				{
-					devices.add(d);
-					deviceList.put(d.getDeviceName(), d);
-				}
-				lf.increment();
-			}
-			
-			// only add the driver class if it contains valid devices
-			if(devices.size() > 0)
-			{
-				Device[] verified = new Device[devices.size()];
-				verified = devices.toArray(verified);
-				drivers.add(verified);
-			}
-		}
-		verifiedDevices = new Device[drivers.size()][];
-		verifiedDevices = drivers.toArray(verifiedDevices);
-		
-		lf.close();
-	}
 
 
 
@@ -311,76 +296,72 @@ public class InterfaceManager
 
 	
 
+	
+	
 	/**
-	 * Sets the look-and-feel.
+	 * Initializes the UI.
 	 * 
-	 * @author   Ryan R. Varick
-	 * @since    2.0.0
-	 * 
+	 * <p>This method populates the UI components that were only partially
+	 * initialized by the constructor.  Generally, this means that the UI
+	 * components handled here take a noticable amount of time, or need to be
+	 * handled outside the constructor for various reasons.
+	 *
 	 */
-	private void setLookAndFeel()
+	public void init()
 	{
-		if(useNativeLAF)
-		{
-			try
-			{
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} 
-			catch(Exception e)
-			{
-				System.err.println("Could not load platform-native look-and-feel.");
-			}
-		}
+		populateDeviceTree(deviceTree);
 	}
 	
-	
-	public JTree getDeviceTree()
+	/**
+	 * Populates the valid device tree.
+	 * 
+	 * <p>This method will populate a <code>JTree</code> with the list of valid 
+	 * devices, organized by driver class.  In general, this should be the tree
+	 * placeholder initialized by the constructor.
+	 * 
+	 * <p>A separate method is used for two reasons.  First, validating the
+	 * device list takes a few seconds.  It is easier to provide appropriate UI
+	 * feedback if the population process is separated from program startup.
+	 * Second, using a separate method affords an opportunity to probe for new
+	 * devices periodically. 
+	 * 
+	 * @param tree   <code>JTree</code> to populate.
+	 * 
+	 * @author       Ryan R. Varick
+	 * @since        2.0.0 
+	 * 
+	 */
+	private void populateDeviceTree(JTree tree)
 	{
-		Device[][] d = getValidDevices();
+		// build the tree 
+		DefaultMutableTreeNode root = processHierarchy(getDevices());
+		TreeModel t = new DefaultTreeModel(root);
+		tree.setModel(t);
 		
-//		Object[] hierarchy =
-//		{ 
-//				"Available Devices",
-//				new Object[]
-//				{ 
-//						"Offline Drivers",
-//						"Static driver (inactive)",
-//						"Random driver (active)"
-//				},
-//		        new Object[] 
-//		        { 
-//						"Network EACs",
-//						"eac1.cs.indiana.edu",
-//						"eac3.cs.indiana.edu",
-//						"eac4.cs.indiana.edu"
-//		        },
-//	            new Object[]
-//	            {
-//						"Local uEACs",
-//						"COM5",
-//						"COM13",
-//	            }
-//		};
-		
-//		DefaultMutableTreeNode root = processHierarchy(hierarchy);
-		DefaultMutableTreeNode root = processHierarchy(d);
-		JTree tree = new JTree(root);
-		    
+		// make each row visible
 		for(int i = 0; i < tree.getRowCount(); i++)
 		{
 			tree.expandRow(i);
 		}
-		    
+		
+		// add select listener and right-click listener
 		tree.addTreeSelectionListener(new DeviceTreeListener());
 		tree.addMouseListener(new DeviceTreeMouseListener());
-		    
-		return tree;
 	}
-	
+
 	/**
+	 * Helper method for <code>populateDeviceTree()</code>.
 	 * 
-	 * @param hierarchy
-	 * @return
+	 * <p>This method uses recursion to build the tree from the device array.
+	 * Based on <a href=http://java.sun.com/docs/books/tutorial/uiswing/components/tree.html">
+	 * How to Use Trees</a>, from Sun Microsystems.
+	 * 
+	 * @param hierarchy   Array of objects used to build the tree.
+	 * @return            Tree, in <code>DefaultMutableTreeNode</code> form.
+	 * 
+	 * @author            Ryan R. Varick
+	 * @since             2.0.0
+	 * 
 	 */
 	private DefaultMutableTreeNode processHierarchy(Object[] hierarchy)
 	{
@@ -403,118 +384,106 @@ public class InterfaceManager
 		
 		return(node);
 	}
-
 	
-	private JPanel getDevicePanel()
+	/**
+	 * Sets the look-and-feel.
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
+	 */
+	private void setLookAndFeel()
 	{
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-
-		JToolBar tools = new JToolBar();
-		tools.setFloatable(false);
-		  
-		JButton b = new JButton();
-		b.setText("Rescan");
-		b.setToolTipText("Scans for new devices");
-		JButton c = new JButton();
-		c.setText("Connect");
-		c.setToolTipText("Scans for new devices");
-		JButton d = new JButton();
-		d.setText("Reset");
-		d.setToolTipText("Scans for new devices");
-		tools.add(b);
-		tools.addSeparator();
-		tools.add(c);
-		tools.add(d);
-		
-		panel.add(tools, BorderLayout.NORTH);
-		
-		deviceTree = new JTree();
-//		panel.add(jt, BorderLayout.CENTER);
-		  
-		JScrollPane deviceListPane = new JScrollPane(deviceTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		JPanel devicePropertiesPanel = new JPanel();
-		devicePropertiesPanel.add(new JLabel("Properties go here."));
-		  
-		JSplitPane devicePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, deviceListPane, devicePropertiesPanel);
-		panel.add(devicePane);
-		  
-		return panel;  
+		if(useNativeLAF)
+		{
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} 
+			catch(Exception e)
+			{
+				System.err.println("Could not load platform-native look-and-feel.");
+			}
+		}
 	}
-	
-	private class DeviceTreeListener implements TreeSelectionListener
+
+	/**
+	 * Starts the interface.
+	 * 
+	 * needs to be separate from the constructor
+	 *
+	 */
+	public void show()
 	{
-		public void valueChanged(TreeSelectionEvent e)
-		{
-//		        DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
-			  
-			if(node == null)
-			{
-				System.out.println("Null: "); return;
-			}
-			Object nodeInfo = node.getUserObject();
-			  
-			if (node.isLeaf())
-			{
-				Device d = (Device)nodeInfo; // now we rock
-				
-				
-				System.out.println("Leaf: " + node.toString() + "; name: " + d.getDeviceName());
-			}
-			else
-			{
-				System.out.println("Branch: " + node.toString()); 
-			}
-		}
-	}
-	  
-	private class DeviceTreeMouseListener extends MouseAdapter {
-		public void mousePressed(MouseEvent e)
-		{
-			maybeShowPopup(e);
-		}
-
-		public void mouseReleased(MouseEvent e)
-		{
-			maybeShowPopup(e);
-		}
-
-		private void maybeShowPopup(MouseEvent e)
-		{
-			if(e.isPopupTrigger())
-			{
-				JPopupMenu p  = new JPopupMenu();
-				JMenuItem jmi = new JMenuItem("Test");
-				JMenuItem jmi2 = new JMenuItem("Test");
-				JMenuItem jmi3 = new JMenuItem("Test");
-				p.add(jmi);
-				p.add(jmi2);
-				p.add(jmi3);
-				  
-				p.show(e.getComponent(), e.getX(), e.getY());
-			}
-		}
+		frame.setVisible(true);
+//		frame.setEnabled(false);
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * Validates the list of devices provided by the <code>HardwareManager</code>.
+	 * 
+	 * <p>The <code>HardwareManager</code> maintains a list of potential EAC
+	 * devices; however, most of these devices are invalid for one reason or
+	 * another.  It usually takes a few seconds to check each device.  While it
+	 * would be trivial to run the validation process at the hardware level, we
+	 * could not provide UI feedback without crossing the interface/hardware
+	 * abstraction barrier.  The interface is already hardware-aware; thus,
+	 * validation is performed here instead.
+	 * 
+	 * <p>NOTE: If no valid devices are found (unlikely), a runtime exception
+	 * will be thrown.
+	 * 
+	 * @return   Validated <code>array[][]</code> of devices.
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
+	 */
+	private Device[][] validateDevices()
+	{
+		// grab the list of devices from the HardwareManager 
+		Device[][] devicesToValidate = hm.getKnownDevices();
+		LoadingFrame lf = new LoadingFrame(hm.getDeviceCount());
+		
+		// verify each device in each driver class
+		Vector<Device[]> drivers = new Vector<Device[]>();      // outer accumulator (valid driver classes)
+		for(int i = 0; i < devicesToValidate.length; i++)
+		{
+			Vector<Device> validatedDevices = new Vector<Device>();      // inner accumulator (valid devices)
+			for(int j = 0; j < devicesToValidate[i].length; j++)
+			{
+				Device d = devicesToValidate[i][j];
+				if(d.isValid())
+				{
+					validatedDevices.add(d);
+					deviceList.put(d.getDeviceName(), d);
+				}
+				lf.increment();
+			}
+			
+			// only add the driver class if it contains one or more valid devices
+			if(validatedDevices.size() > 0)
+			{
+				Device[] validatedDriverClass = new Device[validatedDevices.size()];
+				validatedDriverClass = validatedDevices.toArray(validatedDriverClass);
+				drivers.add(validatedDriverClass);
+			}
+		}
+		
+		lf.close();
 
-
+		Device[][] validated = new Device[drivers.size()][];
+		validated = drivers.toArray(validated);
+		
+		return validated;
+	}
+	
+	
+	
+	
+	
+	
+	
 //	public void testMethod()
 //	{
 //		Game game = new Game();
