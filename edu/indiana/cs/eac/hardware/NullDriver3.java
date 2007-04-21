@@ -48,6 +48,12 @@ public class NullDriver3 extends Driver
 	
 	private class NullDevice implements Device
 	{
+		public String toString()
+		{
+			return getTitle();
+		}
+		
+
 		public String getTitle()
 		{
 			return title; 

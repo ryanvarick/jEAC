@@ -12,6 +12,10 @@
 
 package edu.indiana.cs.eac.ui;
 
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
@@ -20,27 +24,16 @@ import net.infonode.docking.*;
 import net.infonode.docking.theme.*;
 import net.infonode.docking.util.*;
 import net.infonode.util.*;
-
-import java.util.*;
-import java.awt.event.*;
-import java.awt.*;
-
 import edu.indiana.cs.eac.hardware.*;
-import edu.indiana.cs.ga.snakeEvolver.*;
-import edu.indiana.cs.testing.ui.*;
-import edu.indiana.cs.testing.ui.NewUI.*;
 
 
-import ec.display.*;
-
-
-//based on http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html
 
 
 /**
  * Multi-document interface (MDI) manager.
  * 
- * <p>This class implements an MDI manager.  
+ * <p>This class implements an MDI manager.
+ * based on http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html  
  * 
  * @author   Ryan R. Varick
  * @since    2.0.0
@@ -50,65 +43,118 @@ public class InterfaceManager
 {
 	/* defaults (do not alter directly; use the API instead) */
 	private boolean useNativeLAF = true;
+	private DockingWindowsTheme theme = new ShapedGradientDockingTheme();
 	
-	private Color desktopColor = Color.GRAY.brighter();
-	
+	// TODO: externalize strings
 	private static final String APPLICATION_TITLE = "jEAC - Cross-platform EAC development environment";
-	
-	/** Initial width of the UI. */
-	public static int INITIAL_WIDTH = 800;
-	
-	/** Initial height of the UI. */
-	public static int INITIAL_HEIGHT = 600;
-	
-	
-	private static final String DESKTOP_TITLE = "Workspace";
-	
-//	/** Initial x-coordinate of the UI. */
-//	public static int INITIAL_LOCATION_X = 50;
-//	
-//	/** Initial y-coordinate of the UI. */
-//	public static int INITIAL_LOCATION_Y = 50;
+	private static final String DESKTOP_TITLE     = "Workspace";
+	private static final String DEVICE_MGR_TITLE  = "Device Manager";
+	private static final String LLA_EDITOR_TITLE  = "LLA Editor";
+	private static final String EVOLVER_TITLE     = "Evolver";
 
-	
+	private static final int INITIAL_WIDTH  = 800;
+	private static final int INITIAL_HEIGHT = 600;
+
+	private static final Color DESKTOP_COLOR = Color.GRAY.brighter();
+		
 	/* UI components (do not alter) */
-	
 	private JFrame frame;
 	private MDIDesktopPane desktop;
+	private JTree deviceTree;
 	
-	
+	/* device cache */
 	private Device[][] verifiedDevices;
+	private HashMap<String, Device> deviceList = new HashMap<String, Device>();
 
-
-
-
-	public MDIDesktopPane getDesktop()
-	{
-		return desktop;
-	}
-	public JFrame getWindow()
-	{
-		return frame;
-	}
 	
 	
-	
-	
-	private static InterfaceManager instance;
-	private InterfaceManager()
+	/**
+	 *
+	 */
+	public InterfaceManager()
 	{
 		// always set first
 		setLookAndFeel();
 		
+		frame = new JFrame();
 		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.setResizable(true);
+		frame.setTitle(APPLICATION_TITLE);
 		
-		/* --------------------[ Custom component setup ]-------------------- */
+		// start maximized, when supported
+		frame.setSize(new Dimension(INITIAL_WIDTH, INITIAL_HEIGHT));
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
-		// 
-		// For a more robust UI, we are using InfoNode's dockable window components. 
-		// See the InfoNode documentation for more information.
-		//
+		// center on screen
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (screenSize.width - frame.getWidth()) / 2;
+		int y = (screenSize.height - frame.getHeight()) / 2;
+		frame.setLocation(new Point(x, y));
 		
+		// add components
+		MenuManager menu = MenuManager.getInstance();
+		frame.setJMenuBar(menu.getMenu());
+		
+		frame.add(getRootWindow(), BorderLayout.CENTER);
+		
+		JLabel sb = new JLabel(" Status: Disconnected");
+		frame.add(sb, BorderLayout.SOUTH);
+	}
+	
+	/**
+	 * Builds the desktop.
+	 * 
+	 * <p>jEAC uses two kinds of UI containers:  dockable windows and free-
+	 * floating windows.  Free-floating windows are contained within the desktop 
+	 * area, which behaves like a standard multi-document interface (MDI).
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
+	 * @return   MDI desktop component.
+	 * 
+	 */
+	private View getDesktopView()
+	{
+		// create (and cache) the desktop; we will need it later
+		desktop = new MDIDesktopPane();
+		desktop.setBackground(DESKTOP_COLOR);
+		
+		// create a scroll pane to contain the desktop
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.getViewport().add(desktop);
+		
+		// create an InfoNode view to contain the new, scrollable desktop
+		View scrollableDesktop = new View(DESKTOP_TITLE, null, scrollPane);
+		
+		// make the desktop more-or-less immutable
+		scrollableDesktop.getWindowProperties().setCloseEnabled(false);
+		scrollableDesktop.getWindowProperties().setUndockEnabled(false);
+		scrollableDesktop.getWindowProperties().setMaximizeEnabled(false);
+		scrollableDesktop.getWindowProperties().setMinimizeEnabled(false);
+		scrollableDesktop.getWindowProperties().setDragEnabled(false);
+		
+		return scrollableDesktop;
+	}
+	
+	/**
+	 * Builds the overall UI structure.
+	 * 
+	 * <p>For a more robust UI, we are using a mix of InfoNode dockable windows
+	 * and standard Swing components.  This method defines the overall UI
+	 * structure but does <i>NOT</i> populate specific components (such as the
+	 * device list).
+	 * 
+	 * @return   InfoNode component containing the overall UI.
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
+	 */
+	private RootWindow getRootWindow()
+	{
 		// allocate views (similar to JPanel)
 		int view = 1;
 		ViewMap viewMap = new ViewMap();
@@ -127,91 +173,41 @@ public class InterfaceManager
 		viewMap.addView(view++, deviceManagerView);
 		
 		// allocate main window (similiar to JFrame)
-		//  NOTE: RootWindow *must* be allocated before other Windows
+		//  NOTE: RootWindow *must* be allocated before other InfoNode windows
 		RootWindow rootWindow = DockingUtil.createRootWindow(viewMap, false);
 
-		// customize: apply theme (similar to Swing LAF); specify tab layout; reduce clutter
-		DockingWindowsTheme theme = new ShapedGradientDockingTheme();
-		rootWindow.getRootWindowProperties().addSuperObject(theme.getRootWindowProperties());		
-
-		rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
-
+		// reduce clutter by disabling functionality
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getMaximizeButtonProperties().setVisible(false);
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getMinimizeButtonProperties().setVisible(false);
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getDockButtonProperties().setVisible(false);
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getUndockButtonProperties().setVisible(false);
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getCloseButtonProperties().setVisible(false);
 
+		// apply theme (specified in setLookAndFeel())
+		rootWindow.getRootWindowProperties().addSuperObject(theme.getRootWindowProperties());		
+
+		// specify InfoNode tab layout (similar to JTabbedPane)
+		rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
+
 		// specify view layout (similar to JSplitPane)
 		SplitWindow toolWindow = new SplitWindow(false, 0.5f, deviceManagerView, evolverView);
 		SplitWindow mainWindow = new SplitWindow(true,  0.7f, desktopView, toolWindow);
 
 		rootWindow.setWindow(mainWindow);
-		
-		
-		
-		/* --------------------[ Swing component setup ]-------------------- */
-		
-		//
-		// We use standard Swing components for the overall UI skeleton.  The 
-		// InfoNode components defined above are treated as normal Swing components.
-		//
-		
-		frame = new JFrame();
 
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		frame.setResizable(true);
-		frame.setSize(new Dimension(INITIAL_WIDTH, INITIAL_HEIGHT));
-		frame.setTitle(APPLICATION_TITLE);
-
-		// center on screen
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (screenSize.width - frame.getWidth()) / 2;
-		int y = (screenSize.height - frame.getHeight()) / 2;
-		frame.setLocation(new Point(x, y));
-		
-		// add the main menu, the InfoNode components, and the status bar
-		MenuManager menu = MenuManager.getInstance();
-		frame.setJMenuBar(menu.getMenu());
-		
-	    frame.add(rootWindow, BorderLayout.CENTER);
-
-		JLabel sb = new JLabel(" Status: Disconnected");
-	    frame.add(sb, BorderLayout.SOUTH);
+		return rootWindow;
 	}
 	
-	public static final InterfaceManager getInstance()
+	
+	
+	/**
+	 * 
+	 *
+	 */
+	public void init()
 	{
-		if(instance == null) { instance = new InterfaceManager(); }
-		return instance;
+		deviceTree = getDeviceTree();
 	}
-	
-	
-	
-	private View getDesktopView()
-	{
-		// create (and cache) the desktop
-		desktop = new MDIDesktopPane();
-		desktop.setBackground(desktopColor);
-		
-		// create a scrollpane to contain the desktop
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.getViewport().add(desktop);
-		
-		// create a view to contain the new, scrollable desktop
-		View scrollableDesktop = new View(DESKTOP_TITLE, null, scrollPane);
-		
-		// customize the view (restrict actions)
-		scrollableDesktop.getWindowProperties().setCloseEnabled(false);
-		scrollableDesktop.getWindowProperties().setUndockEnabled(false);
-		scrollableDesktop.getWindowProperties().setMaximizeEnabled(false);
-		scrollableDesktop.getWindowProperties().setMinimizeEnabled(false);
-		scrollableDesktop.getWindowProperties().setDragEnabled(false);
-		
-		return scrollableDesktop;
-	}
-	
 	
 	/**
 	 * Starts the interface.
@@ -222,12 +218,15 @@ public class InterfaceManager
 	public void show()
 	{
 		frame.setVisible(true);
+//		frame.setEnabled(false);
 	}
+	
 	
 	
 	/**
 	 * 
 	 * @return   Returns a validated list of drivers, organized by class.
+	 * 
 	 */
 	public Device[][] getValidDevices()
 	{
@@ -237,19 +236,6 @@ public class InterfaceManager
 		}
 		return verifiedDevices;
 	}
-	
-//	public Vector<Vector<Device>> getValidDevices2()
-//	{
-////		// grab the raw list of devices
-////		HardwareManager hm = HardwareManager.getInstance();
-////		Device[][] knownDevices = hm.getKnownDevices2();
-////
-////		// prepare the loading frame
-////		LoadingFrame lf = new LoadingFrame(hm.getDeviceCount());
-////		
-////		
-////		return new Vector();
-//	}
 	
 	/**
 	 * Validates the list of devices provided by the <code>HardwareManager</code>.
@@ -285,9 +271,12 @@ public class InterfaceManager
 			Vector<Device> devices = new Vector<Device>();      // inner accumulator (devices)
 			for(int j = 0; j < unverifiedDevices[i].length; j++)
 			{
-				if(unverifiedDevices[i][j].isValid())
+				Device d = unverifiedDevices[i][j];
+				
+				if(d.isValid())
 				{
-					devices.add(unverifiedDevices[i][j]);
+					devices.add(d);
+					deviceList.put(d.getDeviceName(), d);
 				}
 				lf.increment();
 			}
@@ -305,6 +294,225 @@ public class InterfaceManager
 		
 		lf.close();
 	}
+
+
+
+	public MDIDesktopPane getDesktop()
+	{
+		return desktop;
+	}
+	public JFrame getWindow()
+	{
+		return frame;
+	}
+	
+	
+	
+
+	
+
+	/**
+	 * Sets the look-and-feel.
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
+	 */
+	private void setLookAndFeel()
+	{
+		if(useNativeLAF)
+		{
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} 
+			catch(Exception e)
+			{
+				System.err.println("Could not load platform-native look-and-feel.");
+			}
+		}
+	}
+	
+	
+	public JTree getDeviceTree()
+	{
+		Device[][] d = getValidDevices();
+		
+//		Object[] hierarchy =
+//		{ 
+//				"Available Devices",
+//				new Object[]
+//				{ 
+//						"Offline Drivers",
+//						"Static driver (inactive)",
+//						"Random driver (active)"
+//				},
+//		        new Object[] 
+//		        { 
+//						"Network EACs",
+//						"eac1.cs.indiana.edu",
+//						"eac3.cs.indiana.edu",
+//						"eac4.cs.indiana.edu"
+//		        },
+//	            new Object[]
+//	            {
+//						"Local uEACs",
+//						"COM5",
+//						"COM13",
+//	            }
+//		};
+		
+//		DefaultMutableTreeNode root = processHierarchy(hierarchy);
+		DefaultMutableTreeNode root = processHierarchy(d);
+		JTree tree = new JTree(root);
+		    
+		for(int i = 0; i < tree.getRowCount(); i++)
+		{
+			tree.expandRow(i);
+		}
+		    
+		tree.addTreeSelectionListener(new DeviceTreeListener());
+		tree.addMouseListener(new DeviceTreeMouseListener());
+		    
+		return tree;
+	}
+	
+	/**
+	 * 
+	 * @param hierarchy
+	 * @return
+	 */
+	private DefaultMutableTreeNode processHierarchy(Object[] hierarchy)
+	{
+		DefaultMutableTreeNode node = new DefaultMutableTreeNode(hierarchy[0]);
+	
+		DefaultMutableTreeNode child;
+		for(int i = 1; i < hierarchy.length; i++)
+		{
+			Object nodeSpecifier = hierarchy[i];
+			if (nodeSpecifier instanceof Object[])  // Ie node with children
+			{
+				child = processHierarchy((Object[])nodeSpecifier);
+			}
+			else
+			{
+		        child = new DefaultMutableTreeNode(nodeSpecifier); // Ie Leaf
+			}
+			node.add(child);
+		}
+		
+		return(node);
+	}
+
+	
+	private JPanel getDevicePanel()
+	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+
+		JToolBar tools = new JToolBar();
+		tools.setFloatable(false);
+		  
+		JButton b = new JButton();
+		b.setText("Rescan");
+		b.setToolTipText("Scans for new devices");
+		JButton c = new JButton();
+		c.setText("Connect");
+		c.setToolTipText("Scans for new devices");
+		JButton d = new JButton();
+		d.setText("Reset");
+		d.setToolTipText("Scans for new devices");
+		tools.add(b);
+		tools.addSeparator();
+		tools.add(c);
+		tools.add(d);
+		
+		panel.add(tools, BorderLayout.NORTH);
+		
+		deviceTree = new JTree();
+//		panel.add(jt, BorderLayout.CENTER);
+		  
+		JScrollPane deviceListPane = new JScrollPane(deviceTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JPanel devicePropertiesPanel = new JPanel();
+		devicePropertiesPanel.add(new JLabel("Properties go here."));
+		  
+		JSplitPane devicePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, deviceListPane, devicePropertiesPanel);
+		panel.add(devicePane);
+		  
+		return panel;  
+	}
+	
+	private class DeviceTreeListener implements TreeSelectionListener
+	{
+		public void valueChanged(TreeSelectionEvent e)
+		{
+//		        DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
+			  
+			if(node == null)
+			{
+				System.out.println("Null: "); return;
+			}
+			Object nodeInfo = node.getUserObject();
+			  
+			if (node.isLeaf())
+			{
+				Device d = (Device)nodeInfo; // now we rock
+				
+				
+				System.out.println("Leaf: " + node.toString() + "; name: " + d.getDeviceName());
+			}
+			else
+			{
+				System.out.println("Branch: " + node.toString()); 
+			}
+		}
+	}
+	  
+	private class DeviceTreeMouseListener extends MouseAdapter {
+		public void mousePressed(MouseEvent e)
+		{
+			maybeShowPopup(e);
+		}
+
+		public void mouseReleased(MouseEvent e)
+		{
+			maybeShowPopup(e);
+		}
+
+		private void maybeShowPopup(MouseEvent e)
+		{
+			if(e.isPopupTrigger())
+			{
+				JPopupMenu p  = new JPopupMenu();
+				JMenuItem jmi = new JMenuItem("Test");
+				JMenuItem jmi2 = new JMenuItem("Test");
+				JMenuItem jmi3 = new JMenuItem("Test");
+				p.add(jmi);
+				p.add(jmi2);
+				p.add(jmi3);
+				  
+				p.show(e.getComponent(), e.getX(), e.getY());
+			}
+		}
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 //	public void testMethod()
@@ -369,195 +577,5 @@ public class InterfaceManager
 //		
 //		game.start();
 //	}
-	
 
-	/**
-	 * Sets the Swing look-and-feel.
-	 * 
-	 * @author   Ryan R. Varick
-	 * @since    2.0.0
-	 * 
-	 */
-	private void setLookAndFeel()
-	{
-		if(useNativeLAF)
-		{
-			try
-			{
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} 
-			catch(Exception e)
-			{
-				System.err.println("Could not load platform-native look-and-feel.");
-			}
-		}
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public JTree getTree()
-	{
-		    Object[] hierarchy =
-		      { "Available Devices",
-		    	new Object[] { "Offline Drivers",
-		    		  "Static driver (inactive)",
-		    		  "Random driver (active)"
-		      },
-		        new Object[] { "Network EACs",
-	                       "eac1.cs.indiana.edu",
-	                       "eac3.cs.indiana.edu",
-	                       "eac4.cs.indiana.edu" },
-	            new Object[] { "Local uEACs",
-		    		       "COM5",
-		    		       "COM13", }};
-		    DefaultMutableTreeNode root = processHierarchy(hierarchy);
-		    JTree tree = new JTree(root);
-		    
-		    for(int i = 0; i < tree.getRowCount(); i++)
-		    {
-		    	tree.expandRow(i);
-		    }
-		    
-		    tree.addTreeSelectionListener(new DeviceTreeListener());
-		    tree.addMouseListener(new DeviceTreeMouseListener());
-		    
-		    return tree;
-	}
-	
-	  private DefaultMutableTreeNode processHierarchy(Object[] hierarchy) {
-		    DefaultMutableTreeNode node =
-		      new DefaultMutableTreeNode(hierarchy[0]);
-		    DefaultMutableTreeNode child;
-		    for(int i=1; i<hierarchy.length; i++) {
-		      Object nodeSpecifier = hierarchy[i];
-		      if (nodeSpecifier instanceof Object[])  // Ie node with children
-		        child = processHierarchy((Object[])nodeSpecifier);
-		      else
-		        child = new DefaultMutableTreeNode(nodeSpecifier); // Ie Leaf
-		      node.add(child);
-		    }
-		    return(node);
-		  }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	  private JPanel getDevicePanel()
-	  {
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  JPanel panel = new JPanel();
-		  panel.setLayout(new BorderLayout());
-
-		  JToolBar tools = new JToolBar();
-		  tools.setFloatable(false);
-		  
-		  JButton b = new JButton();
-		  b.setText("Rescan");
-		  b.setToolTipText("Scans for new devices");
-		  JButton c = new JButton();
-		  c.setText("Connect");
-		  c.setToolTipText("Scans for new devices");
-		  JButton d = new JButton();
-		  d.setText("Reset");
-		  d.setToolTipText("Scans for new devices");
-		  tools.add(b);
-		  tools.addSeparator();
-		  tools.add(c);
-		  tools.add(d);
-		  
-		  panel.add(tools, BorderLayout.NORTH);
-		  
-		  JTree jt = getTree();
-//		  panel.add(jt, BorderLayout.CENTER);
-
-
-		  
-		  JScrollPane deviceListPane = new JScrollPane(jt, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		  JPanel devicePropertiesPanel = new JPanel();
-		  devicePropertiesPanel.add(new JLabel("Properties go here."));
-		  
-		  JSplitPane devicePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, deviceListPane, devicePropertiesPanel);
-		  panel.add(devicePane);
-		  
-		  return panel;  
-	  }
-	
-	  private class DeviceTreeListener implements TreeSelectionListener
-	  {
-		  public void valueChanged(TreeSelectionEvent e)
-		  {
-//		        DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-			  DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
-			  
-			  if(node == null)
-				  {
-				  	System.out.println("Null: "); return;
-				  }
-			  Object nodeInfo = node.getUserObject();
-			  
-		      if (node.isLeaf())
-		      {
-		    	  System.out.println("Leaf: " + node.toString());
-		      }
-		      else
-		      {
-		    	  System.out.println("Branch: " + node.toString()); 
-		      }
-		  }
-	  }
-	  
-	  private class DeviceTreeMouseListener extends MouseAdapter {
-		  public void mousePressed(MouseEvent e)
-		  {
-			  maybeShowPopup(e);
-		  }
-
-		  public void mouseReleased(MouseEvent e)
-		  {
-			  maybeShowPopup(e);
-		  }
-
-		  private void maybeShowPopup(MouseEvent e)
-		  {
-			  if(e.isPopupTrigger())
-			  {
-				  JPopupMenu p  = new JPopupMenu();
-				  JMenuItem jmi = new JMenuItem("Test");
-				  JMenuItem jmi2 = new JMenuItem("Test");
-				  JMenuItem jmi3 = new JMenuItem("Test");
-				  p.add(jmi);
-				  p.add(jmi2);
-				  p.add(jmi3);
-				  
-				  p.show(e.getComponent(), e.getX(), e.getY());
-			  }
-		  }
-		  }
-	
 }

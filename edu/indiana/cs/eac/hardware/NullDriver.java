@@ -22,7 +22,7 @@ import edu.indiana.cs.eac.ui.NodeMap;
 
 public class NullDriver extends Driver
 {
-
+	
 //	// API-mapped (added 03/29/2007, rvarick)
 	public Device returnDeviceFromIdentifier(String identifier)
 	{
@@ -48,6 +48,11 @@ public class NullDriver extends Driver
 	
 	private class NullDevice implements Device
 	{
+		public String toString()
+		{
+			return getTitle();
+		}
+		
 		public String getTitle()
 		{
 			return title; 

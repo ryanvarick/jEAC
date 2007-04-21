@@ -12,25 +12,17 @@
 
 package edu.indiana.cs.eac;
 
-import java.util.*;
-
 import edu.indiana.cs.eac.ui.*;
 import edu.indiana.cs.eac.hardware.*;
 
 /**
  * Base class for jEAC.
  * 
- * <p>Much of the functionality that used to be in this class
- * 
- * <p>jEAC was substantially redesigned for v2.0.  Much of the functionality
- * that used to be in this class has been moved to other subordinate classes.
- * One of the major goals for this release was to "untangle" the code and 
- * strengthen the boundaries between core components.
- * 
- * <p>For v2.0, these components (interface, timing, and device drivers) are 
- * organized under <i>Managers</i>, which support and host the various tools
- * and utilities.  <code>JEAC</code> is responsible for overseeing each of 
- * the component managers.
+ * <p>Much of the functionality that used to be in this class is now located
+ * elsewhere.  One of the primary goals for this release was to better organize
+ * the code into core components; namely the UI, timing, and hardware.  As such,
+ * <code>JEAC</code> has been heavily refactored.  Major components are now 
+ * arranged under various managers.  
  * 
  * @author   Ryan R. Varick
  * @since    1.0.0
@@ -38,8 +30,6 @@ import edu.indiana.cs.eac.hardware.*;
  */
 public final class JEAC
 {
-	// private constructor
-	private JEAC() { }
 	
 	/**
 	 * Responsible for getting the good Mr. jEAC up and running.  
@@ -53,19 +43,12 @@ public final class JEAC
 	public static void main(String[] args)
 	{
 		HardwareManager hm = HardwareManager.getInstance();
+//		TimingManager   tm = TimingManager.getInstance();
 //		hm.validateDevices();
 		
-		InterfaceManager ui = InterfaceManager.getInstance();
-		ui.verifyDevices();
+		InterfaceManager ui = new InterfaceManager();
+		ui.init();
 		ui.show();
-
-//		DeviceManager dm = DeviceManager.getInstance();
-//		ThreadManager thread = new ThreadManager();
-
-		// MVC
-//		JeacModel      model      = new JeacModel();
-//		JeacView       view       = new JeacView(model);
-//		JeacController controller = new JeacController(model, view);
 	}
 
 }
