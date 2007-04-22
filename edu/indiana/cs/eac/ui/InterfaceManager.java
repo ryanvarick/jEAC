@@ -50,7 +50,8 @@ public class InterfaceManager
 	private static final String DESKTOP_TITLE     = "Workspace";
 	private static final String DEVICE_MGR_TITLE  = "Device Manager";
 	private static final String LLA_EDITOR_TITLE  = "LLA Editor";
-	private static final String EVOLVER_TITLE     = "Evolver";
+	private static final String EVOLVER_TITLE          = "Evolver";
+	private static final String DEVICE_TREE_ROOT_TITLE = "Available devices";
 
 	private static final int INITIAL_WIDTH  = 800;
 	private static final int INITIAL_HEIGHT = 600;
@@ -323,7 +324,21 @@ public class InterfaceManager
 	 * device list takes a few seconds.  It is easier to provide appropriate UI
 	 * feedback if the population process is separated from program startup.
 	 * Second, using a separate method affords an opportunity to probe for new
-	 * devices periodically. 
+	 * devices periodically.
+	 * 
+	 * <p><i>Note that this method produces side effects in that the given
+	 * <code>JTree</code> will be manipulated directly.</i>
+	 * 
+	 * <p>This is due, in part, to my tenuous grasp of Java design decision.  As
+	 * I understand, Java is pass-by-value, although it sometimes appears to be
+	 * pass-by-reference when it comes to objects because object *references*
+	 * are passed by value.  Thus we have to use side-effects to manipulate an
+	 * already instantiated Swing component (the <code>JTree</code>).  If we use
+	 * <code>new</code>, we will clober the object reference.  See
+	 * <a href="http://javadude.com/articles/passbyvalue.htm">this article</a>
+	 * for a better explanation.
+	 * 
+	 * <p>There is probably a better (safer?) way to do this.
 	 * 
 	 * @param tree   <code>JTree</code> to populate.
 	 * 
@@ -333,8 +348,26 @@ public class InterfaceManager
 	 */
 	private void populateDeviceTree(JTree tree)
 	{
-		// build the tree 
-		DefaultMutableTreeNode root = processHierarchy(getDevices());
+		// build the heirarchy
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(DEVICE_TREE_ROOT_TITLE);
+		
+		Device[][] devices = getDevices();
+		for(int i = 0; i < devices.length; i++)
+		{
+			// get the driver class label from the first device
+			DefaultMutableTreeNode node = new DefaultMutableTreeNode(devices[i][0].getDriverName() + "s");
+			
+			// add the individual devices
+			for(int j = 0; j < devices[i].length; j++)
+			{
+				DefaultMutableTreeNode child = new DefaultMutableTreeNode(devices[i][j]);
+				node.add(child);
+			}
+			
+			root.add(node);
+		}
+		
+		// make a tree out of it
 		TreeModel t = new DefaultTreeModel(root);
 		tree.setModel(t);
 		
@@ -344,46 +377,56 @@ public class InterfaceManager
 			tree.expandRow(i);
 		}
 		
-		// add select listener and right-click listener
+		// add selection listener and right-click listener
 		tree.addTreeSelectionListener(new DeviceTreeListener());
 		tree.addMouseListener(new DeviceTreeMouseListener());
 	}
 
-	/**
-	 * Helper method for <code>populateDeviceTree()</code>.
-	 * 
-	 * <p>This method uses recursion to build the tree from the device array.
-	 * Based on <a href=http://java.sun.com/docs/books/tutorial/uiswing/components/tree.html">
-	 * How to Use Trees</a>, from Sun Microsystems.
-	 * 
-	 * @param hierarchy   Array of objects used to build the tree.
-	 * @return            Tree, in <code>DefaultMutableTreeNode</code> form.
-	 * 
-	 * @author            Ryan R. Varick
-	 * @since             2.0.0
-	 * 
-	 */
-	private DefaultMutableTreeNode processHierarchy(Object[] hierarchy)
-	{
-		DefaultMutableTreeNode node = new DefaultMutableTreeNode(hierarchy[0]);
-	
-		DefaultMutableTreeNode child;
-		for(int i = 1; i < hierarchy.length; i++)
-		{
-			Object nodeSpecifier = hierarchy[i];
-			if (nodeSpecifier instanceof Object[])  // Ie node with children
-			{
-				child = processHierarchy((Object[])nodeSpecifier);
-			}
-			else
-			{
-		        child = new DefaultMutableTreeNode(nodeSpecifier); // Ie Leaf
-			}
-			node.add(child);
-		}
-		
-		return(node);
-	}
+//	/**
+//	 * Helper method for <code>populateDeviceTree()</code>.
+//	 * 
+//	 * <p>This method uses recursion to build the tree from the device array.
+//	 * Based on <a href=http://java.sun.com/docs/books/tutorial/uiswing/components/tree.html">
+//	 * How to Use Trees</a>, from Sun Microsystems.
+//	 * 
+//	 * @param hierarchy   Array of objects used to build the tree.
+//	 * @return            Tree, in <code>DefaultMutableTreeNode</code> form.
+//	 * 
+//	 * @author            Ryan R. Varick
+//	 * @since             2.0.0
+//	 * 
+//	 */
+//	private DefaultMutableTreeNode processDevices(Object[] hierarchy)
+//	{
+//		DefaultMutableTreeNode node;
+//		if(hierarchy[0] instanceof Object[])
+//		{
+//			node = new DefaultMutableTreeNode(DEVICE_TREE_ROOT_TITLE);
+//		}
+//		else
+//		{
+//			node = new DefaultMutableTreeNode("Driver class");
+//		}
+//	
+//		DefaultMutableTreeNode child;
+//		for(int i = 0; i < hierarchy.length; i++)
+//		{
+//			Object nodeSpecifier = hierarchy[i];
+//			if(nodeSpecifier instanceof Object[])
+//			{
+//				// node with children
+//				child = processDevices((Object[])nodeSpecifier);
+//			}
+//			else
+//			{
+//				// leaf node
+//		        child = new DefaultMutableTreeNode(nodeSpecifier);
+//			}
+//			node.add(child);
+//		}
+//		
+//		return node;
+//	}
 	
 	/**
 	 * Sets the look-and-feel.

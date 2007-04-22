@@ -43,6 +43,11 @@ public class RandomDriver extends Driver
 	
 	private class NullDevice implements Device
 	{
+		public String getDriverName()
+		{
+			return "Null driver";
+		}
+
 		public String toString()
 		{
 			return getTitle();

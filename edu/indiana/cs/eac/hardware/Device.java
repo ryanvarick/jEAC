@@ -45,6 +45,7 @@ public interface Device
 	public boolean isValid();
     
 	public String getTitle();
+	public String getDriverName();
     
     
     

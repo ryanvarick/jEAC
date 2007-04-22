@@ -48,6 +48,11 @@ public class NullDriver extends Driver
 	
 	private class NullDevice implements Device
 	{
+		public String getDriverName()
+		{
+			return "Offline driver";
+		}
+		
 		public String toString()
 		{
 			return getTitle();
