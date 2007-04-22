@@ -48,10 +48,6 @@ public final class JEAC
 		InterfaceManager ui = new InterfaceManager(hm, tm);
 		ui.init();
 		ui.show();
-		
-		ui.getDevices();
-		ui.getDevices();
-		ui.getDevices();		
 	}
 
 }
