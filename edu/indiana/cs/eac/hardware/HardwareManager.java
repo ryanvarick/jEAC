@@ -44,9 +44,8 @@ public class HardwareManager
 	 */
 	private static Driver[] drivers = new Driver[]
 	{
-		Driver.getInstance(NullDriver.class),
-		Driver.getInstance(RandomDriver.class),
-//		Driver.getInstance(NullDriver3.class),
+//		Driver.getInstance(NullDriver.class),
+		Driver.getInstance(OfflineDriver.class),
 //		Driver.getInstance(NetEACDriver.class),
 		Driver.getInstance(USBuEACDriver.class)
 	};

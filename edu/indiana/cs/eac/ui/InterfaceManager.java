@@ -39,7 +39,7 @@ import edu.indiana.cs.eac.ui.listeners.*;
  * @since    2.0.0
  *
  */
-public class InterfaceManager
+public class InterfaceManager implements Manager
 {
 	/* defaults (do not alter directly; use the API instead) */
 	private boolean useNativeLAF = true;
@@ -51,7 +51,6 @@ public class InterfaceManager
 	private static final String DEVICE_MGR_TITLE  = "Device Manager";
 	private static final String LLA_EDITOR_TITLE  = "LLA Editor";
 	private static final String EVOLVER_TITLE          = "Evolver";
-	private static final String DEVICE_TREE_ROOT_TITLE = "Available devices";
 
 	private static final int INITIAL_WIDTH  = 800;
 	private static final int INITIAL_HEIGHT = 600;
@@ -61,24 +60,25 @@ public class InterfaceManager
 	/* UI components (do not alter) */
 	private JFrame frame;
 	private MDIDesktopPane desktop;
-	private JTree deviceTree;
 	
 	/* device cache */
 	private HardwareManager hm;
 	private Device[][] validDevices;
 	private HashMap<String, Device> deviceList = new HashMap<String, Device>();
 	
+	private DevicePanelManager dm;
 	private TimingManager tm;
+	private MenuManager mm;
 
 	
 	
 	/**
 	 * Returns a new <code>InterfaceManager</code> object.
 	 * 
-	 * <p>The constructor prepares the user interface and initializes other
-	 * managers (e.g. <code>MenuManager</code>) as needed.  Note that
-	 * it <b>does not</b> finalize or show UI.  These tasks are handled by
-	 * <code>init()</code> and <code>show()</code>, respectively.   
+//	 * <p>The constructor prepares the user interface and initializes other
+//	 * managers (e.g. <code>MenuManager</code>) as needed.  Note that
+//	 * it <b>does not</b> finalize or show UI.  These tasks are handled by
+//	 * <code>init()</code> and <code>show()</code>, respectively.   
 	 * 
 	 * @param hm   <code>HardwareManager</code> to use.
 	 * @param tm   <code>TimingManager</code> to use.
@@ -91,35 +91,6 @@ public class InterfaceManager
 	{
 		this.hm = hm;
 		this.tm = tm;
-		
-		// always set first
-		setLookAndFeel();
-		
-		frame = new JFrame();
-		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		frame.setResizable(true);
-		frame.setTitle(APPLICATION_TITLE);
-		
-		// start maximized where supported
-		frame.setSize(new Dimension(INITIAL_WIDTH, INITIAL_HEIGHT));
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		
-		// center on screen
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (screenSize.width - frame.getWidth()) / 2;
-		int y = (screenSize.height - frame.getHeight()) / 2;
-		frame.setLocation(new Point(x, y));
-		
-		// add components
-		MenuManager menu = MenuManager.getInstance();
-		frame.setJMenuBar(menu.getMenu());
-		
-		frame.add(getRootWindow(), BorderLayout.CENTER);
-		
-		JLabel sb = new JLabel(" Status: Disconnected");
-		frame.add(sb, BorderLayout.SOUTH);
 	}
 	
 	/**
@@ -175,49 +146,6 @@ public class InterfaceManager
 		}
 		return validDevices;
 	}
-	
-	/**
-	 * 
-	 * 
-	 * @return   Device panel component.
-	 * 
-	 *  TODO: finish device panel
-	 * 
-	 */
-	private JPanel getDevicePanel()
-	{
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-
-		JToolBar tools = new JToolBar();
-		tools.setFloatable(false);
-		  
-		JButton b = new JButton();
-		b.setText("Rescan");
-		b.setToolTipText("Scans for new devices");
-		JButton c = new JButton();
-		c.setText("Connect");
-		c.setToolTipText("Scans for new devices");
-		JButton d = new JButton();
-		d.setText("Reset");
-		d.setToolTipText("Scans for new devices");
-		tools.add(b);
-		tools.addSeparator();
-		tools.add(c);
-		tools.add(d);
-		
-		panel.add(tools, BorderLayout.NORTH);
-		
-		deviceTree = new JTree();
-		JScrollPane deviceListPane = new JScrollPane(deviceTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		JPanel devicePropertiesPanel = new JPanel();
-		devicePropertiesPanel.add(new JLabel("Properties go here."));
-		  
-		JSplitPane devicePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, deviceListPane, devicePropertiesPanel);
-		panel.add(devicePane);
-		  
-		return panel;  
-	}
 		
 	/**
 	 * Builds the overall UI structure.
@@ -249,7 +177,8 @@ public class InterfaceManager
 		View editorView = new View("LLA Editor", null, new MDIDesktopPane());
 		viewMap.addView(view++, editorView);
 
-		View deviceManagerView = new View("Device Manager", null, getDevicePanel());
+		dm = new DevicePanelManager(this);
+		View deviceManagerView = new View("Device Manager", null, dm.getDevicePanel());
 		viewMap.addView(view++, deviceManagerView);
 		
 		// allocate main window (similiar to JFrame)
@@ -310,77 +239,38 @@ public class InterfaceManager
 	 */
 	public void init()
 	{
-		populateDeviceTree(deviceTree);
-	}
-	
-	/**
-	 * Populates the valid device tree.
-	 * 
-	 * <p>This method will populate a <code>JTree</code> with the list of valid 
-	 * devices, organized by driver class.  In general, this should be the tree
-	 * placeholder initialized by the constructor.
-	 * 
-	 * <p>A separate method is used for two reasons.  First, validating the
-	 * device list takes a few seconds.  It is easier to provide appropriate UI
-	 * feedback if the population process is separated from program startup.
-	 * Second, using a separate method affords an opportunity to probe for new
-	 * devices periodically.
-	 * 
-	 * <p><i>Note that this method produces side effects in that the given
-	 * <code>JTree</code> will be manipulated directly.</i>
-	 * 
-	 * <p>This is due, in part, to my tenuous grasp of Java design decision.  As
-	 * I understand, Java is pass-by-value, although it sometimes appears to be
-	 * pass-by-reference when it comes to objects because object *references*
-	 * are passed by value.  Thus we have to use side-effects to manipulate an
-	 * already instantiated Swing component (the <code>JTree</code>).  If we use
-	 * <code>new</code>, we will clober the object reference.  See
-	 * <a href="http://javadude.com/articles/passbyvalue.htm">this article</a>
-	 * for a better explanation.
-	 * 
-	 * <p>There is probably a better (safer?) way to do this.
-	 * 
-	 * @param tree   <code>JTree</code> to populate.
-	 * 
-	 * @author       Ryan R. Varick
-	 * @since        2.0.0 
-	 * 
-	 */
-	private void populateDeviceTree(JTree tree)
-	{
-		// label the root
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(DEVICE_TREE_ROOT_TITLE);
+		// always set first
+		setLookAndFeel();
 		
-		// build the hierarchy
-		Device[][] devices = getDevices();
-		for(int i = 0; i < devices.length; i++)
-		{
-			// get the driver class label from the first device
-			DefaultMutableTreeNode node = new DefaultMutableTreeNode(devices[i][0].getDriverName() + "s");
-			
-			// add the individual devices
-			for(int j = 0; j < devices[i].length; j++)
-			{
-				DefaultMutableTreeNode child = new DefaultMutableTreeNode(devices[i][j]);
-				node.add(child);
-			}
-			
-			root.add(node);
-		}
+		frame = new JFrame();
 		
-		// make a tree out of it
-		TreeModel t = new DefaultTreeModel(root);
-		tree.setModel(t);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.setResizable(true);
+		frame.setTitle(APPLICATION_TITLE);
 		
-		// make each row visible
-		for(int i = 0; i < tree.getRowCount(); i++)
-		{
-			tree.expandRow(i);
-		}
+		// start maximized where supported
+		frame.setSize(new Dimension(INITIAL_WIDTH, INITIAL_HEIGHT));
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
-		// add selection listener and right-click listener
-		tree.addTreeSelectionListener(new DeviceTreeListener());
-		tree.addMouseListener(new DeviceTreeMouseListener());
+		// center on screen
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (screenSize.width - frame.getWidth()) / 2;
+		int y = (screenSize.height - frame.getHeight()) / 2;
+		frame.setLocation(new Point(x, y));
+		
+		// add main menu
+		MenuManager menu = new MenuManager();
+		menu.init();
+		frame.setJMenuBar(menu.getMenu());
+		
+		// add root window, containing a combination of InfoNode and Swing components
+		frame.add(getRootWindow(), BorderLayout.CENTER);
+//		populateDeviceTree(deviceTree);
+		
+		// add status bar
+		JLabel sb = new JLabel(" Status: Disconnected");
+		frame.add(sb, BorderLayout.SOUTH);		
 	}
 	
 	/**

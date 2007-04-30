@@ -36,6 +36,8 @@ public class USBuEACDriver extends Driver implements Device
 	
 	private String dname = "Local uEAC";
 	
+	public String toString() { return getTitle(); }
+	
 	public String getTitle()
 	{
 		return "uEAC on " + portName;

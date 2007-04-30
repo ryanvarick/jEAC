@@ -1,33 +1,81 @@
+/*
+ * This file is part of jEAC (http://jeac.sf.net/).
+ * 
+ * Copyright (C) 2007.  All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ * 
+ */
+
 package edu.indiana.cs.eac.ui.listeners;
 
 import javax.swing.event.*;
 import javax.swing.tree.*;
 
 import edu.indiana.cs.eac.hardware.*;
+import edu.indiana.cs.eac.ui.*;
 
+
+
+/**
+ * 
+ * 
+ * @author   Ryan R. Varick
+ * @since    2.0.0
+ * 
+ */
 public class DeviceTreeListener implements TreeSelectionListener
 {
+	private InterfaceManager im;
+	
+	public DeviceTreeListener(InterfaceManager im)
+	{
+		this.im = im;
+	}
+
+	
 	public void valueChanged(TreeSelectionEvent e)
 	{
-//	        DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
-		  
-		if(node == null)
+		DefaultMutableTreeNode node = null;
+		
+		// null ptr exception possibly thrown when right-clicking out of bounds
+		try
 		{
-			System.out.println("Null: "); return;
+			node = (DefaultMutableTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
 		}
+		catch(NullPointerException e2)
+		{
+			System.out.println("Null: ");
+			return;
+		}
+		  
+//		if(node == null)
+//		{
+//			System.out.println("Null: "); return;
+//		}
 		Object nodeInfo = node.getUserObject();
 		  
-		if (node.isLeaf())
+		if(node.isLeaf())
 		{
 			Device d = (Device)nodeInfo; // now we rock
-			
+			// 1. changeMenuBar(d);
+			// 2. updateDeviceControls(d);
+			// new: updateSelectedDevice(d);
 			
 			System.out.println("Leaf: " + node.toString() + "; name: " + d.getDeviceName());
 		}
 		else
 		{
-			System.out.println("Branch: " + node.toString()); 
+			System.out.println("Branch: " + node.toString());
+			
+			// 1. disableMenuBar();
+			// 2. disableDeviceControls();
+			// new: updateSelectedDevice(null);
+			
+//			(DefaultMutableTreeNode)e.get
 		}
 	}
 }

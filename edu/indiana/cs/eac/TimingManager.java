@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package edu.indiana.cs.eac;
 
 /**
@@ -9,6 +10,7 @@ package edu.indiana.cs.eac;
  */
 public class TimingManager
 {
+	/** @deprecated No more singletons!! */
 	public static TimingManager getInstance()
 	{
 		return new TimingManager();

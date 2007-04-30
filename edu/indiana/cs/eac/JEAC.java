@@ -22,32 +22,36 @@ import edu.indiana.cs.eac.hardware.*;
  * elsewhere.  One of the primary goals for this release was to better organize
  * the code into core components; namely the UI, timing, and hardware.  As such,
  * <code>JEAC</code> has been heavily refactored.  Major components are now 
- * arranged under various managers.  
+ * arranged under <i>Manager</i> classes, which act as the top-level interface
+ * for other components.
  * 
- * @author   Ryan R. Varick
- * @since    1.0.0
+ * @author    Ryan R. Varick
+ * @since     1.0.0
+ * 
+ * @version   2.0.0
  *
  */
 public final class JEAC
 {
-	
+
 	/**
-	 * Responsible for getting the good Mr. jEAC up and running.  
+	 * Starts jEAC.  
 	 * 
 	 * @param args   Command line arguments are ignored.
 	 * 
 	 * @author       Ryan R. Varick
 	 * @since        1.0.0
 	 * 
+	 * @version      2.0.0
+	 * 
 	 */
 	public static void main(String[] args)
 	{
 		HardwareManager hm = HardwareManager.getInstance();
-		TimingManager   tm = TimingManager.getInstance();
-		
+		TimingManager tm = TimingManager.getInstance();
+
 		InterfaceManager ui = new InterfaceManager(hm, tm);
 		ui.init();
 		ui.show();
 	}
-
 }

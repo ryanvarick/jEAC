@@ -51,10 +51,14 @@ import edu.indiana.cs.testing.ui.*;
  */
 public class MenuManager
 {
-	private MenuManager()
-	{
-		init();
-	}
+//	private MenuManager()
+//	{
+//		init();
+//	}
+	
+	
+	
+	/** @deprecated No need for a singleton */
 	public static final MenuManager getInstance()
 	{
 		return new MenuManager();
