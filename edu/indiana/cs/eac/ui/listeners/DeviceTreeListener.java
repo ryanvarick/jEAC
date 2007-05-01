@@ -29,11 +29,11 @@ import edu.indiana.cs.eac.ui.*;
  */
 public class DeviceTreeListener implements TreeSelectionListener
 {
-	private InterfaceManager im;
+	private DevicePanelManager dm;
 	
-	public DeviceTreeListener(InterfaceManager im)
+	public DeviceTreeListener(DevicePanelManager dm)
 	{
-		this.im = im;
+		this.dm = dm;
 	}
 
 	
@@ -42,6 +42,7 @@ public class DeviceTreeListener implements TreeSelectionListener
 		DefaultMutableTreeNode node = null;
 		
 		// null ptr exception possibly thrown when right-clicking out of bounds
+		// TODO: fire change listener on null ptr (mode: off)
 		try
 		{
 			node = (DefaultMutableTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
@@ -61,6 +62,8 @@ public class DeviceTreeListener implements TreeSelectionListener
 		if(node.isLeaf())
 		{
 			Device d = (Device)nodeInfo; // now we rock
+			
+			dm.updateSelectedDevice(d);
 			// 1. changeMenuBar(d);
 			// 2. updateDeviceControls(d);
 			// new: updateSelectedDevice(d);
@@ -71,6 +74,7 @@ public class DeviceTreeListener implements TreeSelectionListener
 		{
 			System.out.println("Branch: " + node.toString());
 			
+			dm.updateSelectedDevice(null);
 			// 1. disableMenuBar();
 			// 2. disableDeviceControls();
 			// new: updateSelectedDevice(null);

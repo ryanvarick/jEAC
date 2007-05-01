@@ -5,13 +5,16 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.tree.*;
 
+import edu.indiana.cs.eac.ui.*;
+
 public class DeviceTreeMouseListener extends MouseAdapter
 {
-	private JTree tree;
+//	private JTree tree;
+	private DevicePanelManager dm;
 	
-	public DeviceTreeMouseListener(JTree tree)
+	public DeviceTreeMouseListener(DevicePanelManager dm)
 	{
-		this.tree = tree;
+		this.dm = dm;
 	}
 	
 	public void mousePressed(MouseEvent e)
@@ -29,6 +32,8 @@ public class DeviceTreeMouseListener extends MouseAdapter
 	{
 		if(e.isPopupTrigger())
 		{
+			JTree tree = dm.getTree();
+			
 			// select the active node on right click
 	         int selRow = tree.getRowForLocation(e.getX(), e.getY());
 	         TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());

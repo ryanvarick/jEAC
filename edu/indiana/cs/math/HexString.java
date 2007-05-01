@@ -1,5 +1,6 @@
 package edu.indiana.cs.math;
 
+/** @deprecated */
 public class HexString {
 	public static int toDecimal(String hexString) throws NumberFormatException{
 		int result = 0;

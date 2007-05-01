@@ -29,6 +29,7 @@ public class DevicePanelManager
 	private InterfaceManager im;
 	
 	private JTree deviceTree;
+	private JToolBar tools;
 
 	
 	public DevicePanelManager(InterfaceManager im)
@@ -50,7 +51,7 @@ public class DevicePanelManager
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 
-		JToolBar tools = new JToolBar();
+		tools = new JToolBar();
 		tools.setFloatable(false);
 		  
 		JButton c = new JButton();
@@ -155,7 +156,35 @@ public class DevicePanelManager
 		}
 		
 		// add selection listener and right-click listener
-		tree.addTreeSelectionListener(new DeviceTreeListener(im));
-		tree.addMouseListener(new DeviceTreeMouseListener(tree));
+		tree.addTreeSelectionListener(new DeviceTreeListener(this));
+		tree.addMouseListener(new DeviceTreeMouseListener(this));
 	}
+	
+	
+	public void updateSelectedDevice(Device d)
+	{
+		if(d == null)
+		{
+			// 1. disable menu bar
+			tools.setEnabled(false);
+//			tools.setVisible(false);
+			
+			// 2. disable properties panel
+			
+			System.out.println("Turning shit off.");
+			return;
+		}
+		
+		tools.setEnabled(false);
+//		tools.setVisible(true);
+		
+		System.out.println("Activating new device");
+		
+	}
+	
+	public JTree getTree()
+	{
+		return deviceTree;
+	}
+	
 }

@@ -15,7 +15,6 @@ package edu.indiana.cs.eac.ui;
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.tree.*;
 
 import net.infonode.docking.*;
 import net.infonode.docking.theme.*;
@@ -24,8 +23,6 @@ import net.infonode.util.*;
 
 import edu.indiana.cs.eac.*;
 import edu.indiana.cs.eac.hardware.*;
-import edu.indiana.cs.eac.ui.listeners.*;
-
 
 
 
@@ -33,7 +30,6 @@ import edu.indiana.cs.eac.ui.listeners.*;
  * Multi-document interface (MDI) manager.
  * 
  * <p>This class implements an MDI manager.
- * based on http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html  
  * 
  * @author   Ryan R. Varick
  * @since    2.0.0
@@ -42,7 +38,7 @@ import edu.indiana.cs.eac.ui.listeners.*;
 public class InterfaceManager implements Manager
 {
 	/* defaults (do not alter directly; use the API instead) */
-	private boolean useNativeLAF = true;
+	private static boolean USE_NATIVE_LAF = true;
 	private DockingWindowsTheme theme = new ShapedGradientDockingTheme();
 	
 	// TODO: externalize strings
@@ -75,10 +71,9 @@ public class InterfaceManager implements Manager
 	/**
 	 * Returns a new <code>InterfaceManager</code> object.
 	 * 
-//	 * <p>The constructor prepares the user interface and initializes other
-//	 * managers (e.g. <code>MenuManager</code>) as needed.  Note that
-//	 * it <b>does not</b> finalize or show UI.  These tasks are handled by
-//	 * <code>init()</code> and <code>show()</code>, respectively.   
+	 * <p>Note that the constructor does not initialize or show the interface.
+	 * These tasks are handled by <code>init()</code> and <code>show()</code>,
+	 * respectively.  
 	 * 
 	 * @param hm   <code>HardwareManager</code> to use.
 	 * @param tm   <code>TimingManager</code> to use.
@@ -100,6 +95,10 @@ public class InterfaceManager implements Manager
 	 * floating windows.  Free-floating windows are contained within the desktop 
 	 * area, which behaves like a standard multi-document interface (MDI).
 	 * 
+	 * <p>Note that the MDI is based on code outlined in a JavaWorld article,
+	 * <a href=http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html>
+	 * Conquer Swing deficiencies in MDI development</a>.
+	 * 
 	 * @return   MDI desktop component.
 	 * 
 	 * @author   Ryan R. Varick
@@ -108,7 +107,8 @@ public class InterfaceManager implements Manager
 	 */
 	private View getDesktopView()
 	{
-		// create (and cache) the desktop; we will need it later
+		// create (and cache) the desktop; we will need the reference later
+		//  when we start to add windows
 		desktop = new MDIDesktopPane();
 		desktop.setBackground(DESKTOP_COLOR);
 		
@@ -119,7 +119,8 @@ public class InterfaceManager implements Manager
 		// create an InfoNode view to contain the new, scrollable desktop
 		View scrollableDesktop = new View(DESKTOP_TITLE, null, scrollPane);
 		
-		// make the desktop more-or-less immutable
+		// make the desktop more-or-less immutable by disabling common functions
+		//  FIXME: Expand tab to show full name
 		scrollableDesktop.getWindowProperties().setCloseEnabled(false);
 		scrollableDesktop.getWindowProperties().setUndockEnabled(false);
 		scrollableDesktop.getWindowProperties().setMaximizeEnabled(false);
@@ -192,7 +193,7 @@ public class InterfaceManager implements Manager
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getUndockButtonProperties().setVisible(false);
 		rootWindow.getRootWindowProperties().getTabWindowProperties().getCloseButtonProperties().setVisible(false);
 
-		// apply theme (specified in setLookAndFeel())
+		// apply InfoNode theme (separate from Swing LAF)
 		rootWindow.getRootWindowProperties().addSuperObject(theme.getRootWindowProperties());		
 
 		// specify InfoNode tab layout (similar to JTabbedPane)
@@ -211,7 +212,8 @@ public class InterfaceManager implements Manager
 	
 
 
-
+	// TODO: Clean up getters, eliminate unnecessary functions
+	public DevicePanelManager getDevicePanelManager() { return this.dm; }
 	public MDIDesktopPane getDesktop()
 	{
 		return desktop;
@@ -231,23 +233,26 @@ public class InterfaceManager implements Manager
 	/**
 	 * Initializes the UI.
 	 * 
-	 * <p>This method populates the UI components that were only partially
-	 * initialized by the constructor.  Generally, this means that the UI
-	 * components handled here take a noticable amount of time, or need to be
-	 * handled outside the constructor for various reasons.
-	 *
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
 	 */
 	public void init()
 	{
-		// always set first
-		setLookAndFeel();
+		// apply Swing look-and-feel first
+		if(USE_NATIVE_LAF)
+		{
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} 
+			catch(Exception e)
+			{
+				System.err.println("Could not load platform-native look-and-feel.");
+			}
+		}
 		
 		frame = new JFrame();
-		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		frame.setResizable(true);
-		frame.setTitle(APPLICATION_TITLE);
 		
 		// start maximized where supported
 		frame.setSize(new Dimension(INITIAL_WIDTH, INITIAL_HEIGHT));
@@ -259,52 +264,35 @@ public class InterfaceManager implements Manager
 		int y = (screenSize.height - frame.getHeight()) / 2;
 		frame.setLocation(new Point(x, y));
 		
-		// add main menu
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.setResizable(true);
+		frame.setTitle(APPLICATION_TITLE);
+		
+		// add: main menu
 		MenuManager menu = new MenuManager();
 		menu.init();
 		frame.setJMenuBar(menu.getMenu());
 		
-		// add root window, containing a combination of InfoNode and Swing components
+		// add: content area, which is a mix of InfoNode and Swing components
 		frame.add(getRootWindow(), BorderLayout.CENTER);
-//		populateDeviceTree(deviceTree);
 		
-		// add status bar
+		// add: status bar
+		//  TODO: sketch out status bar
 		JLabel sb = new JLabel(" Status: Disconnected");
 		frame.add(sb, BorderLayout.SOUTH);		
 	}
 	
 	/**
-	 * Sets the look-and-feel.
-	 * 
+	 * Starts the interface.
+	 *
 	 * @author   Ryan R. Varick
 	 * @since    2.0.0
-	 * 
-	 */
-	private void setLookAndFeel()
-	{
-		if(useNativeLAF)
-		{
-			try
-			{
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} 
-			catch(Exception e)
-			{
-				System.err.println("Could not load platform-native look-and-feel.");
-			}
-		}
-	}
-
-	/**
-	 * Starts the interface.
-	 * 
-	 * needs to be separate from the constructor
 	 *
 	 */
 	public void show()
 	{
 		frame.setVisible(true);
-//		frame.setEnabled(false);
 	}
 
 	/**
@@ -365,74 +353,5 @@ public class InterfaceManager implements Manager
 		
 		return validated;
 	}
-	
-	
-	
-	
-	
-	
-	
-//	public void testMethod()
-//	{
-//		Game game = new Game();
-//		
-//		game.setManualControlEnabled(true);
-//		game.setUseMomentum(true);
-//		
-//		game.setGrowSnake(true);
-//		game.setIgnoreSelfCollisions(true);
-//		game.setIgnoreWallCollisions(true);
-//		
-//		// allocate generation information panel
-//		JPanel generalPanel = new JPanel(new GridLayout(2, 2));
-//		generalPanel.setBorder(BorderFactory.createTitledBorder("General information"));
-//		generalPanel.add(new JLabel(" Food eaten:"));
-////		generalPanel.add(foodEaten);
-//		generalPanel.add(new JLabel(" Time remaining:"));
-////		generalPanel.add(timeLeft);
-//		
-//		// allocate world information panel
-//		JPanel worldPanel = new JPanel(new GridLayout(5, 2));
-//		worldPanel.setBorder(BorderFactory.createTitledBorder("World information"));
-//		worldPanel.add(new JLabel(" Snake (x,y):"));
-////		worldPanel.add(snakeLocation);
-//		worldPanel.add(new JLabel(" Food (x,y):"));
-////		worldPanel.add(foodLocation);
-//		worldPanel.add(new JLabel(" Absolute dt:"));
-////		worldPanel.add(absoluteFoodDistance);
-//		worldPanel.add(new JLabel(" Absolute direction:"));
-////		worldPanel.add(snakeDirection);
-//		worldPanel.add(new JLabel(" Relative direction (dx,dy):"));
-////		worldPanel.add(relativeFoodDistance);
-//
-//		// allocate snake information panel
-//		JPanel snakePanel = new JPanel(new GridLayout(3, 2));
-//		snakePanel.setBorder(BorderFactory.createTitledBorder("Snake information"));
-//		snakePanel.add(new JLabel(" Input vector:"));
-//		snakePanel.add(new JLabel());
-//		snakePanel.add(new JLabel(" Output vector:"));
-//		snakePanel.add(new JLabel());
-//		snakePanel.add(new JLabel(" Fitness score:"));
-////		snakePanel.add(fitness);
-//
-//		// finalize the window
-//		// TODO: Register the game frame with the MDI manager
-//		JInternalFrame gameWindow = new JInternalFrame();
-//		gameWindow.setLayout(new BoxLayout(gameWindow.getContentPane(), BoxLayout.Y_AXIS));
-//		gameWindow.add(game);
-//		gameWindow.add(generalPanel);
-//		gameWindow.add(worldPanel);
-//		gameWindow.add(snakePanel);
-//		gameWindow.setResizable(false);
-//        gameWindow.setIconifiable(true);
-//        gameWindow.setClosable(true);
-//
-//		gameWindow.setTitle("Snaaaaake!");
-//		gameWindow.pack();
-//		gameWindow.setVisible(true);
-//		desktop.add(gameWindow);
-//		
-//		game.start();
-//	}
 
 }
