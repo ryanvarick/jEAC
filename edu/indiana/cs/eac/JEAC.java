@@ -12,8 +12,10 @@
 
 package edu.indiana.cs.eac;
 
-import edu.indiana.cs.eac.ui.*;
 import edu.indiana.cs.eac.hardware.*;
+import edu.indiana.cs.eac.ui.*;
+
+
 
 /**
  * Base class for jEAC.
@@ -33,7 +35,6 @@ import edu.indiana.cs.eac.hardware.*;
  */
 public final class JEAC
 {
-
 	/**
 	 * Starts jEAC.  
 	 * 
@@ -54,4 +55,5 @@ public final class JEAC
 		ui.init();
 		ui.show();
 	}
+
 }

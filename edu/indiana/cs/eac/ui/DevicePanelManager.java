@@ -13,14 +13,24 @@
 package edu.indiana.cs.eac.ui;
 
 import java.awt.*;
-
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.tree.*;
+
+import net.infonode.docking.*;
+import net.infonode.docking.util.*;
 
 import edu.indiana.cs.eac.hardware.*;
 import edu.indiana.cs.eac.ui.listeners.*;
 
+
+
 /**
+ * TODO: javadoc description
+ * 
+ * @author   Ryan R. Varick
+ * @since    2.0.0
+ *
  */
 public class DevicePanelManager
 {
@@ -29,8 +39,14 @@ public class DevicePanelManager
 	private InterfaceManager im;
 	
 	private JTree deviceTree;
-	private JToolBar tools;
-
+	private JToolBar toolbar;
+	
+	private JButton connectionButton, resetButton, rescanButton;
+	private JButton[] buttonList;
+	
+	private Device activeDevice;
+	
+	
 	
 	public DevicePanelManager(InterfaceManager im)
 	{
@@ -46,46 +62,95 @@ public class DevicePanelManager
 	 *  TODO: finish device panel
 	 * 
 	 */
-	public JPanel getDevicePanel()
+	public JComponent getDevicePanel()
 	{
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-
-		tools = new JToolBar();
-		tools.setFloatable(false);
-		  
-		JButton c = new JButton();
-		c.setText("Connect");
-//		c.setToolTipText("Scans for new devices");
-		tools.add(c);
-
-//		tools.addSeparator();
-
-		JButton d = new JButton();
-		d.setText("Reset");
-		d.setToolTipText("Scans for new devices");
-		tools.add(d);
-
-		tools.addSeparator();
-
-		JButton b = new JButton();
-		b.setText("Rescan");
-		b.setToolTipText("Scans for new devices");
-		tools.add(b);
-
-		
-		panel.add(tools, BorderLayout.SOUTH);
-		
+		// initialize the toolbar, with no selected device
+		toolbar = getToolBar();
+		updateSelectedDevice(null);
+				
 		deviceTree = new JTree();
 		populateDeviceTree(deviceTree);
 		JScrollPane deviceListPane = new JScrollPane(deviceTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		JPanel devicePropertiesPanel = new JPanel();
-		devicePropertiesPanel.add(new JLabel("Properties go here."));
+		
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BorderLayout());
+		topPanel.add(deviceListPane, BorderLayout.CENTER);
+		topPanel.add(toolbar, BorderLayout.NORTH);
+				
+		JPanel propertiesPanel = new JPanel();
+		propertiesPanel.add(new JLabel("No devices currently connected."));
+		
+		
+		
+		View tp = new View("Available Devices", null, topPanel);
+		tp.getViewProperties().setAlwaysShowTitle(false);
+		ViewMap tpv = new ViewMap();
+		tpv.addView(0, tp);
+		
+//		RootWindow tpw = DockingUtil.createRootWindow(tpv, false);
+		RootWindow tpw = InterfaceManager.createMinimalRootWindow(tpv);
+		
+		View pp = new View("COM4", null, propertiesPanel);
+		View pp2 = new View("eac2.cs.indiana.edu", null, propertiesPanel);
+
+		ViewMap v = new ViewMap();
+		v.addView(0, pp);
+		v.addView(1, pp2);
+		
+//		RootWindow tw = DockingUtil.createRootWindow(v, false);
+		RootWindow tw = InterfaceManager.createMinimalRootWindow(v);
+		
+//		TabWindow tw = new TabWindow();
+//		tw.addTab(pp);
+//		tw.addTab(pp2);
+		
+		SplitWindow panelContainer = new SplitWindow(false, 0.4f, tpw, tw);
+//		SplitWindow panelContainer = new SplitWindow(false, 0.4f, pp, pp2);
+		
+		v.addView(2, new View("Blah", null, new JLabel("Nothing here!")));
+		
+//		JSplitPane panelContainer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, topPanel, propertiesPanel);
+//		JSplitPane panelContainer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tp, tw);
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(panelContainer, BorderLayout.CENTER);
 		  
-		JSplitPane devicePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, deviceListPane, devicePropertiesPanel);
-		panel.add(devicePane);
-		  
-		return panel;  
+		return panelContainer;
+	}
+	
+	private JToolBar getToolBar()
+	{
+		JToolBar bar = new JToolBar();
+		bar.setFloatable(false);
+		bar.setRollover(true);
+//		bar.setLayout(new BorderLayout());
+		
+		connectionButton = new JButton("Connect");
+		connectionButton.addActionListener(new CxnListener());
+		bar.add(connectionButton);
+				
+		resetButton  = new JButton("Reset");
+//		resetButton.addActionListener(new ConnectionButtonListener(this, resetButton));
+		resetButton.addActionListener(new ResetListener());
+		bar.add(resetButton);
+		
+		bar.addSeparator();
+		
+		rescanButton = new JButton("Rescan");
+//		rescanButton.addActionListener(new ConnectionButtonListener(this, rescanButton));
+		bar.add(rescanButton);
+		
+		
+		// register components
+		buttonList = new JButton[]
+		{
+			connectionButton,
+			resetButton,
+			rescanButton,  // FIXME: leave in for now for proper Swing layout
+		};
+
+		return bar;
 	}
 	
 	/**
@@ -160,25 +225,59 @@ public class DevicePanelManager
 		tree.addMouseListener(new DeviceTreeMouseListener(this));
 	}
 	
-	
+	public Device getActiveDevice()
+	{
+		return this.activeDevice;
+	}
 	public void updateSelectedDevice(Device d)
 	{
+		this.activeDevice = d;
+		
 		if(d == null)
 		{
 			// 1. disable menu bar
-			tools.setEnabled(false);
+			toolbar.setEnabled(false);
 //			tools.setVisible(false);
 			
 			// 2. disable properties panel
 			
 			System.out.println("Turning shit off.");
+			
+//			toggleButton.setEnabled(false);
+			for(int i = 0; i < buttonList.length; i++)
+			{
+				buttonList[i].setEnabled(false);
+			}
+			
 			return;
 		}
 		
-		tools.setEnabled(false);
+//		for(int i = 0; i < buttonList.length; i++)
+//		{
+//			buttonList[i].setEnabled(true);
+//		}
+		
+		if(d.isConnected())
+		{
+			connectionButton.setText("Disconnect");
+			connectionButton.setEnabled(true);
+			
+			resetButton.setEnabled(true);
+		}
+		else
+		{
+			connectionButton.setText("Connect");
+			connectionButton.setEnabled(true);
+			
+			resetButton.setEnabled(false);
+		}
+		
+
+		
 //		tools.setVisible(true);
 		
 		System.out.println("Activating new device");
+		connectionButton.setEnabled(true);
 		
 	}
 	
@@ -186,5 +285,72 @@ public class DevicePanelManager
 	{
 		return deviceTree;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//	@SuppressWarnings("unused")
+	private class CxnListener implements ActionListener
+	{
+
+		public void actionPerformed(ActionEvent arg0)
+		{
+			if(activeDevice.isConnected())
+			{
+				activeDevice.disconnect();
+				updateSelectedDevice(null);
+			}
+			else
+			{
+				try
+				{
+					activeDevice.connect();
+					updateSelectedDevice(activeDevice);
+				}
+				catch(Exception e)
+				{
+					
+				}
+			}
+			
+		}
+		
+	}
+	
+	
+	private class ResetListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			JOptionPane.showConfirmDialog(null, "Resetting this device will clear all connections and cannot be undone.  Are you sure you want to proceed?", "Confirm reset", JOptionPane.YES_NO_OPTION);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

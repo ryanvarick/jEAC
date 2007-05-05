@@ -173,6 +173,7 @@ public class InterfaceManager implements Manager
 		viewMap.addView(view++, desktopView);
 
 		View evolverView = new View("Evolver", null, new MDIDesktopPane());
+//		evolverView.getWindowProperties().set
 		viewMap.addView(view++, evolverView);
 
 		View editorView = new View("LLA Editor", null, new MDIDesktopPane());
@@ -201,7 +202,7 @@ public class InterfaceManager implements Manager
 
 		// specify view layout (similar to JSplitPane)
 		SplitWindow toolWindow = new SplitWindow(false, 0.5f, deviceManagerView, evolverView);
-		SplitWindow mainWindow = new SplitWindow(true,  0.7f, desktopView, toolWindow);
+		SplitWindow mainWindow = new SplitWindow(true,  0.75f, desktopView, toolWindow);
 
 		rootWindow.setWindow(mainWindow);
 
@@ -221,6 +222,10 @@ public class InterfaceManager implements Manager
 	public JFrame getWindow()
 	{
 		return frame;
+	}
+	public Device getActiveDevice()
+	{
+		return dm.getActiveDevice();
 	}
 	
 	
@@ -270,7 +275,7 @@ public class InterfaceManager implements Manager
 		frame.setTitle(APPLICATION_TITLE);
 		
 		// add: main menu
-		MenuManager menu = new MenuManager();
+		MenuManager menu = new MenuManager(this);
 		menu.init();
 		frame.setJMenuBar(menu.getMenu());
 		
@@ -352,6 +357,20 @@ public class InterfaceManager implements Manager
 		validated = drivers.toArray(validated);
 		
 		return validated;
+	}
+	
+	public static RootWindow createMinimalRootWindow(AbstractViewMap v)
+	{
+		RootWindow rootWindow = DockingUtil.createRootWindow(v, false);
+
+		// reduce clutter by disabling functionality
+		rootWindow.getRootWindowProperties().getTabWindowProperties().getMaximizeButtonProperties().setVisible(false);
+		rootWindow.getRootWindowProperties().getTabWindowProperties().getMinimizeButtonProperties().setVisible(false);
+		rootWindow.getRootWindowProperties().getTabWindowProperties().getDockButtonProperties().setVisible(false);
+		rootWindow.getRootWindowProperties().getTabWindowProperties().getUndockButtonProperties().setVisible(false);
+		rootWindow.getRootWindowProperties().getTabWindowProperties().getCloseButtonProperties().setVisible(false);
+
+		return rootWindow;
 	}
 
 }

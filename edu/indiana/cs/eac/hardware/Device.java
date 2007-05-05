@@ -43,6 +43,7 @@ public interface Device
 
 	
 	public boolean isValid();
+	public boolean isConnected();
     
 	public String getTitle();
 	public String getDriverName();

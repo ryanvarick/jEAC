@@ -50,6 +50,13 @@ public class OfflineDriver extends Driver
 	
 	private class NullDevice implements Device
 	{
+		private boolean connected = false;
+
+		public boolean isConnected()
+		{
+			return this.connected;
+		}
+		
 		public String getDriverName()
 		{
 			// TODO: reference container class
@@ -161,6 +168,7 @@ public class OfflineDriver extends Driver
 		
 		public void connect() throws ConnectionException
 		{
+			this.connected = true;
 		}
 	    
 		public void reload() throws ConnectionException {
@@ -188,7 +196,7 @@ public class OfflineDriver extends Driver
 	    }
 		
 	    public void disconnect(){	
-	    	
+			this.connected = false;	    	
 		}
 	    
 	    public int getNumLLAs() {

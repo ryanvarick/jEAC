@@ -53,10 +53,10 @@ public abstract class Driver
 	// 1. revert this to an interface
 	// 2. move this code into DeviceManager
 	//    (we cannot force subtypes to be Singletons)
-	public static Driver[] getDrivers()
-	{
-		return new Driver[] { new NullDriver(), new NullDriver() };
-	}
+//	public static Driver[] getDrivers()
+//	{
+//		return new Driver[] { new NullDriver(), new NullDriver() };
+//	}
 	
 //	public abstract void testMe();
 	

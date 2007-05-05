@@ -133,6 +133,8 @@ public class USBuEACDriver extends Driver implements Device
 	// cached copy of the gradient
 	private double[][] lastGradient;
 
+	private boolean connected = false;
+
 
 	
 	/**
@@ -353,6 +355,8 @@ public class USBuEACDriver extends Driver implements Device
 		{
 			throw new ConnectionException("Error connecting; serial port in use.");
 		}
+		
+		this.connected = true;
 	}
 
 	// API-mapped
@@ -371,9 +375,12 @@ public class USBuEACDriver extends Driver implements Device
 			}
 			serialPort.close();
 			serialPort = null;
+			
+			this.connected = false;
 		}
 		else 
 		{
+			// TODO: probably make this into an exception
 			System.err.println("Tried to disconnect a null serial port.");
 		}
 	}
@@ -1334,5 +1341,10 @@ public class USBuEACDriver extends Driver implements Device
 //			e.printStackTrace();
 //		}
 //		return isV;
+	}
+
+	public boolean isConnected()
+	{
+		return this.connected;
 	}
 }

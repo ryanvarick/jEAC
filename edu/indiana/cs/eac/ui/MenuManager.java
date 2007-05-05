@@ -51,41 +51,17 @@ import edu.indiana.cs.testing.ui.*;
  */
 public class MenuManager
 {
-//	private MenuManager()
-//	{
-//		init();
-//	}
-	
-	
-	
-	/** @deprecated No need for a singleton */
-	public static final MenuManager getInstance()
-	{
-		return new MenuManager();
-	}
-	
-	// FIXME: There is no need for any of these to be fields
-	private InterfaceManager ui;
-	
 	private JMenuBar menu;
+	private InterfaceManager im;
 	
-	private JMenu connectMenu, runMenu;
-	private ButtonGroup driverButtonGroup;
-	private ButtonModel hack_driverDeselectionModel;
-	private JMenuItem loadMenuItem, saveMenuItem, saveAsMenuItem;
-	private JMenuItem disconnectMenuItem;
-	private JMenuItem resetMenuItem;
-//	private JMenuItem evolverMenuItem;
-	private JCheckBoxMenuItem gradient2DMenuItem, gradient3DMenuItem, ledMenuItem;
-	private JCheckBoxMenuItem evolverMenuItem, llaViewerMenuItem;
-
-	private Console evolverFrame;
-	private LLAInspectorFrame llaFrame;
-
-	private Gradient3D gradient3DPanel;
-	private Gradient2D gradient2DPanel;
-	private NodeMap    nodemap;
-	private StatusBarManager  statusbar;
+	private MenuManager()
+	{
+		
+	}
+	public MenuManager(InterfaceManager im)
+	{
+		this.im = im;
+	}
 	
 
 
@@ -95,66 +71,66 @@ public class MenuManager
 		menu = new JMenuBar();
 
 		/* DEVICE MENU */
-		JMenu deviceMenu = new JMenu("Device");
-		deviceMenu.setMnemonic('D');
+		JMenu deviceMenu = new JEACMenuManager();
+		deviceMenu.setText("jEAC");
+		deviceMenu.setMnemonic('J');
 
-		JMenu connectMenu = new ConnectMenuManager();
-		connectMenu.setText("Connect");
-		connectMenu.setMnemonic('C');
-		deviceMenu.add(connectMenu);
-		
-		loadMenuItem = new JMenuItem("Load configuration...", 'L');
-//		loadMenuItem.addActionListener(new FileIOListener(this));
-		loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
-		loadMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_open.gif")));
-		loadMenuItem.setEnabled(false);
-		deviceMenu.add(loadMenuItem);
-		
-		deviceMenu.add(new JSeparator());
-
-		saveMenuItem = new JMenuItem("Save configuration", 'S');
-//		saveMenuItem.addActionListener(new FileIOListener(this));
-		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-		saveMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_save.gif")));
-		saveMenuItem.setEnabled(false);
-		deviceMenu.add(saveMenuItem);
-		
-		saveAsMenuItem = new JMenuItem("Save configuration as...", 'A');
-		saveAsMenuItem.setIcon(new BlankIcon(16, 16));
-//		saveAsMenuItem.addActionListener(new FileIOListener(this));
-		saveAsMenuItem.setEnabled(false);
-		deviceMenu.add(saveAsMenuItem);
-		
-		deviceMenu.add(new JSeparator());
-		
-//		ledMenuItem = new JCheckBoxMenuItem("uEAC LEDs");
-////		ledMenuItem.addActionListener(new LEDListener());
-//		ledMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_MASK));
-//		ledMenuItem.setMnemonic('L');
-//		ledMenuItem.setEnabled(false);
-//		deviceMenu.add(ledMenuItem);
-
-		resetMenuItem = new JMenuItem("Reset");
-//		resetMenuItem.addActionListener(new TestListener());
-		resetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
-		resetMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_reset.png")));
-		resetMenuItem.setMnemonic('R');
-		resetMenuItem.setEnabled(false);
-		deviceMenu.add(resetMenuItem);
-
-		disconnectMenuItem = new JMenuItem("Disconnect", 'D');
-//		disconnectMenuItem.addActionListener(new DisconnectListener());
-		disconnectMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_MASK));
-		disconnectMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_disconnect.png")));
-		deviceMenu.add(disconnectMenuItem);
-
-		deviceMenu.add(new JSeparator());
-		
-		JMenuItem exitMenuItem = new JMenuItem("Exit", 'X');
+//		JMenu connectMenu = 
+//		connectMenu.setMnemonic('C');
+//		deviceMenu.add(connectMenu);
+//		
+//		JMenuItem loadMenuItem = new JMenuItem("Load configuration...", 'L');
+////		loadMenuItem.addActionListener(new FileIOListener(this));
+//		loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+//		loadMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_open.gif")));
+//		loadMenuItem.setEnabled(false);
+//		deviceMenu.add(loadMenuItem);
+//		
+//		deviceMenu.add(new JSeparator());
+//
+//		JMenuItem saveMenuItem = new JMenuItem("Save configuration", 'S');
+////		saveMenuItem.addActionListener(new FileIOListener(this));
+//		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+//		saveMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_save.gif")));
+//		saveMenuItem.setEnabled(false);
+//		deviceMenu.add(saveMenuItem);
+//		
+//		JMenuItem saveAsMenuItem = new JMenuItem("Save configuration as...", 'A');
+//		saveAsMenuItem.setIcon(new BlankIcon(16, 16));
+////		saveAsMenuItem.addActionListener(new FileIOListener(this));
+//		saveAsMenuItem.setEnabled(false);
+//		deviceMenu.add(saveAsMenuItem);
+//		
+//		deviceMenu.add(new JSeparator());
+//		
+////		ledMenuItem = new JCheckBoxMenuItem("uEAC LEDs");
+//////		ledMenuItem.addActionListener(new LEDListener());
+////		ledMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_MASK));
+////		ledMenuItem.setMnemonic('L');
+////		ledMenuItem.setEnabled(false);
+////		deviceMenu.add(ledMenuItem);
+//
+//		JMenuItem resetMenuItem = new JMenuItem("Reset");
+////		resetMenuItem.addActionListener(new TestListener());
+//		resetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
+//		resetMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_reset.png")));
+//		resetMenuItem.setMnemonic('R');
+//		resetMenuItem.setEnabled(false);
+//		deviceMenu.add(resetMenuItem);
+//
+//		JMenuItem disconnectMenuItem = new JMenuItem("Disconnect", 'D');
+////		disconnectMenuItem.addActionListener(new DisconnectListener());
+//		disconnectMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_MASK));
+//		disconnectMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_disconnect.png")));
+//		deviceMenu.add(disconnectMenuItem);
+//
+//		deviceMenu.add(new JSeparator());
+//		
+//		JMenuItem exitMenuItem = new JMenuItem("Exit", 'X');
 //		exitMenuItem.addActionListener(new ExitListener());
-		exitMenuItem.setIcon(new BlankIcon(16, 16));
-		exitMenuItem.setEnabled(false);
-		deviceMenu.add(exitMenuItem);
+//		exitMenuItem.setIcon(new BlankIcon(16, 16));
+//		exitMenuItem.setEnabled(true);
+//		deviceMenu.add(exitMenuItem);
 
 
 		menu.add(deviceMenu);
@@ -167,7 +143,7 @@ public class MenuManager
 		viewMenu.setMnemonic('A');
 		
 		// tools > evolver
-		evolverMenuItem = new JCheckBoxMenuItem("Raw Data");
+		JCheckBoxMenuItem evolverMenuItem = new JCheckBoxMenuItem("Raw Data");
 //		evolverMenuItem.addActionListener(new EvolverListener());
 		evolverMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK));
 		evolverMenuItem.setIcon(new BlankIcon(16, 16));
@@ -176,14 +152,14 @@ public class MenuManager
 		
 		viewMenu.add(new JSeparator());
 
-		gradient2DMenuItem = new JCheckBoxMenuItem("2D Gradient");
+		JCheckBoxMenuItem gradient2DMenuItem = new JCheckBoxMenuItem("2D Gradient");
 //		gradient2DMenuItem.addActionListener(new NewGradientModeListener());
 		gradient2DMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.ALT_MASK));
 		gradient2DMenuItem.setMnemonic('2');
 		gradient2DMenuItem.setSelected(false);
 		viewMenu.add(gradient2DMenuItem);
 
-		gradient3DMenuItem = new JCheckBoxMenuItem("3D Gradient");
+		JCheckBoxMenuItem gradient3DMenuItem = new JCheckBoxMenuItem("3D Gradient");
 //		gradient3DMenuItem.addActionListener(new NewGradientModeListener());
 		gradient3DMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.ALT_MASK));
 		gradient3DMenuItem.setMnemonic('3');
@@ -193,7 +169,7 @@ public class MenuManager
 		viewMenu.add(new JSeparator());
 		
 		// tools > lla inspector
-		llaViewerMenuItem = new JCheckBoxMenuItem("LLA Inspector");
+		JCheckBoxMenuItem llaViewerMenuItem = new JCheckBoxMenuItem("LLA Inspector");
 //		llaViewerMenuItem.addActionListener(new LLAViewerListener());
 		llaViewerMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK));
 		llaViewerMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_inspector.gif")));
@@ -221,8 +197,8 @@ public class MenuManager
 		JMenuItem deviceManagerMenuItem = new JMenuItem("Device Manager");
 		toolMenu.add(deviceManagerMenuItem);
 		
-		JMenuItem evolverMenuItem = new JMenuItem("Evolver");
-		toolMenu.add(evolverMenuItem);
+		JMenuItem evolverMenuItem2 = new JMenuItem("Evolver");
+		toolMenu.add(evolverMenuItem2);
 		
 		JMenuItem llaEditorMenuItem = new JMenuItem("LLA Editor");
 		toolMenu.add(llaEditorMenuItem);
@@ -334,38 +310,62 @@ public class MenuManager
 	 * most hack-ish parts of jEACv1.  
 	 *
 	 * @author Varick
+	 *  
+	 *  TODO: externilize inner class (???)
 	 *
 	 */
-	private class ConnectMenuManager extends DynamicMenuManager
-	{	
+	private class JEACMenuManager extends DynamicMenuManager
+	{
 		protected void buildMenu()
-		{			
-			InterfaceManager ui = InterfaceManager.getInstance();
+		{
+			JMenuItem cxn = new JMenuItem();
 			
-			Device[][] devices = ui.getDevices();
-			int keyCounter = 0;
-			for(int i = 0; i < devices.length; i++)
+			
+			Device d = im.getActiveDevice();
+			
+			if(d == null)
 			{
-				for(int j = 0; j < devices[i].length; j++)
-				{
-					Device d = devices[i][j];
-					System.out.println("adding device:  " + d.getTitle());
-					
-					// create the menu item (and store the Device reference)
-					ExtendedJCheckBoxMenuItem menuItem = new ExtendedJCheckBoxMenuItem(d);
-					menuItem.addActionListener(new ConnectMenuEventListener());
-					menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0 + keyCounter++, KeyEvent.CTRL_MASK));
-					menuItem.setText(d.getTitle());
-					
-					add(menuItem);
-				}
-				add(new JSeparator());
+				cxn.setText("Connect to device");
+				cxn.setEnabled(false);
 			}
-		
-			add(new JMenuItem("Rescan"));
-			// TODO: Add listener
-
+			else
+			{
+				cxn.setText("Connect to " + d.getDeviceName());
+				cxn.setEnabled(true);
+//				addActionListener(...);
+			}
+			
+			add(cxn);
+			
 		}	
+//		protected void buildMenu()
+//		{			
+//			InterfaceManager ui = InterfaceManager.getInstance();
+//			
+//			Device[][] devices = ui.getDevices();
+//			int keyCounter = 0;
+//			for(int i = 0; i < devices.length; i++)
+//			{
+//				for(int j = 0; j < devices[i].length; j++)
+//				{
+//					Device d = devices[i][j];
+//					System.out.println("adding device:  " + d.getTitle());
+//					
+//					// create the menu item (and store the Device reference)
+//					ExtendedJCheckBoxMenuItem menuItem = new ExtendedJCheckBoxMenuItem(d);
+//					menuItem.addActionListener(new ConnectMenuEventListener());
+//					menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0 + keyCounter++, KeyEvent.CTRL_MASK));
+//					menuItem.setText(d.getTitle());
+//					
+//					add(menuItem);
+//				}
+//				add(new JSeparator());
+//			}
+//		
+//			add(new JMenuItem("Rescan"));
+//			// TODO: Add listener
+//
+//		}	
 	}
 	
 	
