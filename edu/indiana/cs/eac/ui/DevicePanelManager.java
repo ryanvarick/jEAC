@@ -50,6 +50,8 @@ public class DevicePanelManager implements Manager
 	private JButton loadButton;
 
 	private JButton saveButton;
+
+	private TabWindow tabs;
 	
 	
 	
@@ -69,74 +71,73 @@ public class DevicePanelManager implements Manager
 	 */
 	public JComponent getDevicePanel()
 	{
-		// initialize the toolbar, with no selected device
+		ViewMap viewMap = new ViewMap();
+		int i = 0;
+		
+		/* build the device chooser */
 		toolbar = getToolBar();
 		updateSelectedDevice(null);
 				
-		deviceTree = new JTree();
-		populateDeviceTree(deviceTree);
-		JScrollPane deviceListPane = new JScrollPane(deviceTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BorderLayout());
-		topPanel.add(deviceListPane, BorderLayout.CENTER);
 		topPanel.add(toolbar, BorderLayout.NORTH);
-		
-		JToolBar t = new JToolBar();
-		JButton x = new JButton("Rescan");
-		t.setFloatable(false);
-		t.setRollover(true);
-		t.setLayout(new BorderLayout());
-		
-		t.add(x, BorderLayout.EAST);
-		
-//		t.addSeparator();
-		topPanel.add(t, BorderLayout.SOUTH);
-				
-		JPanel propertiesPanel = new JPanel();
-		propertiesPanel.add(new JLabel("No devices currently connected."));
-		
-		
-		
-		View tp = new View("Available Devices", null, topPanel);
-		tp.getViewProperties().setAlwaysShowTitle(false);
-		ViewMap tpv = new ViewMap();
-		tpv.addView(0, tp);
-		
-//		RootWindow tpw = DockingUtil.createRootWindow(tpv, false);
-		RootWindow tpw = InterfaceManager.createMinimalRootWindow(tpv);
-		
-		View pp = new View("COM4", null, propertiesPanel);
-		View pp2 = new View("eac2.cs.indiana.edu", null, propertiesPanel);
 
-		ViewMap v = new ViewMap();
-		v.addView(0, pp);
-		v.addView(1, pp2);
+		// FIXME: figure out how this should work
+		deviceTree = new JTree();
+		populateDeviceTree(deviceTree);
+		JScrollPane deviceListPane = new JScrollPane(deviceTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);	
+		topPanel.add(deviceListPane, BorderLayout.CENTER);
 		
-//		RootWindow tw = DockingUtil.createRootWindow(v, false);
-		RootWindow tw = InterfaceManager.createMinimalRootWindow(v);
+		JToolBar bottom = new JToolBar();
+		JButton rescan = new JButton("Rescan");
+		bottom.setFloatable(false);
+		bottom.setRollover(true);
+		bottom.setLayout(new BorderLayout());
+		bottom.add(rescan, BorderLayout.EAST);
+		topPanel.add(bottom, BorderLayout.SOUTH);
 		
-//		TabWindow tw = new TabWindow();
-//		tw.addTab(pp);
-//		tw.addTab(pp2);
+		View devices = new View(null, null, topPanel);
+		devices.getViewProperties().setAlwaysShowTitle(false);
+		viewMap.addView(i++, devices);
 		
-//		SplitWindow panelContainer = new SplitWindow(false, 0.4f, tpw, tw);
+		
+		
+		/* build the control panel */
+
+		JPanel propertiesPanel0 = new JPanel();
+		propertiesPanel0.add(new JLabel("No devices currently connected. 0"));
+		JPanel propertiesPanel1 = new JPanel();
+		propertiesPanel1.add(new JLabel("No devices currently connected. 1"));
+		
+		View pp0 = new View("COM4", null, propertiesPanel0);
+		viewMap.addView(i++, pp0);
+		
+		View pp1 = new View("eac2.cs.indiana.edu", null, propertiesPanel1);
+		viewMap.addView(i++, pp1);
+		
+		
+		
+		/* put it all together */
+		RootWindow tpw = InterfaceManager.createMinimalRootWindow(viewMap);
+		
+		tabs = new TabWindow();
+		tabs.addTab(pp0);
+		tabs.addTab(pp1);
+
+		SplitWindow sw = new SplitWindow(false, 0.4f, devices, tabs);
+		
+		tpw.setWindow(sw);
+		
 		
 		// TODO: determine why this will not resize
-		SplitWindow panelContainer = new SplitWindow(false, 0.4f, tp, tw);
-//		SplitWindow panelContainer = new SplitWindow(false, 0.4f, pp, pp2);
+//		SplitWindow container = new SplitWindow(false, tp, tw);
+//		SplitWindow container = new SplitWindow(false, 0.4f, tp, tw);
+//		JSplitPane container = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tp, tw);
 		
 		// TODO: add views programmatically
-		v.addView(2, new View("Blah", null, new JLabel("Nothing here!")));
+//		v.addView(2, new View("Blah", null, new JLabel("Nothing here!")));
 		
-//		JSplitPane panelContainer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, topPanel, propertiesPanel);
-//		JSplitPane panelContainer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tp, tw);
-
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.add(panelContainer, BorderLayout.CENTER);
-		  
-		return panelContainer;
+		return sw;
 	}
 	
 	private JToolBar getToolBar()
@@ -283,6 +284,15 @@ public class DevicePanelManager implements Manager
 		
 		
 //		updateSelectedDevice(null);
+		System.out.println("DPM::update(): Update fired!");
+		
+		JPanel propertiesPanel1 = new JPanel();
+		propertiesPanel1.add(new JLabel("No devices currently connected. 1"));
+		
+		View pp0 = new View("COM4", null, propertiesPanel1);
+		
+		tabs.addTab(pp0);
+
 	}
 	
 	public void updateSelectedDevice(Device d)
@@ -381,12 +391,17 @@ public class DevicePanelManager implements Manager
 				{
 					activeDevice.connect();
 					updateSelectedDevice(activeDevice);
+					
+					// TESTING!
+					im.update();
+
 				}
 				catch(Exception e)
 				{
 					
 				}
 			}
+			
 			
 		}
 		

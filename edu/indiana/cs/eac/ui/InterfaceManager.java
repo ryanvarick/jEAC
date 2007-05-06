@@ -120,11 +120,11 @@ public class InterfaceManager implements Manager
 		
 		// make the desktop more-or-less immutable by disabling common functions
 		//  FIXME: Expand tab to show full name
-		workspace.getWindowProperties().setCloseEnabled(false);
-		workspace.getWindowProperties().setUndockEnabled(false);
-		workspace.getWindowProperties().setMaximizeEnabled(false);
-		workspace.getWindowProperties().setMinimizeEnabled(false);
-		workspace.getWindowProperties().setDragEnabled(false);
+//		workspace.getWindowProperties().setCloseEnabled(false);
+//		workspace.getWindowProperties().setUndockEnabled(false);
+//		workspace.getWindowProperties().setMaximizeEnabled(false);
+//		workspace.getWindowProperties().setMinimizeEnabled(false);
+//		workspace.getWindowProperties().setDragEnabled(false);
 		
 		return workspace;
 	}
@@ -184,20 +184,21 @@ public class InterfaceManager implements Manager
 		
 		// allocate main window (similiar to JFrame)
 		//  NOTE: RootWindow *must* be allocated before other InfoNode windows
-		RootWindow rootWindow = DockingUtil.createRootWindow(viewMap, false);
+		RootWindow rootWindow = InterfaceManager.createMinimalRootWindow(viewMap);
+//		RootWindow rootWindow = DockingUtil.createRootWindow(viewMap, false);
 
 		// reduce clutter by disabling functionality
-		rootWindow.getRootWindowProperties().getTabWindowProperties().getMaximizeButtonProperties().setVisible(false);
-		rootWindow.getRootWindowProperties().getTabWindowProperties().getMinimizeButtonProperties().setVisible(false);
-		rootWindow.getRootWindowProperties().getTabWindowProperties().getDockButtonProperties().setVisible(false);
-		rootWindow.getRootWindowProperties().getTabWindowProperties().getUndockButtonProperties().setVisible(false);
-		rootWindow.getRootWindowProperties().getTabWindowProperties().getCloseButtonProperties().setVisible(false);
+//		rootWindow.getRootWindowProperties().getTabWindowProperties().getMaximizeButtonProperties().setVisible(false);
+//		rootWindow.getRootWindowProperties().getTabWindowProperties().getMinimizeButtonProperties().setVisible(false);
+//		rootWindow.getRootWindowProperties().getTabWindowProperties().getDockButtonProperties().setVisible(false);
+//		rootWindow.getRootWindowProperties().getTabWindowProperties().getUndockButtonProperties().setVisible(false);
+//		rootWindow.getRootWindowProperties().getTabWindowProperties().getCloseButtonProperties().setVisible(false);
 
 		// apply InfoNode theme (separate from Swing LAF)
 		rootWindow.getRootWindowProperties().addSuperObject(theme.getRootWindowProperties());		
 
 		// specify InfoNode tab layout (similar to JTabbedPane)
-		rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
+//		rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
 
 		// specify view layout (similar to JSplitPane)
 		SplitWindow rightWindow = new SplitWindow(false, 0.75f, workspaceView, evolverView);
