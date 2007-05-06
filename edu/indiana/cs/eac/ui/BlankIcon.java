@@ -8,6 +8,8 @@
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
  * 
+ *
+ * 
  */
 
 package edu.indiana.cs.eac.ui;
@@ -16,6 +18,11 @@ import java.awt.*;
 import java.io.*;
 import javax.swing.*;
 
+/** 
+ * 
+ * @deprecated Move to <code>JEAC_Utilities</code>
+ *
+ */
 public class BlankIcon implements Icon, Serializable
 {
 	int height, width;

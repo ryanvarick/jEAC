@@ -20,6 +20,7 @@ import javax.swing.tree.*;
 import net.infonode.docking.*;
 import net.infonode.docking.util.*;
 
+import edu.indiana.cs.eac.*;
 import edu.indiana.cs.eac.hardware.*;
 import edu.indiana.cs.eac.ui.listeners.*;
 
@@ -32,7 +33,7 @@ import edu.indiana.cs.eac.ui.listeners.*;
  * @since    2.0.0
  *
  */
-public class DevicePanelManager
+public class DevicePanelManager implements Manager
 {
 	private static final String DEVICE_TREE_ROOT_TITLE = "Available devices";
 
@@ -45,6 +46,10 @@ public class DevicePanelManager
 	private JButton[] buttonList;
 	
 	private Device activeDevice;
+
+	private JButton loadButton;
+
+	private JButton saveButton;
 	
 	
 	
@@ -76,6 +81,17 @@ public class DevicePanelManager
 		topPanel.setLayout(new BorderLayout());
 		topPanel.add(deviceListPane, BorderLayout.CENTER);
 		topPanel.add(toolbar, BorderLayout.NORTH);
+		
+		JToolBar t = new JToolBar();
+		JButton x = new JButton("Rescan");
+		t.setFloatable(false);
+		t.setRollover(true);
+		t.setLayout(new BorderLayout());
+		
+		t.add(x, BorderLayout.EAST);
+		
+//		t.addSeparator();
+		topPanel.add(t, BorderLayout.SOUTH);
 				
 		JPanel propertiesPanel = new JPanel();
 		propertiesPanel.add(new JLabel("No devices currently connected."));
@@ -104,9 +120,13 @@ public class DevicePanelManager
 //		tw.addTab(pp);
 //		tw.addTab(pp2);
 		
-		SplitWindow panelContainer = new SplitWindow(false, 0.4f, tpw, tw);
+//		SplitWindow panelContainer = new SplitWindow(false, 0.4f, tpw, tw);
+		
+		// TODO: determine why this will not resize
+		SplitWindow panelContainer = new SplitWindow(false, 0.4f, tp, tw);
 //		SplitWindow panelContainer = new SplitWindow(false, 0.4f, pp, pp2);
 		
+		// TODO: add views programmatically
 		v.addView(2, new View("Blah", null, new JLabel("Nothing here!")));
 		
 //		JSplitPane panelContainer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, topPanel, propertiesPanel);
@@ -128,26 +148,39 @@ public class DevicePanelManager
 		
 		connectionButton = new JButton("Connect");
 		connectionButton.addActionListener(new CxnListener());
+		connectionButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_disconnect.png")));
 		bar.add(connectionButton);
-				
-		resetButton  = new JButton("Reset");
-//		resetButton.addActionListener(new ConnectionButtonListener(this, resetButton));
-		resetButton.addActionListener(new ResetListener());
-		bar.add(resetButton);
 		
 		bar.addSeparator();
 		
-		rescanButton = new JButton("Rescan");
-//		rescanButton.addActionListener(new ConnectionButtonListener(this, rescanButton));
-		bar.add(rescanButton);
+		loadButton = new JButton();
+		loadButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-open.png")));
+		loadButton.setToolTipText("Load configuration");
+		bar.add(loadButton);
+		
+		saveButton = new JButton();
+		saveButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-save.png")));
+		saveButton.setToolTipText("Save configuration");
+		bar.add(saveButton);
+				
+		resetButton  = new JButton();
+//		resetButton.addActionListener(new ConnectionButtonListener(this, resetButton));
+		resetButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-reset.png")));
+		resetButton.setToolTipText("Reset");
+		resetButton.addActionListener(new ResetListener());
+		bar.add(resetButton);
+		
+//		bar.addSeparator();
+		
 		
 		
 		// register components
 		buttonList = new JButton[]
 		{
 			connectionButton,
+			loadButton,
+			saveButton,
 			resetButton,
-			rescanButton,  // FIXME: leave in for now for proper Swing layout
 		};
 
 		return bar;
@@ -229,6 +262,29 @@ public class DevicePanelManager
 	{
 		return this.activeDevice;
 	}
+	
+	/**
+	 * Message-passing method that forces things to reload.
+	 *
+	 */
+	public void update()
+	{
+		/*
+		 * This method should be used to update things.  It can be called
+		 * interally or externally (like, say, in response to a menu event).
+		 * Ideally, this will be called by InterfaceManager.update();
+		 * 
+		 */
+		
+		// 1. read selected device
+		// 2. update toolbar
+		// 3. update tree selection
+		// 4. update view page
+		
+		
+//		updateSelectedDevice(null);
+	}
+	
 	public void updateSelectedDevice(Device d)
 	{
 		this.activeDevice = d;
@@ -308,6 +364,7 @@ public class DevicePanelManager
 	
 	
 //	@SuppressWarnings("unused")
+	// TODO: externalize
 	private class CxnListener implements ActionListener
 	{
 
@@ -335,7 +392,7 @@ public class DevicePanelManager
 		
 	}
 	
-	
+	// TODO: externalize	
 	private class ResetListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -343,14 +400,11 @@ public class DevicePanelManager
 			JOptionPane.showConfirmDialog(null, "Resetting this device will clear all connections and cannot be undone.  Are you sure you want to proceed?", "Confirm reset", JOptionPane.YES_NO_OPTION);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	public void init()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+		
 }

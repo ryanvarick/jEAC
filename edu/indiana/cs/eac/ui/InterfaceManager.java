@@ -44,9 +44,6 @@ public class InterfaceManager implements Manager
 	// TODO: externalize strings
 	private static final String APPLICATION_TITLE = "jEAC - Cross-platform EAC development environment";
 	private static final String DESKTOP_TITLE     = "Workspace";
-	private static final String DEVICE_MGR_TITLE  = "Device Manager";
-	private static final String LLA_EDITOR_TITLE  = "LLA Editor";
-	private static final String EVOLVER_TITLE          = "Evolver";
 
 	private static final int INITIAL_WIDTH  = 800;
 	private static final int INITIAL_HEIGHT = 600;
@@ -89,11 +86,11 @@ public class InterfaceManager implements Manager
 	}
 	
 	/**
-	 * Builds the desktop.
+	 * Builds the workspace area.
 	 * 
 	 * <p>jEAC uses two kinds of UI containers:  dockable windows and free-
-	 * floating windows.  Free-floating windows are contained within the desktop 
-	 * area, which behaves like a standard multi-document interface (MDI).
+	 * floating windows.  Free-floating windows are contained within the 
+	 * workspace, which behaves like a standard multi-document interface (MDI).
 	 * 
 	 * <p>Note that the MDI is based on code outlined in a JavaWorld article,
 	 * <a href=http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html>
@@ -104,8 +101,10 @@ public class InterfaceManager implements Manager
 	 * @author   Ryan R. Varick
 	 * @since    2.0.0
 	 * 
+	 * TODO: terminology - workspace vs. desktop
+	 * 
 	 */
-	private View getDesktopView()
+	private View getWorkspaceView()
 	{
 		// create (and cache) the desktop; we will need the reference later
 		//  when we start to add windows
@@ -117,17 +116,17 @@ public class InterfaceManager implements Manager
 		scrollPane.getViewport().add(desktop);
 		
 		// create an InfoNode view to contain the new, scrollable desktop
-		View scrollableDesktop = new View(DESKTOP_TITLE, null, scrollPane);
+		View workspace = new View(DESKTOP_TITLE, null, scrollPane);
 		
 		// make the desktop more-or-less immutable by disabling common functions
 		//  FIXME: Expand tab to show full name
-		scrollableDesktop.getWindowProperties().setCloseEnabled(false);
-		scrollableDesktop.getWindowProperties().setUndockEnabled(false);
-		scrollableDesktop.getWindowProperties().setMaximizeEnabled(false);
-		scrollableDesktop.getWindowProperties().setMinimizeEnabled(false);
-		scrollableDesktop.getWindowProperties().setDragEnabled(false);
+		workspace.getWindowProperties().setCloseEnabled(false);
+		workspace.getWindowProperties().setUndockEnabled(false);
+		workspace.getWindowProperties().setMaximizeEnabled(false);
+		workspace.getWindowProperties().setMinimizeEnabled(false);
+		workspace.getWindowProperties().setDragEnabled(false);
 		
-		return scrollableDesktop;
+		return workspace;
 	}
 	
 	/**
@@ -168,9 +167,9 @@ public class InterfaceManager implements Manager
 		int view = 1;
 		ViewMap viewMap = new ViewMap();
 
-		View desktopView = getDesktopView();
+		View workspaceView = getWorkspaceView();
 //		desktopView.getCustomTitleBarComponents();
-		viewMap.addView(view++, desktopView);
+		viewMap.addView(view++, workspaceView);
 
 		View evolverView = new View("Evolver", null, new MDIDesktopPane());
 //		evolverView.getWindowProperties().set
@@ -201,8 +200,11 @@ public class InterfaceManager implements Manager
 		rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
 
 		// specify view layout (similar to JSplitPane)
-		SplitWindow toolWindow = new SplitWindow(false, 0.5f, deviceManagerView, evolverView);
-		SplitWindow mainWindow = new SplitWindow(true,  0.75f, desktopView, toolWindow);
+		SplitWindow rightWindow = new SplitWindow(false, 0.75f, workspaceView, evolverView);
+		SplitWindow mainWindow  = new SplitWindow(true, 0.25f, deviceManagerView, rightWindow);
+		
+//		SplitWindow toolWindow = new SplitWindow(false, 0.5f, deviceManagerView, evolverView);
+//		SplitWindow mainWindow = new SplitWindow(true,  0.75f, desktopView, toolWindow);
 
 		rootWindow.setWindow(mainWindow);
 
@@ -288,6 +290,31 @@ public class InterfaceManager implements Manager
 		frame.add(sb, BorderLayout.SOUTH);		
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public void update()
+	{
+		//updates everything
+		
+		dm.update();
+//		mm.update();
+//		sb.update();
+		
+	}
+	
+	
+	
+	
+	
+	
 	/**
 	 * Starts the interface.
 	 *
@@ -359,6 +386,9 @@ public class InterfaceManager implements Manager
 		return validated;
 	}
 	
+	/**
+	 * @deprecated Move to <code>JeacUtilities</code>
+	 */
 	public static RootWindow createMinimalRootWindow(AbstractViewMap v)
 	{
 		RootWindow rootWindow = DockingUtil.createRootWindow(v, false);

@@ -49,7 +49,7 @@ import edu.indiana.cs.testing.ui.*;
  * @since    2.0.0
  *
  */
-public class MenuManager
+public class MenuManager implements Manager
 {
 	private JMenuBar menu;
 	private InterfaceManager im;
@@ -71,68 +71,7 @@ public class MenuManager
 		menu = new JMenuBar();
 
 		/* DEVICE MENU */
-		JMenu deviceMenu = new JEACMenuManager();
-		deviceMenu.setText("jEAC");
-		deviceMenu.setMnemonic('J');
-
-//		JMenu connectMenu = 
-//		connectMenu.setMnemonic('C');
-//		deviceMenu.add(connectMenu);
-//		
-//		JMenuItem loadMenuItem = new JMenuItem("Load configuration...", 'L');
-////		loadMenuItem.addActionListener(new FileIOListener(this));
-//		loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
-//		loadMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_open.gif")));
-//		loadMenuItem.setEnabled(false);
-//		deviceMenu.add(loadMenuItem);
-//		
-//		deviceMenu.add(new JSeparator());
-//
-//		JMenuItem saveMenuItem = new JMenuItem("Save configuration", 'S');
-////		saveMenuItem.addActionListener(new FileIOListener(this));
-//		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-//		saveMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_save.gif")));
-//		saveMenuItem.setEnabled(false);
-//		deviceMenu.add(saveMenuItem);
-//		
-//		JMenuItem saveAsMenuItem = new JMenuItem("Save configuration as...", 'A');
-//		saveAsMenuItem.setIcon(new BlankIcon(16, 16));
-////		saveAsMenuItem.addActionListener(new FileIOListener(this));
-//		saveAsMenuItem.setEnabled(false);
-//		deviceMenu.add(saveAsMenuItem);
-//		
-//		deviceMenu.add(new JSeparator());
-//		
-////		ledMenuItem = new JCheckBoxMenuItem("uEAC LEDs");
-//////		ledMenuItem.addActionListener(new LEDListener());
-////		ledMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_MASK));
-////		ledMenuItem.setMnemonic('L');
-////		ledMenuItem.setEnabled(false);
-////		deviceMenu.add(ledMenuItem);
-//
-//		JMenuItem resetMenuItem = new JMenuItem("Reset");
-////		resetMenuItem.addActionListener(new TestListener());
-//		resetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
-//		resetMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_reset.png")));
-//		resetMenuItem.setMnemonic('R');
-//		resetMenuItem.setEnabled(false);
-//		deviceMenu.add(resetMenuItem);
-//
-//		JMenuItem disconnectMenuItem = new JMenuItem("Disconnect", 'D');
-////		disconnectMenuItem.addActionListener(new DisconnectListener());
-//		disconnectMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_MASK));
-//		disconnectMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_disconnect.png")));
-//		deviceMenu.add(disconnectMenuItem);
-//
-//		deviceMenu.add(new JSeparator());
-//		
-//		JMenuItem exitMenuItem = new JMenuItem("Exit", 'X');
-//		exitMenuItem.addActionListener(new ExitListener());
-//		exitMenuItem.setIcon(new BlankIcon(16, 16));
-//		exitMenuItem.setEnabled(true);
-//		deviceMenu.add(exitMenuItem);
-
-
+		JMenu deviceMenu = new JEACMenu();
 		menu.add(deviceMenu);
 		
 		
@@ -211,8 +150,11 @@ public class MenuManager
 				
 	
 		// FIXME: Incorporate into the code better
-		JMenu windowMenu = new WindowMenuManager();
+		JMenu windowMenu = new WindowMenu();
 		windowMenu.setText("Window");
+		windowMenu.setMnemonic('W');
+		
+		
 		menu.add(windowMenu);
 		
 		
@@ -259,7 +201,7 @@ public class MenuManager
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			FileDialog fd = new FileDialog(InterfaceManager.getInstance().getWindow());
+			FileDialog fd = new FileDialog(im.getWindow());
 			fd.setTitle("Open");
 			fd.setDirectory(System.getProperty("user.dir"));
 			fd.setMode(FileDialog.LOAD);
@@ -277,7 +219,7 @@ public class MenuManager
 //			fileChooser.changeToParentDirectory();
 //			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 ////			fileChooser.setFileFilter(new FileFilter());
-//			int result = fileChooser.showOpenDialog(InterfaceManager.getInstance().getDesktop());
+//			int result = fileChooser.showOpenDialog(im.getDesktop());
 			
 			// handle cancel; otherwise, load up the file
 //			if (result == JFileChooser.CANCEL_OPTION) return;
@@ -296,7 +238,7 @@ public class MenuManager
 //				return;
 //			}
 			
-			InterfaceManager.getInstance().getDesktop().add(new TextFrame2(file));
+			im.getDesktop().add(new TextFrame2(file));
 		}
 	}
 	
@@ -314,33 +256,75 @@ public class MenuManager
 	 *  TODO: externilize inner class (???)
 	 *
 	 */
-	private class JEACMenuManager extends DynamicMenuManager
+	private class JEACMenu extends DynamicMenu
 	{
+		private JMenuItem connectItem, loadItem;
+		private JMenuItem saveItem, saveAsItem;
+		private JMenuItem resetItem, disconnectItem;
+		private JMenuItem exitItem;
+		
+		public JEACMenu()
+		{
+			setText("Device");
+			setMnemonic('D');
+		}
+		
+
+		
+		
 		protected void buildMenu()
 		{
-			JMenuItem cxn = new JMenuItem();
 			
+			connectItem = new JMenuItem("Connect to device", 'C');
+//			connectItem.addActionListener(new ConnectionListener());
+			connectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_MASK));
+//			connectItem.setIcon(new BlankIcon(16, 16));
+			add(connectItem);
 			
-			Device d = im.getActiveDevice();
+			loadItem = new JMenuItem("Load configuration...", 'O');
+//			loadItem.addActionListener(new LoadListener());
+			loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+//			loadItem.setIcon(new BlankIcon(16, 16));
+			add(loadItem);
 			
-			if(d == null)
-			{
-				cxn.setText("Connect to device");
-				cxn.setEnabled(false);
-			}
-			else
-			{
-				cxn.setText("Connect to " + d.getDeviceName());
-				cxn.setEnabled(true);
-//				addActionListener(...);
-			}
+			add(new JSeparator());
 			
-			add(cxn);
+			saveItem = new JMenuItem("Save configuratoin", 'S');
+//			saveItem.addActionListener(new FileIOListener());
+			saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+//			saveItem.setIcon(new BlankIcon(16, 16));
+			add(saveItem);
 			
-		}	
+			saveAsItem = new JMenuItem("Save configuration as...", 'A');
+//			saveAsItem.addActionListener(new FileIOListener());
+//			saveAsItem.setIcon(new BlankIcon(16, 16));
+			add(saveAsItem);
+			
+			add(new JSeparator());
+			
+			resetItem = new JMenuItem("Reset", 'R');
+//			resetItem.addActionListener(new ResetListener());
+			resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
+//			resetItem.setIcon(new BlankIcon(16, 16));
+			add(resetItem);
+			
+			disconnectItem = new JMenuItem("Disconnect", 'D');
+//			disconnectItem.addActionListener(new DisconnectListener());
+			disconnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_MASK));
+//			disconnectItem.setIcon(new BlankIcon(16, 16));
+			add(disconnectItem);
+			
+			add(new JSeparator());
+			
+			exitItem = new JMenuItem("Exit", 'X');
+			exitItem.addActionListener(new ExitListener());
+//			exitItem.setIcon(new BlankIcon(16, 16));
+			add(exitItem);
+		}
+		
 //		protected void buildMenu()
 //		{			
-//			InterfaceManager ui = InterfaceManager.getInstance();
+//			InterfaceManager ui = im;
 //			
 //			Device[][] devices = ui.getDevices();
 //			int keyCounter = 0;
@@ -377,10 +361,9 @@ public class MenuManager
 	 * 
 	 *  TODO:  Integrate code better
 	 */
-	private class WindowMenuManager extends DynamicMenuManager
+	private class WindowMenu extends DynamicMenu
 	{
 		private JMenuItem cascadeMenuItem, tileMenuItem;
-
 		/* Sets up the children menus depending on the current desktop state */
 	    protected void buildMenu()
 	    {
@@ -390,7 +373,7 @@ public class MenuManager
 	        {
 	            public void actionPerformed(ActionEvent ae)
 	            {
-	                InterfaceManager.getInstance().getDesktop().cascadeFrames();
+	                im.getDesktop().cascadeFrames();
 	            }
 	        });
 
@@ -400,12 +383,12 @@ public class MenuManager
 	        {
 	            public void actionPerformed(ActionEvent ae)
 	            {
-	                InterfaceManager.getInstance().getDesktop().tileFrames();
+	                im.getDesktop().tileFrames();
 	            }
 	        });
 	    	
 	    	ExtendedJCheckBoxMenuItem menu;
-	        JInternalFrame[] array = InterfaceManager.getInstance().getDesktop().getAllFrames();
+	        JInternalFrame[] array = im.getDesktop().getAllFrames();
 
 	        add(cascadeMenuItem);
 	        add(tileMenuItem);
@@ -433,6 +416,15 @@ public class MenuManager
 	        }
 	    }
 
+	}
+
+
+
+
+	public void update()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }

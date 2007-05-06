@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+/** @deprecated */
 public class AboutFrame extends JFrame
 {
 	private static final int FRAME_WIDTH  = 340;
