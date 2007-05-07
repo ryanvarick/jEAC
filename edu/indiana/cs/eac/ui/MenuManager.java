@@ -71,106 +71,89 @@ public class MenuManager implements Manager
 	{
 		menu = new JMenuBar();
 
-		/* DEVICE MENU */
+		/* file menu */
 		JMenu fileMenu = new FileMenu();
 		menu.add(fileMenu);
+
+		/* view menu */
+		JMenu viewMenu = new JMenu("View");
+		viewMenu.setMnemonic('V');
 		
+		JCheckBoxMenuItem cpItem = new JCheckBoxMenuItem("Device Controller");
+		cpItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_MASK));
+		cpItem.setIcon(JEACUtilities.getImageIcon("icon-controller.png"));
+		cpItem.setMnemonic('C');
+		viewMenu.add(cpItem);
 		
+		viewMenu.add(new JSeparator());
 		
-		/* ---------------[ Tools ]--------------- */
-		
-		JMenu viewMenu = new JMenu("Data");
-		viewMenu.setMnemonic('A');
-		
-		// tools > evolver
-		JCheckBoxMenuItem evolverMenuItem = new JCheckBoxMenuItem("Raw Data");
+		JCheckBoxMenuItem dataItem = new JCheckBoxMenuItem("Data");
 //		evolverMenuItem.addActionListener(new EvolverListener());
-		evolverMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK));
-		evolverMenuItem.setIcon(new BlankIcon(16, 16));
-		evolverMenuItem.setMnemonic('E');
-		viewMenu.add(evolverMenuItem);
-		
-		viewMenu.add(new JSeparator());
+		dataItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, KeyEvent.ALT_MASK));
+		dataItem.setMnemonic('1');
+		viewMenu.add(dataItem);
 
-		JCheckBoxMenuItem gradient2DMenuItem = new JCheckBoxMenuItem("2D Gradient");
+		JCheckBoxMenuItem gradient2DItem = new JCheckBoxMenuItem("2D Visualization");
 //		gradient2DMenuItem.addActionListener(new NewGradientModeListener());
-		gradient2DMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.ALT_MASK));
-		gradient2DMenuItem.setMnemonic('2');
-		gradient2DMenuItem.setSelected(false);
-		viewMenu.add(gradient2DMenuItem);
+		gradient2DItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.ALT_MASK));
+		gradient2DItem.setMnemonic('2');
+		gradient2DItem.setSelected(false);
+		viewMenu.add(gradient2DItem);
 
-		JCheckBoxMenuItem gradient3DMenuItem = new JCheckBoxMenuItem("3D Gradient");
+		JCheckBoxMenuItem gradient3DItem = new JCheckBoxMenuItem("3D Visualization");
 //		gradient3DMenuItem.addActionListener(new NewGradientModeListener());
-		gradient3DMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.ALT_MASK));
-		gradient3DMenuItem.setMnemonic('3');
-		gradient3DMenuItem.setSelected(true);
-		viewMenu.add(gradient3DMenuItem);
+		gradient3DItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.ALT_MASK));
+		gradient3DItem.setMnemonic('3');
+		gradient3DItem.setSelected(true);
+		viewMenu.add(gradient3DItem);
 
 		viewMenu.add(new JSeparator());
-		
-		// tools > lla inspector
-		JCheckBoxMenuItem llaViewerMenuItem = new JCheckBoxMenuItem("LLA Inspector");
+
+		JCheckBoxMenuItem llaInspectorItem = new JCheckBoxMenuItem("LLA Inspector");
 //		llaViewerMenuItem.addActionListener(new LLAViewerListener());
-		llaViewerMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK));
-		llaViewerMenuItem.setIcon(JEACUtilities.getImageIcon("icon_inspector.gif"));
-		llaViewerMenuItem.setMnemonic('L');
-		llaViewerMenuItem.setState(false);
-		viewMenu.add(llaViewerMenuItem);
-		
+		llaInspectorItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_MASK));
+		llaInspectorItem.setIcon(JEACUtilities.getImageIcon("icon-inspector.png"));
+		llaInspectorItem.setMnemonic('L');
+		llaInspectorItem.setState(false);
+		viewMenu.add(llaInspectorItem);
 
 		menu.add(viewMenu);
 		
+		/* tools menu */
+//		JMenu toolMenu = new JMenu("Tools");
+//		
+//		toolMenu.add(new JSeparator());
+//				
+//		JMenuItem deviceManagerMenuItem = new JMenuItem("Device Manager");
+//		toolMenu.add(deviceManagerMenuItem);
+//		
+//		JMenuItem evolverMenuItem2 = new JMenuItem("Evolver");
+//		toolMenu.add(evolverMenuItem2);
+//		
+//		JMenuItem llaEditorMenuItem = new JMenuItem("LLA Editor");
+//		toolMenu.add(llaEditorMenuItem);
+//		
+//		menu.add(toolMenu);
 		
-		
-		/* --- tools */ 
-		
-		JMenu toolMenu = new JMenu("Tools");
-		
-		JMenuItem consoleMenuItem = new JMenuItem("Window Manager Test...");
-		consoleMenuItem.addActionListener(new ConsoleListener());
-		toolMenu.add(consoleMenuItem);
-		
-		toolMenu.add(new JSeparator());
-		
-
-		
-		JMenuItem deviceManagerMenuItem = new JMenuItem("Device Manager");
-		toolMenu.add(deviceManagerMenuItem);
-		
-		JMenuItem evolverMenuItem2 = new JMenuItem("Evolver");
-		toolMenu.add(evolverMenuItem2);
-		
-		JMenuItem llaEditorMenuItem = new JMenuItem("LLA Editor");
-		toolMenu.add(llaEditorMenuItem);
-		
-		menu.add(toolMenu);
-		
-		
-		
-
-				
-	
-		// FIXME: Incorporate into the code better
+		/* window menu */
 		JMenu windowMenu = new WindowMenu();
 		windowMenu.setText("Window");
 		windowMenu.setMnemonic('W');
-		
-		
 		menu.add(windowMenu);
 		
-		
-		/* ---------------[ Help  ]--------------- */
-		
+		/* help menu */
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic('H');
-		
+				
 		JMenuItem releaseNotesMenuItem = new JMenuItem("Release Notes", 'R');
-		// listener
 		helpMenu.add(releaseNotesMenuItem);
+
+		JMenuItem projectItem = new JMenuItem("Project Homepage", 'P');
+		helpMenu.add(projectItem);
 		
 		helpMenu.add(new JSeparator());
 
-		JMenuItem aboutMenuItem = new JMenuItem("About", 'A');
+		JMenuItem aboutMenuItem = new JMenuItem("About jEAC", 'A');
 		aboutMenuItem.addActionListener(new AboutMenuItemListener());
 
 		helpMenu.add(aboutMenuItem);
@@ -368,6 +351,12 @@ public class MenuManager implements Manager
 		/* Sets up the children menus depending on the current desktop state */
 	    protected void buildMenu()
 	    {
+	    	// FIXME: Testing only--remove before release!
+	    	JMenuItem consoleMenuItem = new JMenuItem("MDI Tester...");
+			consoleMenuItem.addActionListener(new ConsoleListener());
+			add(consoleMenuItem);
+			add(new JSeparator());
+	    	
 	        // cascade menu
 	        cascadeMenuItem = new JMenuItem("Cascade");
 	        cascadeMenuItem.addActionListener(new ActionListener()

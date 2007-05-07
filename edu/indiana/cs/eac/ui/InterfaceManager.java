@@ -182,8 +182,11 @@ public class InterfaceManager implements Manager
 
 		dm = new DevicePanelManager(this);
 		View deviceManagerView = new View("Device Manager", null, dm.getDevicePanel());
+		deviceManagerView.getWindowProperties().setMinimizeEnabled(false);
 		deviceManagerView.getWindowProperties().setCloseEnabled(false);
-		deviceManagerView.getViewProperties().getViewTitleBarProperties().setVisible(false);
+		deviceManagerView.getWindowProperties().setUndockEnabled(false);
+		deviceManagerView.getWindowProperties().setRestoreEnabled(false);
+		deviceManagerView.getWindowProperties().setMaximizeEnabled(false);
 		
 		viewMap.addView(view++, deviceManagerView);
 		
