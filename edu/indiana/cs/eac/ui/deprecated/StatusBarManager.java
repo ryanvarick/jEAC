@@ -12,11 +12,13 @@
  *
  */
 
-package edu.indiana.cs.eac.ui;
+package edu.indiana.cs.eac.ui.deprecated;
 
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
+
+import edu.indiana.cs.eac.ui.deprecated.*;
 
 public class StatusBarManager extends JPanel
 {

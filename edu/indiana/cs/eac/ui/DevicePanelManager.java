@@ -22,6 +22,7 @@ import net.infonode.docking.util.*;
 
 import edu.indiana.cs.eac.*;
 import edu.indiana.cs.eac.hardware.*;
+import edu.indiana.cs.eac.ui.deprecated.*;
 import edu.indiana.cs.eac.ui.listeners.*;
 
 

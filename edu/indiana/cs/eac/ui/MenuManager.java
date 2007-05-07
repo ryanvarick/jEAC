@@ -30,6 +30,7 @@ import edu.indiana.cs.eac.*;
 //import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.eac.gradient.*;
 import edu.indiana.cs.eac.hardware.*;
+import edu.indiana.cs.eac.ui.deprecated.*;
 import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.testing.ui.*;
 
@@ -111,7 +112,7 @@ public class MenuManager implements Manager
 		JCheckBoxMenuItem llaViewerMenuItem = new JCheckBoxMenuItem("LLA Inspector");
 //		llaViewerMenuItem.addActionListener(new LLAViewerListener());
 		llaViewerMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK));
-		llaViewerMenuItem.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_inspector.gif")));
+		llaViewerMenuItem.setIcon(JEACUtilities.getImageIcon("icon_inspector.gif"));
 		llaViewerMenuItem.setMnemonic('L');
 		llaViewerMenuItem.setState(false);
 		viewMenu.add(llaViewerMenuItem);

@@ -18,8 +18,7 @@ import java.net.*;
 
 // TODO: Remove superfluous references
 import edu.indiana.cs.eac.exceptions.*;
-import edu.indiana.cs.eac.ui.JEACNode;
-import edu.indiana.cs.eac.ui.NodeMap;
+import edu.indiana.cs.eac.ui.deprecated.*;
 
 public class OfflineDriver extends Driver
 {

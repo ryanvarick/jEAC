@@ -12,7 +12,7 @@
  *
  */
 
-package edu.indiana.cs.eac.ui;
+package edu.indiana.cs.eac.ui.deprecated;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -22,6 +22,7 @@ import javax.swing.event.*;
 
 import edu.indiana.cs.eac.exceptions.*;
 import edu.indiana.cs.eac.hardware.*;
+import edu.indiana.cs.eac.ui.deprecated.*;
 
 public class ControlFrame extends JFrame
 {

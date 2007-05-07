@@ -10,7 +10,7 @@
  * 
  */
 
-package edu.indiana.cs.eac.ui;
+package edu.indiana.cs.eac.ui.deprecated;
 
 import java.util.*;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import edu.indiana.cs.eac.gradient.Gradient;
 import edu.indiana.cs.eac.gradient.Gradient2D;
 import edu.indiana.cs.eac.gradient.Gradient3D;
 import edu.indiana.cs.eac.hardware.Device;
+import edu.indiana.cs.eac.ui.*;
 
 public class UpdateTask extends TimerTask
 {

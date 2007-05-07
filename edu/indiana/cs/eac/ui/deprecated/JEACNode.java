@@ -12,7 +12,7 @@
  * 
  */
 
-package edu.indiana.cs.eac.ui;
+package edu.indiana.cs.eac.ui.deprecated;
 
 import edu.indiana.cs.eac.exceptions.*;
 import java.io.*;

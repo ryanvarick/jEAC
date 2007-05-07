@@ -15,6 +15,7 @@ package edu.indiana.cs.eac.hardware;
 import java.io.*;
 
 import edu.indiana.cs.eac.ui.*;
+import edu.indiana.cs.eac.ui.deprecated.*;
 import edu.indiana.cs.eac.exceptions.*;
 
 /**

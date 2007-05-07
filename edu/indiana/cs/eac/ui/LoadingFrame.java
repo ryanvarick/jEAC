@@ -18,8 +18,10 @@ import javax.swing.*;
 /**
  * Provides UI feedback while jEAC looks for local uEACs.
  * 
- * @author   Ryan R. Varick
- * @since    1.0.0
+ * @author    Ryan R. Varick
+ * @since     1.0.0
+ * 
+ * @version   1.1.0
  * 
  */
 
@@ -50,6 +52,8 @@ public class LoadingFrame
 	 * 
 	 * @author        Ryan R. Varick
 	 * @since         1.2.0
+	 * 
+	 * @version       1.1.0
 	 * 
 	 */
 	public LoadingFrame(int steps)
