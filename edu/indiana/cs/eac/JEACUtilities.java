@@ -29,6 +29,13 @@ public class JEACUtilities
 	/** Relative path to project-related resource files. */
 	private static final String RESOURCE_PATH = "resources/";
 	
+	/** Help URL. */
+	private static final String BASE_URL = "http://jeac.sf.net/";
+	
+	public static final String JEAC_HELP_URL = BASE_URL + "help/";
+	public static final String JEAC_RELEASENOTES_URL = BASE_URL + "help/releasenotes/";
+	public static final String JEAC_HOMEPAGE_URL = BASE_URL;
+	
 	
 	
 	private JEACUtilities()

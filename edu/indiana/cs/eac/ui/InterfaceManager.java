@@ -67,6 +67,15 @@ public class InterfaceManager implements Manager
 	private TimingManager tm;
 	private MenuManager mm;
 
+
+	
+	private Vector<Manager> managerRegister;
+	
+	public void registerManager(Manager m)
+	{
+		managerRegister.add(m);
+	}
+
 	
 	
 	/**
@@ -300,6 +309,15 @@ public class InterfaceManager implements Manager
 	
 	public void update()
 	{
+		Manager[] mg = null;
+		mg = managerRegister.toArray(mg);
+		
+		for(int i = 0; i < mg.length; i++)
+		{
+			System.out.println("InterfaceManager::update() - updating manager " + i);
+			mg[i].update();
+		}
+		
 		//updates everything
 		
 		dm.update();
@@ -400,5 +418,8 @@ public class InterfaceManager implements Manager
 
 		return rootWindow;
 	}
+	
+	
+	
 
 }

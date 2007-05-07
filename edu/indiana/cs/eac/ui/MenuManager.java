@@ -142,22 +142,7 @@ public class MenuManager implements Manager
 		menu.add(windowMenu);
 		
 		/* help menu */
-		JMenu helpMenu = new JMenu("Help");
-		helpMenu.setMnemonic('H');
-				
-		JMenuItem releaseNotesMenuItem = new JMenuItem("Release Notes", 'R');
-		helpMenu.add(releaseNotesMenuItem);
-
-		JMenuItem projectItem = new JMenuItem("Project Homepage", 'P');
-		helpMenu.add(projectItem);
-		
-		helpMenu.add(new JSeparator());
-
-		JMenuItem aboutMenuItem = new JMenuItem("About jEAC", 'A');
-		aboutMenuItem.addActionListener(new AboutMenuItemListener());
-
-		helpMenu.add(aboutMenuItem);
-		menu.add(helpMenu);
+		menu.add(getHelpMenu());
 	
 	}
 	
@@ -173,8 +158,44 @@ public class MenuManager implements Manager
 	
 	
 	
-	
-	
+	/**
+	 * Builds the Help menu.
+	 * 
+	 * @return   Help menu.
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
+	 */
+	private JMenu getHelpMenu()
+	{
+		JMenu menu = new JMenu("Help");
+		menu.setMnemonic('H');
+		
+		JMenuItem help_f1 = new JMenuItem("Using jEAC", 'U');
+		help_f1.addActionListener(new LauncherListener(JEACUtilities.JEAC_HELP_URL));
+		help_f1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+		help_f1.setIcon(JEACUtilities.getImageIcon("icon-help.png"));
+		menu.add(help_f1);
+		
+		menu.add(new JSeparator());
+		
+		JMenuItem releaseNotes = new JMenuItem("Release Notes", 'R');
+		releaseNotes.addActionListener(new LauncherListener(JEACUtilities.JEAC_RELEASENOTES_URL));
+		menu.add(releaseNotes);
+
+		JMenuItem projectHomepage = new JMenuItem("Project Homepage", 'P');
+		projectHomepage.addActionListener(new LauncherListener(JEACUtilities.JEAC_HOMEPAGE_URL));
+		menu.add(projectHomepage);
+		
+		menu.add(new JSeparator());
+
+		JMenuItem about = new JMenuItem("About jEAC", 'A');
+		about.addActionListener(new AboutMenuItemListener());
+		menu.add(about);
+		
+		return menu;
+	}
 	
 
 	
