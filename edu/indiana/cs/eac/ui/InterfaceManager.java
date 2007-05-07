@@ -18,6 +18,7 @@ import javax.swing.*;
 
 import net.infonode.docking.*;
 import net.infonode.docking.theme.*;
+import net.infonode.docking.title.*;
 import net.infonode.docking.util.*;
 import net.infonode.util.*;
 
@@ -37,22 +38,25 @@ import edu.indiana.cs.eac.hardware.*;
  */
 public class InterfaceManager implements Manager
 {
-	/* defaults (do not alter directly; use the API instead) */
+	/* defaults */
 	private static boolean USE_NATIVE_LAF = true;
 	private DockingWindowsTheme theme = new ShapedGradientDockingTheme();
 	
 	// TODO: externalize strings
 	private static final String APPLICATION_TITLE = "jEAC - Cross-platform EAC development environment";
-	private static final String DESKTOP_TITLE     = "Workspace";
+	private static final String WORKSPACE_TITLE   = "Workspace";
 
 	private static final int INITIAL_WIDTH  = 800;
 	private static final int INITIAL_HEIGHT = 600;
 
-	private static final Color DESKTOP_COLOR = Color.GRAY.brighter();
-		
+	private static final Color BACKGROUND_COLOR = new Color(0xBABDB6);     // Tango aluminum gray
+//	private static final Color DESKTOP_COLOR = Color.GRAY.brighter();
+
+	/* defaults (do not alter directly; use the API instead) */
+
 	/* UI components (do not alter) */
 	private JFrame frame;
-	private MDIDesktopPane desktop;
+	private MDIDesktopPane workspace;
 	
 	/* device cache */
 	private HardwareManager hm;
@@ -90,41 +94,42 @@ public class InterfaceManager implements Manager
 	 * 
 	 * <p>jEAC uses two kinds of UI containers:  dockable windows and free-
 	 * floating windows.  Free-floating windows are contained within the 
-	 * workspace, which behaves like a standard multi-document interface (MDI).
+	 * <i>workspace</i>, which behaves like a standard multi-document interface
+	 * (MDI).
 	 * 
-	 * <p>Note that the MDI is based on code outlined in a JavaWorld article,
+	 * <p><i>Note that the MDI is based on code outlined in a JavaWorld article,
 	 * <a href=http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html>
-	 * Conquer Swing deficiencies in MDI development</a>.
+	 * Conquer Swing deficiencies in MDI development</a>.</i>
 	 * 
 	 * @return   MDI desktop component.
 	 * 
 	 * @author   Ryan R. Varick
 	 * @since    2.0.0
 	 * 
-	 * TODO: terminology - workspace vs. desktop
-	 * 
 	 */
 	private View getWorkspaceView()
 	{
-		// create (and cache) the desktop; we will need the reference later
-		//  when we start to add windows
-		desktop = new MDIDesktopPane();
-		desktop.setBackground(DESKTOP_COLOR);
+		// create the workspace, which is a field because we will need to reference
+		//  it later when we start adding windows
+		workspace = new MDIDesktopPane();
+		workspace.setBackground(BACKGROUND_COLOR);
 		
-		// create a scroll pane to contain the desktop
+		// add the workspace to a scrollpane
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.getViewport().add(desktop);
+		scrollPane.getViewport().add(workspace);
 		
-		// create an InfoNode view to contain the new, scrollable desktop
-		View workspace = new View(DESKTOP_TITLE, null, scrollPane);
+		// package the new, scrollable workspace in an InfoNode view
+		View workspace = new View(WORKSPACE_TITLE, null, scrollPane);
 		
-		// make the desktop more-or-less immutable by disabling common functions
-		//  FIXME: Expand tab to show full name
-//		workspace.getWindowProperties().setCloseEnabled(false);
-//		workspace.getWindowProperties().setUndockEnabled(false);
-//		workspace.getWindowProperties().setMaximizeEnabled(false);
-//		workspace.getWindowProperties().setMinimizeEnabled(false);
-//		workspace.getWindowProperties().setDragEnabled(false);
+		// turn off default functions to reduce clutter
+		workspace.getWindowProperties().setCloseEnabled(false);
+		workspace.getWindowProperties().setUndockEnabled(false);
+		workspace.getWindowProperties().setMaximizeEnabled(false);
+		workspace.getWindowProperties().setMinimizeEnabled(false);
+		workspace.getWindowProperties().setDragEnabled(false);
+		
+		// HACK: without the leading space, the title is truncated (WTF?)
+		workspace.getViewProperties().setTitle(" " + WORKSPACE_TITLE);
 		
 		return workspace;
 	}
@@ -168,11 +173,9 @@ public class InterfaceManager implements Manager
 		ViewMap viewMap = new ViewMap();
 
 		View workspaceView = getWorkspaceView();
-//		desktopView.getCustomTitleBarComponents();
 		viewMap.addView(view++, workspaceView);
 
-		View evolverView = new View("Evolver", null, new MDIDesktopPane());
-//		evolverView.getWindowProperties().set
+		View evolverView = new View("Evolver", null, new JLabel("Evolver goes here."));
 		viewMap.addView(view++, evolverView);
 
 		View editorView = new View("LLA Editor", null, new MDIDesktopPane());
@@ -180,32 +183,22 @@ public class InterfaceManager implements Manager
 
 		dm = new DevicePanelManager(this);
 		View deviceManagerView = new View("Device Manager", null, dm.getDevicePanel());
+		deviceManagerView.getWindowProperties().setCloseEnabled(false);
 		viewMap.addView(view++, deviceManagerView);
 		
 		// allocate main window (similiar to JFrame)
 		//  NOTE: RootWindow *must* be allocated before other InfoNode windows
 		RootWindow rootWindow = InterfaceManager.createMinimalRootWindow(viewMap);
-//		RootWindow rootWindow = DockingUtil.createRootWindow(viewMap, false);
-
-		// reduce clutter by disabling functionality
-//		rootWindow.getRootWindowProperties().getTabWindowProperties().getMaximizeButtonProperties().setVisible(false);
-//		rootWindow.getRootWindowProperties().getTabWindowProperties().getMinimizeButtonProperties().setVisible(false);
-//		rootWindow.getRootWindowProperties().getTabWindowProperties().getDockButtonProperties().setVisible(false);
-//		rootWindow.getRootWindowProperties().getTabWindowProperties().getUndockButtonProperties().setVisible(false);
-//		rootWindow.getRootWindowProperties().getTabWindowProperties().getCloseButtonProperties().setVisible(false);
 
 		// apply InfoNode theme (separate from Swing LAF)
 		rootWindow.getRootWindowProperties().addSuperObject(theme.getRootWindowProperties());		
 
 		// specify InfoNode tab layout (similar to JTabbedPane)
-//		rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
+		rootWindow.getWindowBar(Direction.DOWN).setEnabled(true);
 
 		// specify view layout (similar to JSplitPane)
 		SplitWindow rightWindow = new SplitWindow(false, 0.75f, workspaceView, evolverView);
 		SplitWindow mainWindow  = new SplitWindow(true, 0.25f, deviceManagerView, rightWindow);
-		
-//		SplitWindow toolWindow = new SplitWindow(false, 0.5f, deviceManagerView, evolverView);
-//		SplitWindow mainWindow = new SplitWindow(true,  0.75f, desktopView, toolWindow);
 
 		rootWindow.setWindow(mainWindow);
 
@@ -220,7 +213,7 @@ public class InterfaceManager implements Manager
 	public DevicePanelManager getDevicePanelManager() { return this.dm; }
 	public MDIDesktopPane getDesktop()
 	{
-		return desktop;
+		return workspace;
 	}
 	public JFrame getWindow()
 	{

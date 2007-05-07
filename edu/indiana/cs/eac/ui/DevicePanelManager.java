@@ -89,7 +89,7 @@ public class DevicePanelManager implements Manager
 		topPanel.add(deviceListPane, BorderLayout.CENTER);
 		
 		JToolBar bottom = new JToolBar();
-		JButton rescan = new JButton("Rescan");
+		JButton rescan = new JButton("Scan for new devices");
 		bottom.setFloatable(false);
 		bottom.setRollover(true);
 		bottom.setLayout(new BorderLayout());
@@ -149,22 +149,22 @@ public class DevicePanelManager implements Manager
 		
 		connectionButton = new JButton("Connect");
 		connectionButton.addActionListener(new CxnListener());
-		connectionButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon_disconnect.png")));
+		connectionButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-connect.png")));
 		bar.add(connectionButton);
 		
-		bar.addSeparator();
+//		bar.addSeparator();
 		
 		loadButton = new JButton();
 		loadButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-open.png")));
 		loadButton.setToolTipText("Load configuration");
-		bar.add(loadButton);
+//		bar.add(loadButton);
 		
 		saveButton = new JButton();
 		saveButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-save.png")));
 		saveButton.setToolTipText("Save configuration");
-		bar.add(saveButton);
+//		bar.add(saveButton);
 				
-		resetButton  = new JButton();
+		resetButton  = new JButton("Reset");
 //		resetButton.addActionListener(new ConnectionButtonListener(this, resetButton));
 		resetButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-reset.png")));
 		resetButton.setToolTipText("Reset");
@@ -326,6 +326,7 @@ public class DevicePanelManager implements Manager
 		if(d.isConnected())
 		{
 			connectionButton.setText("Disconnect");
+			connectionButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-disconnect.png")));
 			connectionButton.setEnabled(true);
 			
 			resetButton.setEnabled(true);
@@ -333,6 +334,7 @@ public class DevicePanelManager implements Manager
 		else
 		{
 			connectionButton.setText("Connect");
+			connectionButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-connect.png")));
 			connectionButton.setEnabled(true);
 			
 			resetButton.setEnabled(false);

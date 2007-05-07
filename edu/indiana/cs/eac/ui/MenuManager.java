@@ -71,8 +71,8 @@ public class MenuManager implements Manager
 		menu = new JMenuBar();
 
 		/* DEVICE MENU */
-		JMenu deviceMenu = new JEACMenu();
-		menu.add(deviceMenu);
+		JMenu fileMenu = new FileMenu();
+		menu.add(fileMenu);
 		
 		
 		
@@ -256,17 +256,17 @@ public class MenuManager implements Manager
 	 *  TODO: externilize inner class (???)
 	 *
 	 */
-	private class JEACMenu extends DynamicMenu
+	private class FileMenu extends DynamicMenu
 	{
 		private JMenuItem connectItem, loadItem;
 		private JMenuItem saveItem, saveAsItem;
 		private JMenuItem resetItem, disconnectItem;
 		private JMenuItem exitItem;
 		
-		public JEACMenu()
+		public FileMenu()
 		{
-			setText("Device");
-			setMnemonic('D');
+			setText("File");
+			setMnemonic('F');
 		}
 		
 
@@ -275,11 +275,11 @@ public class MenuManager implements Manager
 		protected void buildMenu()
 		{
 			
-			connectItem = new JMenuItem("Connect to device", 'C');
+//			connectItem = new JMenuItem("Connect to device", 'C');
 //			connectItem.addActionListener(new ConnectionListener());
-			connectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_MASK));
+//			connectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_MASK));
 //			connectItem.setIcon(new BlankIcon(16, 16));
-			add(connectItem);
+//			add(connectItem);
 			
 			loadItem = new JMenuItem("Load configuration...", 'O');
 //			loadItem.addActionListener(new LoadListener());
@@ -300,19 +300,19 @@ public class MenuManager implements Manager
 //			saveAsItem.setIcon(new BlankIcon(16, 16));
 			add(saveAsItem);
 			
-			add(new JSeparator());
+//			add(new JSeparator());
 			
-			resetItem = new JMenuItem("Reset", 'R');
+//			resetItem = new JMenuItem("Reset", 'R');
 //			resetItem.addActionListener(new ResetListener());
-			resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
+//			resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
 //			resetItem.setIcon(new BlankIcon(16, 16));
-			add(resetItem);
+//			add(resetItem);
 			
-			disconnectItem = new JMenuItem("Disconnect", 'D');
+//			disconnectItem = new JMenuItem("Disconnect", 'D');
 //			disconnectItem.addActionListener(new DisconnectListener());
-			disconnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_MASK));
+//			disconnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_MASK));
 //			disconnectItem.setIcon(new BlankIcon(16, 16));
-			add(disconnectItem);
+//			add(disconnectItem);
 			
 			add(new JSeparator());
 			
