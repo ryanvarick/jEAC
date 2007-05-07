@@ -284,7 +284,7 @@ public class MenuManager implements Manager
 			loadItem = new JMenuItem("Load configuration...", 'O');
 //			loadItem.addActionListener(new LoadListener());
 			loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
-//			loadItem.setIcon(new BlankIcon(16, 16));
+//			loadItem.setIcon(JEACUtilities.getImageIcon("icon-open.png"));
 			add(loadItem);
 			
 			add(new JSeparator());
@@ -292,7 +292,7 @@ public class MenuManager implements Manager
 			saveItem = new JMenuItem("Save configuratoin", 'S');
 //			saveItem.addActionListener(new FileIOListener());
 			saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-//			saveItem.setIcon(new BlankIcon(16, 16));
+			saveItem.setIcon(JEACUtilities.getImageIcon("icon-save.png"));
 			add(saveItem);
 			
 			saveAsItem = new JMenuItem("Save configuration as...", 'A');

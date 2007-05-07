@@ -692,6 +692,7 @@ public class JEAC_Reference extends JInternalFrame
 	 * @param String image - name (plus extension) of the image to load
 	 * 
 	 * @return Image
+	 * @deprecated moved to JeacUtilties
 	 *  
 	 */
 	public static Image getImage(String imageName)

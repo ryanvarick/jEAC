@@ -93,9 +93,8 @@ public class InterfaceManager implements Manager
 	 * Builds the workspace area.
 	 * 
 	 * <p>jEAC uses two kinds of UI containers:  dockable windows and free-
-	 * floating windows.  Free-floating windows are contained within the 
-	 * <i>workspace</i>, which behaves like a standard multi-document interface
-	 * (MDI).
+	 * floating windows, which are contained within the <i>workspace</i> area.
+	 * The workspace behaves as a standard multi-document interface (MDI).
 	 * 
 	 * <p><i>Note that the MDI is based on code outlined in a JavaWorld article,
 	 * <a href=http://www.javaworld.com/javaworld/jw-05-2001/jw-0525-mdi.html>
@@ -128,7 +127,7 @@ public class InterfaceManager implements Manager
 		workspace.getWindowProperties().setMinimizeEnabled(false);
 		workspace.getWindowProperties().setDragEnabled(false);
 		
-		// HACK: without the leading space, the title is truncated (WTF?)
+		// HACK: without a leading space, the title is truncated (WTF?)
 		workspace.getViewProperties().setTitle(" " + WORKSPACE_TITLE);
 		
 		return workspace;
@@ -184,6 +183,8 @@ public class InterfaceManager implements Manager
 		dm = new DevicePanelManager(this);
 		View deviceManagerView = new View("Device Manager", null, dm.getDevicePanel());
 		deviceManagerView.getWindowProperties().setCloseEnabled(false);
+		deviceManagerView.getViewProperties().getViewTitleBarProperties().setVisible(false);
+		
 		viewMap.addView(view++, deviceManagerView);
 		
 		// allocate main window (similiar to JFrame)

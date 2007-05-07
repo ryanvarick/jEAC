@@ -121,6 +121,8 @@ public class DevicePanelManager implements Manager
 		RootWindow tpw = InterfaceManager.createMinimalRootWindow(viewMap);
 		
 		tabs = new TabWindow();
+		tabs.getTabWindowProperties().getTabbedPanelProperties().setShadowEnabled(false);
+		
 		tabs.addTab(pp0);
 		tabs.addTab(pp1);
 
@@ -149,24 +151,24 @@ public class DevicePanelManager implements Manager
 		
 		connectionButton = new JButton("Connect");
 		connectionButton.addActionListener(new CxnListener());
-		connectionButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-connect.png")));
+		connectionButton.setIcon(JEACUtilities.getImageIcon("icon-connection.png"));
 		bar.add(connectionButton);
 		
-//		bar.addSeparator();
+		bar.addSeparator();
 		
 		loadButton = new JButton();
-		loadButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-open.png")));
+		loadButton.setIcon(JEACUtilities.getImageIcon("icon-open.png"));
 		loadButton.setToolTipText("Load configuration");
 //		bar.add(loadButton);
 		
 		saveButton = new JButton();
-		saveButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-save.png")));
+		saveButton.setIcon(JEACUtilities.getImageIcon("icon-save.png"));
 		saveButton.setToolTipText("Save configuration");
 //		bar.add(saveButton);
 				
 		resetButton  = new JButton("Reset");
 //		resetButton.addActionListener(new ConnectionButtonListener(this, resetButton));
-		resetButton.setIcon(new ImageIcon(JEAC_Reference.getImage("icon-reset.png")));
+		resetButton.setIcon(JEACUtilities.getImageIcon("icon-reset.png"));
 		resetButton.setToolTipText("Reset");
 		resetButton.addActionListener(new ResetListener());
 		bar.add(resetButton);
