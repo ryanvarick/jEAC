@@ -43,7 +43,7 @@ public class JEACUtilities
 	 * 
 	 * @param image   Name of the image to load, including file extension.
 	 * @return        <code>ImageIcon</code> containing the requested image,
-	 * 				  or <code>null</code> if the image could not be loaded.
+	 *                or <code>null</code> if the image could not be loaded.
 	 * 
 	 * @author        Ryan R. Varick
 	 * @since         1.0.0
