@@ -27,8 +27,15 @@ import edu.indiana.cs.eac.ui.*;
  */
 public class AboutMenuItemListener implements ActionListener
 {
+	private InterfaceManager im;
+
+	public AboutMenuItemListener(InterfaceManager im)
+	{
+		this.im = im;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
-		AboutWindow aboutWindow = new AboutWindow();
+		AboutWindow aboutWindow = new AboutWindow(im);
 	}
 }

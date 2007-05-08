@@ -31,7 +31,7 @@ public class AboutWindow extends JInternalFrame
 	 * 
 	 *
 	 */
-	public AboutWindow()
+	public AboutWindow(InterfaceManager im)
 	{
 		//		this.setSize(new Dimension(WINDOW_HEIGHT, WINDOW_WIDTH));
 		//		this.setVisible(true);
@@ -70,7 +70,6 @@ public class AboutWindow extends JInternalFrame
 		test.add(editorPane);
 		test.setVisible(true);
 
-		InterfaceManager.getInstance().getDesktop().add(this);
-
+		im.getDesktop().add(this);
 	}
 }

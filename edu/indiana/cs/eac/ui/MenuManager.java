@@ -144,7 +144,7 @@ public class MenuManager implements Manager
 		menu.add(new JSeparator());
 
 		JMenuItem about = new JMenuItem("About jEAC", 'A');
-		about.addActionListener(new AboutMenuItemListener());
+		about.addActionListener(new AboutMenuItemListener(im));
 		menu.add(about);
 		
 		return menu;
@@ -246,7 +246,7 @@ public class MenuManager implements Manager
 			
 			add(new JSeparator());
 			
-			JMenuItem save = new JMenuItem("Save configuratoin", 'S');
+			JMenuItem save = new JMenuItem("Save configuration", 'S');
 			save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
 			save.setEnabled(isEnabled);
 			save.setIcon(JEACUtilities.getImageIcon("icon-save.png"));
