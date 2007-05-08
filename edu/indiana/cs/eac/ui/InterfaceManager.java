@@ -62,21 +62,16 @@ public class InterfaceManager implements Manager
 	private HardwareManager hm;
 	private Device[][] validDevices;
 	private HashMap<String, Device> deviceList = new HashMap<String, Device>();
-	
+
+	/* component management */
 	private DevicePanelManager dm;
 	private TimingManager tm;
 	private MenuManager mm;
-
-
-	
 	private Vector<Manager> managerRegister;
 	
-	public void registerManager(Manager m)
-	{
-		managerRegister.add(m);
-	}
-
 	
+	
+	/* -------------------------[ Generic class methods ]------------------------- */
 	
 	/**
 	 * Returns a new <code>InterfaceManager</code> object.
@@ -96,7 +91,91 @@ public class InterfaceManager implements Manager
 	{
 		this.hm = hm;
 		this.tm = tm;
+		
+		managerRegister = new Vector<Manager>();
 	}
+	
+	// interface method: Manager
+	public void init()
+	{
+		// apply Swing look-and-feel first
+		if(USE_NATIVE_LAF)
+		{
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} 
+			catch(Exception e)
+			{
+				System.err.println("Could not load platform-native look-and-feel.");
+			}
+		}
+		
+		frame = new JFrame();
+		
+		// start maximized where supported
+		frame.setSize(new Dimension(INITIAL_WIDTH, INITIAL_HEIGHT));
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		
+		// center application on screen
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (screenSize.width - frame.getWidth()) / 2;
+		int y = (screenSize.height - frame.getHeight()) / 2;
+		frame.setLocation(new Point(x, y));
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.setResizable(true);
+		frame.setTitle(APPLICATION_TITLE);
+		
+		// add component: main menu
+		MenuManager menu = new MenuManager(this);
+		menu.init();
+		frame.setJMenuBar(menu.getMenu());
+		
+		// add component: content area, which is a mix of InfoNode and Swing components
+		frame.add(getRootWindow(), BorderLayout.CENTER);
+		
+		// add component: status bar
+		//  TODO: sketch out status bar
+		JLabel sb = new JLabel(" Status: Disconnected");
+		frame.add(sb, BorderLayout.SOUTH);		
+	}
+	
+	// interface method: Manager
+	public void update()
+	{
+		/*
+		 * InterfaceManager is the top-level UI manager; thus its update()
+		 * method is called by sub-managers, and is responsible for distributing
+		 * update events to the other sub-managers.
+		 * 
+		 */
+		
+		Manager[] mgr = null;
+		mgr = managerRegister.toArray(mgr);
+		
+		for(int i = 0; i < mgr.length; i++)
+		{
+			System.out.println("InterfaceManager::update() - updating manager " + i);
+			mgr[i].update();
+		}
+
+		// TODO: Remove these lines
+		dm.update();
+//		mm.update();
+//		sb.update();
+	}
+
+	
+	
+	
+	
+	public void registerManager(Manager m)
+	{
+		managerRegister.add(m);
+	}
+	
 	
 	/**
 	 * Builds the workspace area.
@@ -255,87 +334,6 @@ public class InterfaceManager implements Manager
 
 	
 	
-	/**
-	 * Initializes the UI.
-	 * 
-	 * @author   Ryan R. Varick
-	 * @since    2.0.0
-	 * 
-	 */
-	public void init()
-	{
-		// apply Swing look-and-feel first
-		if(USE_NATIVE_LAF)
-		{
-			try
-			{
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} 
-			catch(Exception e)
-			{
-				System.err.println("Could not load platform-native look-and-feel.");
-			}
-		}
-		
-		frame = new JFrame();
-		
-		// start maximized where supported
-		frame.setSize(new Dimension(INITIAL_WIDTH, INITIAL_HEIGHT));
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		
-		// center on screen
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (screenSize.width - frame.getWidth()) / 2;
-		int y = (screenSize.height - frame.getHeight()) / 2;
-		frame.setLocation(new Point(x, y));
-		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		frame.setResizable(true);
-		frame.setTitle(APPLICATION_TITLE);
-		
-		// add: main menu
-		MenuManager menu = new MenuManager(this);
-		menu.init();
-		frame.setJMenuBar(menu.getMenu());
-		
-		// add: content area, which is a mix of InfoNode and Swing components
-		frame.add(getRootWindow(), BorderLayout.CENTER);
-		
-		// add: status bar
-		//  TODO: sketch out status bar
-		JLabel sb = new JLabel(" Status: Disconnected");
-		frame.add(sb, BorderLayout.SOUTH);		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public void update()
-	{
-		Manager[] mg = null;
-		mg = managerRegister.toArray(mg);
-		
-		for(int i = 0; i < mg.length; i++)
-		{
-			System.out.println("InterfaceManager::update() - updating manager " + i);
-			mg[i].update();
-		}
-		
-		//updates everything
-		
-		dm.update();
-//		mm.update();
-//		sb.update();
-		
-	}
 	
 	
 	

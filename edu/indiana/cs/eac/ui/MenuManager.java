@@ -88,6 +88,10 @@ public class MenuManager implements Manager
 	// interface method: Manager
 	public void init()
 	{
+		// even though we ignore update() events, we'll register anyway
+		im.registerManager(this);
+		
+		// initialize the main menu
 		menu = new JMenuBar();
 		menu.add(getFileMenu());
 		menu.add(getViewMenu());
