@@ -232,12 +232,23 @@ public class InterfaceManager implements Manager
 	{
 		return frame;
 	}
-	public Device getActiveDevice()
+	public Device getSelectedDevice()
 	{
 		return dm.getActiveDevice();
 	}
 	
-	
+	public boolean isSelectedDeviceActive()
+	{
+		Device d = getSelectedDevice();
+		
+		boolean isActive = false;
+		if(d != null)
+		{
+			isActive = d.isConnected();
+		}
+		
+		return isActive;
+	}
 	
 
 	

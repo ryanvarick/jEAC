@@ -12,39 +12,34 @@
 
 package edu.indiana.cs.eac.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyVetoException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
 import java.awt.*;
+import java.awt.event.*;
+import java.beans.*;
+import java.io.*;
 import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
-import ec.display.Console;
 import edu.indiana.cs.eac.*;
-//import edu.indiana.cs.eac.ui.listeners.*;
-import edu.indiana.cs.eac.gradient.*;
-import edu.indiana.cs.eac.hardware.*;
-import edu.indiana.cs.eac.ui.deprecated.*;
-import edu.indiana.cs.eac.ui.listeners.*;
 import edu.indiana.cs.testing.ui.*;
+import edu.indiana.cs.eac.ui.listeners.*;
+
+
 
 /**
- * Menu layout and event manager.
+ * Handles menu-related events.
  * 
- * <p>This class defines the layout and behavior of the jEAC menubar.  It 
- * contains a number of listeners to handle menu events.  If you're trying to
- * hook or modify a menu event, this is the class you're looking for.
+ * <p>This class defines the layout and behavior of the <i>jEAC</i> main menu.
+ * It acts as a <code>Manager</code>; however, it does not implement the
+ * <code>update()</code> method since dynamic components are built automatically
+ * on demand in response to menu events.  In other words, this class does not
+ * care about on-screen UI events until a menu event is recieved.  Even then,
+ * only a portion of the overall menu structure is generated.
  * 
- * <p>The constructor caches the <code>InterfaceManager</code>, so that listeners 
- * can alter the rest of the interface.  Generally, menu events that alter the
- * interface only originate here.  The event will likely be handled by a method
- * in <code>InterfaceManager</code>. 
+ * <p>Note that this does <b>not</b> mean menu events are <i>processed</i> here.
+ * This class respects the "no inner listener" rule.  That is, event handling
+ * is handled by classes in the <code>ui.listeners</code> package.
+ * 
+ * <p>To sum up:  for menu structure and generation, look here.  For event
+ * processing, look in the aforementioned <code>listeners</code> package.
  * 
  * @author   Ryan R. Varick
  * @since    2.0.0
@@ -52,121 +47,79 @@ import edu.indiana.cs.testing.ui.*;
  */
 public class MenuManager implements Manager
 {
-	private JMenuBar menu;
 	private InterfaceManager im;
+	private JMenuBar menu;
 	
-	private MenuManager()
-	{
-		
-	}
-	public MenuManager(InterfaceManager im)
-	{
-		this.im = im;
-	}
 	
-
-
-	// constructor
-	public void init()
-	{
-		menu = new JMenuBar();
-
-		/* file menu */
-		JMenu fileMenu = new FileMenu();
-		menu.add(fileMenu);
-
-		/* view menu */
-		JMenu viewMenu = new JMenu("View");
-		viewMenu.setMnemonic('V');
-		
-		JCheckBoxMenuItem cpItem = new JCheckBoxMenuItem("Device Controller");
-		cpItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_MASK));
-		cpItem.setIcon(JEACUtilities.getImageIcon("icon-controller.png"));
-		cpItem.setMnemonic('C');
-		viewMenu.add(cpItem);
-		
-		viewMenu.add(new JSeparator());
-		
-		JCheckBoxMenuItem dataItem = new JCheckBoxMenuItem("Data");
-//		evolverMenuItem.addActionListener(new EvolverListener());
-		dataItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, KeyEvent.ALT_MASK));
-		dataItem.setMnemonic('1');
-		viewMenu.add(dataItem);
-
-		JCheckBoxMenuItem gradient2DItem = new JCheckBoxMenuItem("2D Visualization");
-//		gradient2DMenuItem.addActionListener(new NewGradientModeListener());
-		gradient2DItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.ALT_MASK));
-		gradient2DItem.setMnemonic('2');
-		gradient2DItem.setSelected(false);
-		viewMenu.add(gradient2DItem);
-
-		JCheckBoxMenuItem gradient3DItem = new JCheckBoxMenuItem("3D Visualization");
-//		gradient3DMenuItem.addActionListener(new NewGradientModeListener());
-		gradient3DItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.ALT_MASK));
-		gradient3DItem.setMnemonic('3');
-		gradient3DItem.setSelected(true);
-		viewMenu.add(gradient3DItem);
-
-		viewMenu.add(new JSeparator());
-
-		JCheckBoxMenuItem llaInspectorItem = new JCheckBoxMenuItem("LLA Inspector");
-//		llaViewerMenuItem.addActionListener(new LLAViewerListener());
-		llaInspectorItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_MASK));
-		llaInspectorItem.setIcon(JEACUtilities.getImageIcon("icon-inspector.png"));
-		llaInspectorItem.setMnemonic('L');
-		llaInspectorItem.setState(false);
-		viewMenu.add(llaInspectorItem);
-
-		menu.add(viewMenu);
-		
-		/* tools menu */
-//		JMenu toolMenu = new JMenu("Tools");
-//		
-//		toolMenu.add(new JSeparator());
-//				
-//		JMenuItem deviceManagerMenuItem = new JMenuItem("Device Manager");
-//		toolMenu.add(deviceManagerMenuItem);
-//		
-//		JMenuItem evolverMenuItem2 = new JMenuItem("Evolver");
-//		toolMenu.add(evolverMenuItem2);
-//		
-//		JMenuItem llaEditorMenuItem = new JMenuItem("LLA Editor");
-//		toolMenu.add(llaEditorMenuItem);
-//		
-//		menu.add(toolMenu);
-		
-		/* window menu */
-		JMenu windowMenu = new WindowMenu();
-		windowMenu.setText("Window");
-		windowMenu.setMnemonic('W');
-		menu.add(windowMenu);
-		
-		/* help menu */
-		menu.add(getHelpMenu());
 	
-	}
-	
+	/* -------------------------[ Generic class methods ]------------------------- */
+
 	/**
+	 * Private constructor.
 	 * 
-	 * @return
-	 */
-	public JMenuBar getMenu()
-	{
-		return menu;
-	}
-	
-	
-	
-	
-	/**
-	 * Builds the Help menu.
-	 * 
-	 * @return   Help menu.
+	 * <p>The default constructor is hidden, since this class requires an
+	 * <code>InterfaceManager</code> callback reference.
 	 * 
 	 * @author   Ryan R. Varick
 	 * @since    2.0.0
 	 * 
 	 */
+	private MenuManager()
+	{
+		/* Do nothing. */
+	}
+	
+	/**
+	 * Returns a new <code>InterfaceManager</code> instance.
+	 * 
+	 * @param im   Current <code>InterfaceManager</code> instance.
+	 * 
+	 * @author     Ryan R. Varick
+	 * @since      2.0.0
+	 * 
+	 * TODO: Register with InterfaceManager.
+	 * 
+	 */
+	public MenuManager(InterfaceManager im)
+	{
+		this.im = im;
+	}
+	
+	// interface method: Manager
+	public void init()
+	{
+		menu = new JMenuBar();
+		menu.add(getFileMenu());
+		menu.add(getViewMenu());
+		menu.add(getWindowMenu());
+		menu.add(getHelpMenu());
+	}
+	
+	// interface method: Manager
+	public void update()
+	{
+		/* Do nothing (see class declaration). */ 
+	}
+	
+	
+	
+	/* -------------------------[ MenuManager methods ]------------------------- */
+	
+	private JMenu getFileMenu()
+	{
+		return new FileMenu();
+	}
+
+	private JMenu getViewMenu()
+	{
+		return new ViewMenu();
+	}
+	
+	private JMenu getWindowMenu()
+	{
+		return new WindowMenu();
+	}
+
 	private JMenu getHelpMenu()
 	{
 		JMenu menu = new JMenu("Help");
@@ -197,11 +150,34 @@ public class MenuManager implements Manager
 		return menu;
 	}
 	
+	
+	
+	/* -------------------------[ Get/set methods ]------------------------- */
+
+	/**
+	 * Returns the menu.
+	 * 
+	 * @return   The menu.
+	 * 
+	 * @author   Ryan R. Varick
+	 * @since    2.0.0
+	 * 
+	 */
+	public JMenuBar getMenu()
+	{
+		return menu;
+	}
 
 	
 	
+	
+	
+	
+	
+	
+	/* =========================[ Inner classes ]========================= */
 
-
+	/** @deprecated This is just a test method. */
 	private class ConsoleListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -250,111 +226,103 @@ public class MenuManager implements Manager
 	
 
 		
-	/**
-	 * Manages the list of available devices.
-	 * 
-	 * <p>Managing the list of devices is a tricky task, and was one of the
-	 * most hack-ish parts of jEACv1.  
-	 *
-	 * @author Varick
-	 *  
-	 *  TODO: externilize inner class (???)
-	 *
-	 */
+	// TODO: add listeners
 	private class FileMenu extends DynamicMenu
 	{
-		private JMenuItem connectItem, loadItem;
-		private JMenuItem saveItem, saveAsItem;
-		private JMenuItem resetItem, disconnectItem;
-		private JMenuItem exitItem;
-		
 		public FileMenu()
 		{
 			setText("File");
 			setMnemonic('F');
-		}
-		
-
-		
+		}		
 		
 		protected void buildMenu()
 		{
+			boolean isEnabled = im.isSelectedDeviceActive();
 			
-//			connectItem = new JMenuItem("Connect to device", 'C');
-//			connectItem.addActionListener(new ConnectionListener());
-//			connectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_MASK));
-//			connectItem.setIcon(new BlankIcon(16, 16));
-//			add(connectItem);
-			
-			loadItem = new JMenuItem("Load configuration...", 'O');
-//			loadItem.addActionListener(new LoadListener());
-			loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
-//			loadItem.setIcon(JEACUtilities.getImageIcon("icon-open.png"));
-			add(loadItem);
+			JMenuItem load = new JMenuItem("Load configuration...", 'O');
+			load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+			load.setEnabled(isEnabled);
+			add(load);
 			
 			add(new JSeparator());
 			
-			saveItem = new JMenuItem("Save configuratoin", 'S');
-//			saveItem.addActionListener(new FileIOListener());
-			saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-			saveItem.setIcon(JEACUtilities.getImageIcon("icon-save.png"));
-			add(saveItem);
+			JMenuItem save = new JMenuItem("Save configuratoin", 'S');
+			save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+			save.setEnabled(isEnabled);
+			save.setIcon(JEACUtilities.getImageIcon("icon-save.png"));
+			add(save);
 			
-			saveAsItem = new JMenuItem("Save configuration as...", 'A');
-//			saveAsItem.addActionListener(new FileIOListener());
-//			saveAsItem.setIcon(new BlankIcon(16, 16));
-			add(saveAsItem);
-			
-//			add(new JSeparator());
-			
-//			resetItem = new JMenuItem("Reset", 'R');
-//			resetItem.addActionListener(new ResetListener());
-//			resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
-//			resetItem.setIcon(new BlankIcon(16, 16));
-//			add(resetItem);
-			
-//			disconnectItem = new JMenuItem("Disconnect", 'D');
-//			disconnectItem.addActionListener(new DisconnectListener());
-//			disconnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_MASK));
-//			disconnectItem.setIcon(new BlankIcon(16, 16));
-//			add(disconnectItem);
+			JMenuItem saveAs = new JMenuItem("Save configuration as...", 'A');
+			saveAs.setEnabled(isEnabled);
+			add(saveAs);
 			
 			add(new JSeparator());
 			
-			exitItem = new JMenuItem("Exit", 'X');
-			exitItem.addActionListener(new ExitListener());
-//			exitItem.setIcon(new BlankIcon(16, 16));
-			add(exitItem);
+			JMenuItem exit = new JMenuItem("Exit", 'X');
+			exit.addActionListener(new ExitListener());
+			add(exit);
 		}
 		
-//		protected void buildMenu()
-//		{			
-//			InterfaceManager ui = im;
-//			
-//			Device[][] devices = ui.getDevices();
-//			int keyCounter = 0;
-//			for(int i = 0; i < devices.length; i++)
-//			{
-//				for(int j = 0; j < devices[i].length; j++)
-//				{
-//					Device d = devices[i][j];
-//					System.out.println("adding device:  " + d.getTitle());
-//					
-//					// create the menu item (and store the Device reference)
-//					ExtendedJCheckBoxMenuItem menuItem = new ExtendedJCheckBoxMenuItem(d);
-//					menuItem.addActionListener(new ConnectMenuEventListener());
-//					menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0 + keyCounter++, KeyEvent.CTRL_MASK));
-//					menuItem.setText(d.getTitle());
-//					
-//					add(menuItem);
-//				}
-//				add(new JSeparator());
-//			}
-//		
-//			add(new JMenuItem("Rescan"));
-//			// TODO: Add listener
-//
-//		}	
+	}
+	
+	// TODO: checkbox toggling
+	// TODO: add listeners
+	private class ViewMenu extends DynamicMenu
+	{
+		public ViewMenu()
+		{
+			setText("View");
+			setMnemonic('V');
+		}
+		
+		protected void buildMenu()
+		{
+			boolean isEnabled = im.isSelectedDeviceActive();
+
+			JCheckBoxMenuItem controller = new JCheckBoxMenuItem("Device Controller");
+			controller.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_MASK));
+			controller.setEnabled(isEnabled);
+			controller.setIcon(JEACUtilities.getImageIcon("icon-controller.png"));
+			controller.setMnemonic('C');
+			add(controller);
+			
+			add(new JSeparator());
+			
+			JCheckBoxMenuItem data = new JCheckBoxMenuItem("Data");
+//			evolverMenuItem.addActionListener(new EvolverListener());
+			data.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, KeyEvent.ALT_MASK));
+			data.setEnabled(isEnabled);
+			data.setMnemonic('1');
+			add(data);
+
+			JCheckBoxMenuItem gradient2D = new JCheckBoxMenuItem("2D Visualization");
+//			gradient2DMenuItem.addActionListener(new NewGradientModeListener());
+			gradient2D.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.ALT_MASK));
+			gradient2D.setEnabled(isEnabled);
+			gradient2D.setMnemonic('2');
+			gradient2D.setSelected(false);
+			add(gradient2D);
+
+			JCheckBoxMenuItem gradient3D = new JCheckBoxMenuItem("3D Visualization");
+//			gradient3DMenuItem.addActionListener(new NewGradientModeListener());
+			gradient3D.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.ALT_MASK));
+			gradient3D.setEnabled(isEnabled);
+			gradient3D.setMnemonic('3');
+			gradient3D.setSelected(true);
+			add(gradient3D);
+
+			add(new JSeparator());
+
+			JCheckBoxMenuItem llaInspector = new JCheckBoxMenuItem("LLA Inspector");
+//			llaViewerMenuItem.addActionListener(new LLAViewerListener());
+			llaInspector.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_MASK));
+			llaInspector.setEnabled(isEnabled);
+			llaInspector.setIcon(JEACUtilities.getImageIcon("icon-inspector.png"));
+			llaInspector.setMnemonic('L');
+			llaInspector.setState(false);
+			add(llaInspector);
+		}
+		
 	}
 	
 	
@@ -370,6 +338,13 @@ public class MenuManager implements Manager
 	{
 		private JMenuItem cascadeMenuItem, tileMenuItem;
 		/* Sets up the children menus depending on the current desktop state */
+		
+		public WindowMenu()
+		{
+			setText("Window");
+			setMnemonic('W');
+		}
+		
 	    protected void buildMenu()
 	    {
 	    	// FIXME: Testing only--remove before release!
@@ -428,14 +403,5 @@ public class MenuManager implements Manager
 	    }
 
 	}
-
-
-
-
-	public void update()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 }
