@@ -63,7 +63,7 @@ public class DeviceTreeListener implements TreeSelectionListener
 		{
 			Device d = (Device)nodeInfo; // now we rock
 			
-			dm.updateSelectedDevice(d);
+			dm.setSelectedDevice(d);
 			// 1. changeMenuBar(d);
 			// 2. updateDeviceControls(d);
 			// new: updateSelectedDevice(d);
@@ -74,7 +74,7 @@ public class DeviceTreeListener implements TreeSelectionListener
 		{
 			System.out.println("Branch: " + node.toString());
 			
-			dm.updateSelectedDevice(null);
+			dm.setSelectedDevice(null);
 			// 1. disableMenuBar();
 			// 2. disableDeviceControls();
 			// new: updateSelectedDevice(null);

@@ -113,11 +113,11 @@ public class InterfaceManager implements Manager
 		
 		frame = new JFrame();
 		
-		// start maximized where supported
+		// start maximized, when supported
 		frame.setSize(new Dimension(INITIAL_WIDTH, INITIAL_HEIGHT));
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
-		// center application on screen
+		// center on screen
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (screenSize.width - frame.getWidth()) / 2;
 		int y = (screenSize.height - frame.getHeight()) / 2;
@@ -269,6 +269,7 @@ public class InterfaceManager implements Manager
 		viewMap.addView(view++, editorView);
 
 		dm = new DevicePanelManager(this);
+		dm.init();
 		View deviceManagerView = new View("Device Manager", null, dm.getDevicePanel());
 		deviceManagerView.getWindowProperties().setMinimizeEnabled(false);
 		deviceManagerView.getWindowProperties().setCloseEnabled(false);

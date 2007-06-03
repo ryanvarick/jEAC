@@ -28,7 +28,9 @@ import edu.indiana.cs.eac.ui.listeners.*;
 
 
 /**
- * TODO: javadoc description
+ * Responsible for device management and device-specific controls.
+ * 
+ * TODO: full javadoc here
  * 
  * @author   Ryan R. Varick
  * @since    2.0.0
@@ -40,8 +42,9 @@ public class DevicePanelManager implements Manager
 
 	private InterfaceManager im;
 	
+	private JComponent devicePanel;
 	private JTree deviceTree;
-	private JToolBar toolbar;
+	private JToolBar deviceToolbar;
 	
 	private JButton connectionButton, resetButton, rescanButton;
 	private JButton[] buttonList;
@@ -72,90 +75,25 @@ public class DevicePanelManager implements Manager
 	 */
 	public JComponent getDevicePanel()
 	{
-		ViewMap viewMap = new ViewMap();
-		int i = 0;
-		
-		/* build the device chooser */
-		toolbar = getToolBar();
-		updateSelectedDevice(null);
-				
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new BorderLayout());
-		topPanel.add(toolbar, BorderLayout.NORTH);
-
-		// FIXME: figure out how this should work
-		deviceTree = new JTree();
-		populateDeviceTree(deviceTree);
-		JScrollPane deviceListPane = new JScrollPane(deviceTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);	
-		topPanel.add(deviceListPane, BorderLayout.CENTER);
-		
-		JToolBar bottom = new JToolBar();
-		JButton rescan = new JButton("Scan for new devices");
-		bottom.setFloatable(false);
-		bottom.setRollover(true);
-		bottom.setLayout(new BorderLayout());
-		bottom.add(rescan, BorderLayout.EAST);
-		topPanel.add(bottom, BorderLayout.SOUTH);
-		
-		View devices = new View(null, null, topPanel);
-		devices.getViewProperties().setAlwaysShowTitle(false);
-		viewMap.addView(i++, devices);
-		
-		
-		
-		/* build the control panel */
-
-		JPanel propertiesPanel0 = new JPanel();
-		propertiesPanel0.add(new JLabel("No devices currently connected. 0"));
-		JPanel propertiesPanel1 = new JPanel();
-		propertiesPanel1.add(new JLabel("No devices currently connected. 1"));
-		
-		View pp0 = new View("COM4", null, propertiesPanel0);
-		viewMap.addView(i++, pp0);
-		
-		View pp1 = new View("eac2.cs.indiana.edu", null, propertiesPanel1);
-		viewMap.addView(i++, pp1);
-		
-		
-		
-		/* put it all together */
-		RootWindow tpw = InterfaceManager.createMinimalRootWindow(viewMap);
-		
-		tabs = new TabWindow();
-		tabs.getTabWindowProperties().getTabbedPanelProperties().setShadowEnabled(false);
-		
-		tabs.addTab(pp0);
-		tabs.addTab(pp1);
-
-		SplitWindow sw = new SplitWindow(false, 0.4f, devices, tabs);
-		
-		tpw.setWindow(sw);
-		
-		
-		// TODO: determine why this will not resize
-//		SplitWindow container = new SplitWindow(false, tp, tw);
-//		SplitWindow container = new SplitWindow(false, 0.4f, tp, tw);
-//		JSplitPane container = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tp, tw);
-		
-		// TODO: add views programmatically
-//		v.addView(2, new View("Blah", null, new JLabel("Nothing here!")));
-		
-		return sw;
+		return devicePanel;
 	}
 	
-	private JToolBar getToolBar()
+	/**
+	 * TODO: cleanup, comment
+	 * @return
+	 */
+	private JToolBar getDeviceToolbar()
 	{
-		JToolBar bar = new JToolBar();
-		bar.setFloatable(false);
-		bar.setRollover(true);
-//		bar.setLayout(new BorderLayout());
+		JToolBar toolbar = new JToolBar();
+		toolbar.setFloatable(false);
+		toolbar.setRollover(true);
 		
 		connectionButton = new JButton("Connect");
 		connectionButton.addActionListener(new CxnListener());
 		connectionButton.setIcon(JEACUtilities.getImageIcon("icon-connection.png"));
-		bar.add(connectionButton);
+		toolbar.add(connectionButton);
 		
-		bar.addSeparator();
+		toolbar.addSeparator();
 		
 		loadButton = new JButton();
 		loadButton.setIcon(JEACUtilities.getImageIcon("icon-open.png"));
@@ -172,7 +110,7 @@ public class DevicePanelManager implements Manager
 		resetButton.setIcon(JEACUtilities.getImageIcon("icon-reset.png"));
 		resetButton.setToolTipText("Reset");
 		resetButton.addActionListener(new ResetListener());
-		bar.add(resetButton);
+		toolbar.add(resetButton);
 		
 //		bar.addSeparator();
 		
@@ -187,7 +125,7 @@ public class DevicePanelManager implements Manager
 			resetButton,
 		};
 
-		return bar;
+		return toolbar;
 	}
 	
 	/**
@@ -298,14 +236,18 @@ public class DevicePanelManager implements Manager
 
 	}
 	
-	public void updateSelectedDevice(Device d)
+	/**
+	 * Should this be setSelectedDevice?
+	 * @param d
+	 */
+	public void setSelectedDevice(Device d)
 	{
 		this.activeDevice = d;
 		
 		if(d == null)
 		{
 			// 1. disable menu bar
-			toolbar.setEnabled(false);
+			deviceToolbar.setEnabled(false);
 //			tools.setVisible(false);
 			
 			// 2. disable properties panel
@@ -388,14 +330,14 @@ public class DevicePanelManager implements Manager
 			if(activeDevice.isConnected())
 			{
 				activeDevice.disconnect();
-				updateSelectedDevice(null);
+				setSelectedDevice(null);
 			}
 			else
 			{
 				try
 				{
 					activeDevice.connect();
-					updateSelectedDevice(activeDevice);
+					setSelectedDevice(activeDevice);
 					
 					// TESTING!
 					im.update();
@@ -423,8 +365,77 @@ public class DevicePanelManager implements Manager
 
 	public void init()
 	{
-		// TODO Auto-generated method stub
+		/* 1. build the device chooser */
+		deviceToolbar = getDeviceToolbar();
+
+		// FIXME: this depends on the toolbar being initialized; unwravel this
+		setSelectedDevice(null);
+				
+		JPanel deviceChooserPanel = new JPanel();
+		deviceChooserPanel.setLayout(new BorderLayout());
+		deviceChooserPanel.add(deviceToolbar, BorderLayout.NORTH);
+
+		// FIXME: figure out how this should work
+		deviceTree = new JTree();
+		populateDeviceTree(deviceTree);
+		JScrollPane deviceListPane = new JScrollPane(deviceTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);	
+		deviceChooserPanel.add(deviceListPane, BorderLayout.CENTER);
 		
+		JToolBar rescanToolbar = new JToolBar();
+		rescanToolbar.setFloatable(false);
+		rescanToolbar.setRollover(true);
+		rescanToolbar.setLayout(new BorderLayout());
+
+		JButton rescan = new JButton("Scan for new devices");
+		rescanToolbar.add(rescan, BorderLayout.EAST);
+		
+		deviceChooserPanel.add(rescanToolbar, BorderLayout.SOUTH);
+		
+
+		
+		/* 2. set up the control panel area */
+		ViewMap viewMap = new ViewMap();
+		int view_cnt = 0;
+
+		View devices = new View(null, null, deviceChooserPanel);
+		devices.getViewProperties().setAlwaysShowTitle(false);
+		viewMap.addView(view_cnt++, devices);
+
+		JPanel propertiesPanel0 = new JPanel();
+		propertiesPanel0.add(new JLabel("No devices currently connected. 0"));
+		JPanel propertiesPanel1 = new JPanel();
+		propertiesPanel1.add(new JLabel("No devices currently connected. 1"));
+		
+		View pp0 = new View("COM4", null, propertiesPanel0);
+		viewMap.addView(view_cnt++, pp0);
+		
+		View pp1 = new View("eac2.cs.indiana.edu", null, propertiesPanel1);
+		viewMap.addView(view_cnt++, pp1);
+		
+		
+		
+		/* put it all together */
+		RootWindow tpw = InterfaceManager.createMinimalRootWindow(viewMap);
+		
+		tabs = new TabWindow();
+		tabs.getTabWindowProperties().getTabbedPanelProperties().setShadowEnabled(false);
+		
+		tabs.addTab(pp0);
+		tabs.addTab(pp1);
+
+		SplitWindow sw = new SplitWindow(false, 0.4f, devices, tabs);
+		
+		tpw.setWindow(sw);
+		
+		devicePanel = tpw;
+		
+		// TODO: determine why this will not resize
+//		SplitWindow container = new SplitWindow(false, tp, tw);
+//		SplitWindow container = new SplitWindow(false, 0.4f, tp, tw);
+//		JSplitPane container = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tp, tw);
+		
+		// TODO: add views programmatically
+//		v.addView(2, new View("Blah", null, new JLabel("Nothing here!")));
 	}
 		
 }
